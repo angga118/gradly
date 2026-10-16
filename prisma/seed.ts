@@ -1,6 +1,5 @@
 import "dotenv/config"
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3"
-import { PrismaClient } from "../src/generated/prisma/client"
+import { prisma } from "../src/lib/prisma"
 import { hashPassword } from "../src/lib/password"
 import {
   seedBookings,
@@ -14,9 +13,6 @@ import {
   seedUsers,
   seedWithdrawals,
 } from "../src/lib/mock-data"
-
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL! })
-const prisma = new PrismaClient({ adapter })
 
 const d = (s: string) => new Date(s)
 

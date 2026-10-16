@@ -5,7 +5,7 @@ import { PortofolioView } from "@/components/public/portofolio-view";
 export const metadata: Metadata = {
   title: "Portofolio fotografer",
   description:
-    "Lihat portofolio Kirana Larasati: hasil sesi foto wisuda dengan warna hangat dan arahan santai, lengkap dengan rating dan testimoni klien.",
+    "Jelajahi semua fotografer Gradly: bandingkan studio, rating, gaya, dan ketersediaan booking sebelum memilih fotografer untuk sesimu.",
   alternates: { canonical: "/portofolio" },
 };
 

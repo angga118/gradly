@@ -61,11 +61,31 @@ h4 {
   scrollbar-width: none;
 }
 
+/* Entrance halus tanpa JS. Basis SELALU terlihat; @starting-style hanya
+   menambah animasi masuk, jadi konten tak pernah tersembunyi bila animasi
+   tidak jalan (mis. JS/CSS gagal atau animasi di-throttle). */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--reveal-duration, 700ms) ease-out,
+    transform var(--reveal-duration, 700ms) ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@starting-style {
+  .reveal {
+    opacity: 0;
+    transform: translateY(var(--reveal-shift, 1rem));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
   }
 }

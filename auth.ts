@@ -80,9 +80,7 @@ const providers: NextAuthConfig["providers"] = [
         loginAttempts.set(key, recent)
         return null
       }
-      if (!user.emailVerified) {
-        throw new EmailNotVerifiedError()
-      }
+
       loginAttempts.delete(key)
       return { id: user.id, email: user.email, name: user.name, role: toRole(user.role) }
     },

@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+import { useGradly } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icons";
@@ -16,6 +20,8 @@ export function PackageCard({
   pkg: Package;
   className?: string;
 }) {
+  const { userById } = useGradly();
+  const photographer = userById(pkg.photographerId);
   const hasSubsidy = pkg.subsidyEnabled && pkg.subsidyPrice != null;
   const popular = Boolean(pkg.popular);
 
@@ -38,6 +44,16 @@ export function PackageCard({
         <h3 className="font-serif text-2xl leading-tight">{pkg.name}</h3>
         {hasSubsidy ? <Chip tone="butter">Harga subsidi</Chip> : null}
       </div>
+
+      {photographer ? (
+        <Link
+          href={`/portofolio/${photographer.id}`}
+          className="mt-2 inline-flex items-center gap-1.5 text-xs text-ink/55 transition-colors hover:text-ink"
+        >
+          <Icon name="user" size={13} />
+          {photographer.name}
+        </Link>
+      ) : null}
 
       <p className="mt-2 text-sm text-ink/65">{pkg.description}</p>
 

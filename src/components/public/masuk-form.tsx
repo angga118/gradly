@@ -7,6 +7,7 @@ import { useGradly } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icons";
+import { PasswordInput } from "@/components/ui/password-input";
 import { AuthShell } from "./auth-shell";
 import { roleHome } from "./role-home";
 
@@ -171,9 +172,8 @@ export function MasukForm() {
             htmlFor="password"
             hint="Lupa kata sandi? Hubungi admin lewat halaman bantuan."
           >
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               autoComplete="current-password"
               value={password}
               onChange={(e) => {

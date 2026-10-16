@@ -5,8 +5,9 @@ import { useGradly } from "@/lib/store";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Field, Input } from "@/components/ui/field";
+import { Field } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icons";
+import { PasswordInput } from "@/components/ui/password-input";
 import { PageIntro } from "./page-intro";
 import { AccountNav } from "./account-nav";
 
@@ -15,7 +16,6 @@ export function PasswordView() {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [show, setShow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -72,45 +72,34 @@ export function PasswordView() {
           <Card className="p-6">
             <form onSubmit={onSubmit} className="space-y-5">
               <Field label="Kata sandi saat ini" htmlFor="current" required>
-                <div className="relative">
-                  <Input
-                    id="current"
-                    type={show ? "text" : "password"}
-                    value={current}
-                    onChange={(e) => {
-                      setCurrent(e.target.value);
-                      setError(null);
-                      setSuccess(false);
-                    }}
-                    autoComplete="current-password"
-                    className="pr-12"
-                  />
-                  <ShowToggle show={show} onToggle={() => setShow((v) => !v)} />
-                </div>
+                <PasswordInput
+                  id="current"
+                  value={current}
+                  onChange={(e) => {
+                    setCurrent(e.target.value);
+                    setError(null);
+                    setSuccess(false);
+                  }}
+                  autoComplete="current-password"
+                />
               </Field>
 
               <Field label="Kata sandi baru" htmlFor="next" required>
-                <div className="relative">
-                  <Input
-                    id="next"
-                    type={show ? "text" : "password"}
-                    value={next}
-                    onChange={(e) => {
-                      setNext(e.target.value);
-                      setError(null);
-                      setSuccess(false);
-                    }}
-                    autoComplete="new-password"
-                    className="pr-12"
-                  />
-                  <ShowToggle show={show} onToggle={() => setShow((v) => !v)} />
-                </div>
+                <PasswordInput
+                  id="next"
+                  value={next}
+                  onChange={(e) => {
+                    setNext(e.target.value);
+                    setError(null);
+                    setSuccess(false);
+                  }}
+                  autoComplete="new-password"
+                />
               </Field>
 
               <Field label="Konfirmasi kata sandi baru" htmlFor="confirm" required>
-                <Input
+                <PasswordInput
                   id="confirm"
-                  type={show ? "text" : "password"}
                   value={confirm}
                   onChange={(e) => {
                     setConfirm(e.target.value);
@@ -172,18 +161,5 @@ export function PasswordView() {
         </div>
       </div>
     </div>
-  );
-}
-
-function ShowToggle({ show, onToggle }: { show: boolean; onToggle: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-label={show ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-2 text-ink/50 transition-colors hover:bg-ink/5 hover:text-ink"
-    >
-      <Icon name="eye" size={18} />
-    </button>
   );
 }

@@ -1,9 +1,11 @@
-"use client";
-
-import { useEffect, useState, type ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-/** Kemunculan halus saat mount. Hormati prefers-reduced-motion lewat globals.css. */
+/**
+ * Kemunculan halus saat mount (lebih pendek/cepat dari versi public).
+ * Animasi murni CSS (kelas `.reveal` di globals.css) sehingga konten tetap
+ * terlihat tanpa JS. Hormati prefers-reduced-motion lewat globals.css.
+ */
 export function Reveal({
   children,
   delay = 0,
@@ -13,21 +15,14 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setShown(true), delay);
-    return () => clearTimeout(t);
-  }, [delay]);
+  const style = {
+    "--reveal-duration": "500ms",
+    "--reveal-shift": "0.75rem",
+    ...(delay > 0 ? { "--reveal-delay": `${delay}ms` } : null),
+  } as CSSProperties;
 
   return (
-    <div
-      className={cn(
-        "transition-all duration-500 ease-out motion-reduce:transition-none",
-        shown ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
-        className,
-      )}
-    >
+    <div className={cn("reveal", className)} style={style}>
       {children}
     </div>
   );

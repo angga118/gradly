@@ -110,7 +110,7 @@ interface GradlyContextValue {
     phone: string;
     city: string;
     role: Role;
-  }) => Promise<{ ok: boolean; error?: string }>;
+  }) => Promise<{ ok: boolean; error?: string; code?: string; verifyUrl?: string }>;
   logout: () => Promise<void>;
   updateProfile: (patch: Partial<User>) => Promise<void>;
   changePassword: (current: string, next: string) => Promise<{ ok: boolean; error?: string }>;
@@ -279,9 +279,20 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback<GradlyContextValue["register"]>(
     async (input) => {
-      const res = await sendJSON<{ ok: boolean }>("/api/auth/register", "POST", input);
+      const res = await sendJSON<{ ok: boolean; verifyUrl?: string }>(
+        "/api/auth/register",
+        "POST",
+        input,
+      );
       if (!res.ok) return { ok: false, error: res.error };
-      return login(input.email, input.password);
+      const loginRes = await login(input.email, input.password);
+      // Dev fallback: when mail is skipped the account stays unverified, so login
+      // fails — but the API returned the verification link. Surface it so the
+      // register flow can finish locally without an email provider.
+      if (!loginRes.ok && res.data?.verifyUrl) {
+        return { ...loginRes, verifyUrl: res.data.verifyUrl };
+      }
+      return loginRes;
     },
     [login],
   );

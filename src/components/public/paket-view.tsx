@@ -28,23 +28,31 @@ const SORTS: { value: Sort; label: string }[] = [
 ];
 
 export function PaketView() {
-  const { packages } = useGradly();
+  const { packages, users } = useGradly();
   const [filter, setFilter] = useState<Filter>("semua");
   const [sort, setSort] = useState<Sort>("populer");
+  const [fotograferId, setFotograferId] = useState("semua");
 
   const active = useMemo(() => packages.filter((p) => p.isActive), [packages]);
+  const fotografer = useMemo(
+    () => users.filter((u) => u.role === "fotografer"),
+    [users],
+  );
 
   const visible = useMemo(() => {
     let list = active;
     if (filter === "subsidi") list = list.filter((p) => p.subsidyEnabled);
     if (filter === "murah") list = list.filter((p) => p.price < 1_000_000);
+    if (fotograferId !== "semua") {
+      list = list.filter((p) => p.photographerId === fotograferId);
+    }
 
     return [...list].sort((a, b) => {
       if (sort === "termurah") return a.price - b.price;
       if (sort === "termahal") return b.price - a.price;
       return Number(Boolean(b.popular)) - Number(Boolean(a.popular)) || a.price - b.price;
     });
-  }, [active, filter, sort]);
+  }, [active, filter, sort, fotograferId]);
 
   const cheapest = active.reduce(
     (min, p) => (p.price < min ? p.price : min),
@@ -69,21 +77,40 @@ export function PaketView() {
             onChange={(v) => setFilter(v as Filter)}
             className="w-full sm:w-auto"
           />
-          <label className="flex items-center gap-2 text-sm text-ink/70">
-            <Icon name="filter" size={16} className="text-ink/50" />
-            <span className="sr-only sm:not-sr-only">Urutkan</span>
-            <Select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as Sort)}
-              className="w-full sm:w-48"
-            >
-              {SORTS.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                </option>
-              ))}
-            </Select>
-          </label>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <label className="flex items-center gap-2 text-sm text-ink/70">
+              <Icon name="user" size={16} className="text-ink/50" />
+              <span className="sr-only sm:not-sr-only">Fotografer</span>
+              <Select
+                value={fotograferId}
+                onChange={(e) => setFotograferId(e.target.value)}
+                aria-label="Saring paket per fotografer"
+                className="w-full sm:w-52"
+              >
+                <option value="semua">Semua fotografer</option>
+                {fotografer.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.name}
+                  </option>
+                ))}
+              </Select>
+            </label>
+            <label className="flex items-center gap-2 text-sm text-ink/70">
+              <Icon name="filter" size={16} className="text-ink/50" />
+              <span className="sr-only sm:not-sr-only">Urutkan</span>
+              <Select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as Sort)}
+                className="w-full sm:w-48"
+              >
+                {SORTS.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                  </option>
+                ))}
+              </Select>
+            </label>
+          </div>
         </div>
       </Reveal>
 

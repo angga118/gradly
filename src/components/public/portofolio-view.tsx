@@ -1,199 +1,106 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useGradly } from "@/lib/store";
-import { formatDate } from "@/lib/format";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icons";
-import { Avatar, Rating, SectionHeading } from "@/components/ui/misc";
-import { Tabs } from "@/components/ui/tabs";
-import { PhotoTile } from "./photo-tile";
+import { Avatar, EmptyState, Rating } from "@/components/ui/misc";
+import { PageHeader } from "./page-header";
 import { Reveal } from "./reveal";
 
 export function PortofolioView() {
-  const { users, portfolio, highlights, testimonials } = useGradly();
-  const fotografer = users.find((u) => u.role === "fotografer");
-  const [year, setYear] = useState("semua");
-
-  const years = useMemo(() => {
-    const set = new Set(portfolio.map((p) => p.shotDate.slice(0, 4)));
-    return ["semua", ...[...set].sort((a, b) => b.localeCompare(a))];
-  }, [portfolio]);
-
-  const visible = useMemo(
-    () =>
-      year === "semua"
-        ? portfolio
-        : portfolio.filter((p) => p.shotDate.startsWith(year)),
-    [portfolio, year],
-  );
-
-  const name = fotografer?.name ?? "Kirana Larasati";
-  const tags = fotografer?.tags ?? [];
+  const { users, hydrated } = useGradly();
+  const fotografer = users.filter((u) => u.role === "fotografer");
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6 sm:py-16">
-      {/* ── Profil fotografer ──────────────────────────────── */}
       <Reveal>
-        <Card className="overflow-hidden">
-          <div className="relative h-32 bg-gradient-to-br from-sage via-sage/60 to-sky/70 sm:h-44">
-            <div
-              className="absolute inset-0 opacity-[0.14]"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(135deg, rgba(81,50,41,0.6) 0, rgba(81,50,41,0.6) 1px, transparent 1px, transparent 16px)",
-              }}
-              aria-hidden="true"
-            />
-          </div>
-          <div className="px-6 pb-6">
-            <div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-              <div className="flex items-end gap-4">
-                <span className="rounded-full border-4 border-paper">
-                  <Avatar name={name} size={88} />
-                </span>
-                <div className="pb-1">
-                  <h1 className="font-serif text-2xl leading-tight sm:text-3xl">{name}</h1>
-                  <p className="text-sm text-ink/60">
-                    {fotografer?.studio ?? "Kirana Studio"} · {fotografer?.city ?? "Bandung"}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 pb-1">
-                <Rating value={fotografer?.rating ?? 4.9} count={fotografer?.sessions} />
-                {fotografer?.acceptingBookings ? (
-                  <Chip tone="sky">Menerima booking</Chip>
-                ) : (
-                  <Chip tone="outline">Jadwal penuh</Chip>
-                )}
-              </div>
-            </div>
-
-            <p className="mt-5 max-w-2xl text-sm leading-relaxed text-ink/70">
-              {fotografer?.bio ??
-                "Fotografer wisuda & potret editorial. Suka cahaya hangat dan momen yang apa adanya."}
-            </p>
-
-            {tags.length > 0 ? (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {tags.map((tag) => (
-                  <Chip key={tag} tone="outline">
-                    {tag}
-                  </Chip>
-                ))}
-              </div>
-            ) : null}
-
-            <div className="mt-6 flex flex-wrap gap-3 border-t border-ink/10 pt-5">
-              <Button href="/paket">
-                Lihat paket
-                <Icon name="arrowRight" size={16} />
-              </Button>
-              <Button href="/bantuan" variant="secondary">
-                Tanya dulu
-              </Button>
-            </div>
-          </div>
-        </Card>
+        <PageHeader
+          eyebrow="Portofolio"
+          title="Temukan fotografermu"
+          description="Jelajahi semua fotografer Gradly: bandingkan studio, rating, gaya, dan ketersediaannya sebelum memilih satu untuk sesimu."
+        />
       </Reveal>
 
-      {/* ── Highlight ──────────────────────────────────────── */}
-      <section className="mt-14">
-        <Reveal>
-          <SectionHeading
-            eyebrow="Kenapa memilih"
-            title="Yang kamu dapat di setiap sesi"
-          />
-        </Reveal>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {highlights.map((h, i) => (
-            <Reveal key={h.id} delay={i * 90}>
-              <div className="flex h-full flex-col rounded-[var(--radius-card)] border border-ink/10 bg-white/60 p-6">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-sky/70 text-ink">
-                  <Icon name={h.icon} size={20} />
-                </span>
-                <h3 className="mt-4 text-lg leading-tight">{h.title}</h3>
-                <p className="mt-2 text-sm text-ink/65">{h.text}</p>
-              </div>
-            </Reveal>
+      {!hydrated ? (
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+          <span className="sr-only">Memuat daftar fotografer…</span>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-56 animate-pulse rounded-[var(--radius-card)] bg-ink/5" />
           ))}
         </div>
-      </section>
-
-      {/* ── Galeri portofolio ──────────────────────────────── */}
-      <section className="mt-14">
-        <Reveal>
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <SectionHeading
-              eyebrow="Portofolio"
-              title="Galeri hasil sesi"
-              description="Disaring per tahun supaya mudah melihat perkembangan gaya."
-            />
-            {years.length > 1 ? (
-              <Tabs
-                tabs={years.map((y) => ({
-                  value: y,
-                  label: y === "semua" ? "Semua" : y,
-                }))}
-                value={year}
-                onChange={setYear}
-                className="shrink-0"
-              />
-            ) : null}
-          </div>
-        </Reveal>
-
-        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
-          {visible.map((item, i) => (
-            <Reveal key={item.id} delay={i * 60}>
-              <figure>
-                <PhotoTile
-                  tone={item.tone as "butter" | "sky" | "sage"}
-                  label={item.title}
-                  meta={item.location}
-                  className="aspect-[4/5] rounded-[var(--radius-card)] shadow-soft transition-transform duration-300 hover:-translate-y-1 hover:shadow-lift"
-                />
-                <figcaption className="mt-2 flex items-center justify-between gap-2 text-xs text-ink/55">
-                  <span className="truncate">{item.packageName}</span>
-                  <span className="shrink-0">{formatDate(item.shotDate, { short: true })}</span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Kata mereka ────────────────────────────────────── */}
-      <section className="mt-16">
-        <Reveal>
-          <SectionHeading
-            align="center"
-            eyebrow="Kata mereka"
-            title="Cerita dari klien"
+      ) : fotografer.length === 0 ? (
+        <div className="mt-10">
+          <EmptyState
+            icon="camera"
+            title="Belum ada fotografer"
+            description="Fotografer yang sudah bergabung dengan Gradly akan muncul di sini."
           />
-        </Reveal>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <Reveal key={t.id} delay={i * 90}>
-              <Card className="flex h-full flex-col bg-paper/85 p-6">
-                <Icon name="quote" size={26} className="text-ink/20" />
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/80">
-                  {t.message}
-                </p>
-                <div className="mt-5 flex items-center gap-3 border-t border-ink/10 pt-4">
-                  <Avatar name={t.clientName} size={38} />
-                  <div>
-                    <p className="text-sm font-medium">{t.clientName}</p>
-                    <Rating value={t.rating} size={13} />
+        </div>
+      ) : (
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {fotografer.map((f, i) => (
+            <Reveal key={f.id} delay={i * 70} className="h-full">
+              <Link
+                href={`/portofolio/${f.id}`}
+                className="block h-full"
+                aria-label={`Lihat portofolio ${f.name}`}
+              >
+                <Card className="group h-full overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lift">
+                  <div className="relative h-14 bg-gradient-to-br from-sage via-sage/60 to-sky/70">
+                    <div
+                      className="absolute inset-0 opacity-[0.14]"
+                      style={{
+                        backgroundImage:
+                          "repeating-linear-gradient(135deg, rgba(81,50,41,0.6) 0, rgba(81,50,41,0.6) 1px, transparent 1px, transparent 16px)",
+                      }}
+                      aria-hidden="true"
+                    />
                   </div>
-                </div>
-              </Card>
+                  <div className="px-6 pb-6">
+                    <div className="-mt-8 flex items-end gap-3">
+                      <span className="rounded-full border-4 border-paper">
+                        <Avatar name={f.name} size={62} />
+                      </span>
+                      <div className="min-w-0 pb-1">
+                        <h2 className="truncate font-serif text-xl leading-tight">{f.name}</h2>
+                        <p className="truncate text-sm text-ink/60">
+                          {f.studio || "Fotografer"} · {f.city}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+                      <Rating value={f.rating ?? 0} count={f.sessions ?? 0} />
+                      {f.acceptingBookings ? (
+                        <Chip tone="sky">Menerima booking</Chip>
+                      ) : (
+                        <Chip tone="outline">Jadwal penuh</Chip>
+                      )}
+                    </div>
+
+                    {f.tags && f.tags.length > 0 ? (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {f.tags.map((tag) => (
+                          <Chip key={tag} tone="outline">
+                            {tag}
+                          </Chip>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    <p className="mt-5 flex items-center gap-1.5 border-t border-ink/10 pt-4 text-sm font-medium text-ink/60 transition-colors group-hover:text-ink">
+                      Lihat portofolio
+                      <Icon name="arrowRight" size={15} />
+                    </p>
+                  </div>
+                </Card>
+              </Link>
             </Reveal>
           ))}
         </div>
-      </section>
+      )}
     </div>
   );
 }

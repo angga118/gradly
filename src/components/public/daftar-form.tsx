@@ -9,6 +9,7 @@ import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
 import { Icon, type IconName } from "@/components/ui/icons";
+import { PasswordInput } from "@/components/ui/password-input";
 import { AuthShell } from "./auth-shell";
 import { roleHome } from "./role-home";
 
@@ -46,6 +47,7 @@ export function DaftarForm() {
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
+  const [verifyUrl, setVerifyUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   function set<K extends keyof FormState>(key: K, value: string) {
@@ -72,6 +74,7 @@ export function DaftarForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setFormError(null);
+    setVerifyUrl(null);
     if (!validate()) return;
 
     setSubmitting(true);
@@ -86,6 +89,10 @@ export function DaftarForm() {
     setSubmitting(false);
 
     if (!res.ok) {
+      if (res.verifyUrl) {
+        setVerifyUrl(res.verifyUrl);
+        return;
+      }
       setFormError(res.error ?? "Pendaftaran gagal. Coba lagi.");
       return;
     }
@@ -118,6 +125,27 @@ export function DaftarForm() {
             >
               <Icon name="alert" size={16} className="mt-0.5 shrink-0" />
               {formError}
+            </div>
+          ) : null}
+
+          {verifyUrl ? (
+            <div
+              role="status"
+              className="flex items-start gap-2 rounded-2xl bg-sage/50 p-3.5 text-sm text-ink/80"
+            >
+              <Icon name="check" size={16} className="mt-0.5 shrink-0" />
+              <div>
+                <p>
+                  Akun berhasil dibuat, tetapi email belum diverifikasi. Di
+                  lingkungan lokal email dilewati, jadi gunakan tautan ini.
+                </p>
+                <a
+                  href={verifyUrl}
+                  className="mt-1 inline-block font-medium text-ink underline underline-offset-4 transition-colors hover:text-ink-soft"
+                >
+                  Verifikasi sekarang
+                </a>
+              </div>
             </div>
           ) : null}
 
@@ -193,9 +221,8 @@ export function DaftarForm() {
             error={errors.password}
             hint={errors.password ? undefined : "Minimal 8 karakter."}
           >
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               autoComplete="new-password"
               value={form.password}
               onChange={(e) => set("password", e.target.value)}

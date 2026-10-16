@@ -1,11 +1,10 @@
-"use client";
-
-import { useEffect, useState, type ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
  * Kemunculan halus saat mount, dipakai untuk orkestrasi masuk halaman.
- * `prefers-reduced-motion` ditangani lewat globals.css.
+ * Animasi murni CSS (kelas `.reveal` di globals.css) sehingga konten tetap
+ * terlihat tanpa JS. `prefers-reduced-motion` ditangani lewat globals.css.
  */
 export function Reveal({
   children,
@@ -16,20 +15,12 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setShown(true), delay);
-    return () => clearTimeout(t);
-  }, [delay]);
-
   return (
     <div
-      className={cn(
-        "transition-all duration-700 ease-out motion-reduce:transition-none",
-        shown ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
-        className,
-      )}
+      className={cn("reveal", className)}
+      style={
+        delay > 0 ? ({ "--reveal-delay": `${delay}ms` } as CSSProperties) : undefined
+      }
     >
       {children}
     </div>
