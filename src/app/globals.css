@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #513229;
+  --color-ink-soft: #6b4a3d;
+  --color-paper: #f4f1e2;
+  --color-paper-deep: #ece7d2;
+  --color-sky: #d8ebf9;
+  --color-sky-deep: #bfddf2;
+  --color-butter: #fce6b7;
+  --color-butter-deep: #f6d68c;
+  --color-sage: #d7d4b1;
+  --color-sage-deep: #c3bf93;
+  --color-danger: #a63d2f;
+  --color-danger-soft: #f2d9d4;
+  --color-success: #4f6b3a;
+
+  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+  --shadow-soft: 0 1px 2px rgba(81, 50, 41, 0.06), 0 12px 32px -16px rgba(81, 50, 41, 0.28);
+  --shadow-lift: 0 2px 4px rgba(81, 50, 41, 0.08), 0 24px 48px -24px rgba(81, 50, 41, 0.4);
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+::selection {
+  background: var(--color-butter-deep);
+  color: var(--color-ink);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

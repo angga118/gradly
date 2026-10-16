@@ -1,0 +1,197 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  passwordHash      String?
+  role              String
+  name              String
+  phone             String    @default("")
+  city              String    @default("")
+  createdAt         DateTime  @default(now())
+  bio               String?
+  studio            String?
+  tags              String    @default("[]")
+  acceptingBookings Boolean   @default(true)
+  rating            Float     @default(0)
+  sessions          Int       @default(0)
+  subsidyValidUntil String?
+
+  packages                Package[]
+  bookingsAsCustomer      Booking[]            @relation("CustomerBookings")
+  bookingsAsPhotographer  Booking[]            @relation("PhotographerBookings")
+  applications            SubsidyApplication[] @relation("ApplicantApplications")
+  reviewedApplications    SubsidyApplication[] @relation("ReviewedApplications")
+  notifications           Notification[]
+  portfolio               PortfolioItem[]
+  highlights              HighlightCard[]
+  testimonials            Testimonial[]
+  withdrawals             Withdrawal[]
+  verifiedPayments        PaymentProof[]       @relation("VerifiedPayments")
+}
+
+model SubsidyApplication {
+  id           String    @id
+  userId       String
+  user         User      @relation("ApplicantApplications", fields: [userId], references: [id])
+  docType      String
+  docName      String
+  fileKey      String?
+  kelurahan    String
+  address      String
+  status       String
+  submittedAt  DateTime  @default(now())
+  reviewedById String?
+  reviewedBy   User?     @relation("ReviewedApplications", fields: [reviewedById], references: [id])
+  reviewedAt   DateTime?
+  rejectReason String?
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Package {
+  id             String  @id @default(cuid())
+  photographerId String
+  photographer   User    @relation(fields: [photographerId], references: [id])
+  name           String
+  description    String  @default("")
+  price          Int
+  subsidyPrice   Int?
+  subsidyEnabled Boolean @default(false)
+  features       String  @default("[]")
+  isActive       Boolean @default(true)
+  popular        Boolean @default(false)
+  bookings       Booking[]
+
+  @@index([photographerId])
+}
+
+model Booking {
+  id             String   @id
+  userId         String
+  user           User     @relation("CustomerBookings", fields: [userId], references: [id])
+  customerName   String
+  customerPhone  String
+  photographerId String
+  photographer   User     @relation("PhotographerBookings", fields: [photographerId], references: [id])
+  packageId      String
+  package        Package  @relation(fields: [packageId], references: [id])
+  eventDate      String
+  eventTime      String
+  location       String
+  note           String   @default("")
+  price          Int
+  contribution   Int
+  total          Int
+  status         String
+  subsidized     Boolean  @default(false)
+  reminderSentAt DateTime?
+  createdAt      DateTime @default(now())
+  payment        PaymentProof?
+  ledger         LedgerEntry[]
+
+  @@index([userId])
+  @@index([photographerId])
+  @@index([status])
+}
+
+model PaymentProof {
+  id           String   @id @default(cuid())
+  bookingId    String   @unique
+  booking      Booking  @relation(fields: [bookingId], references: [id])
+  fileKey      String
+  name         String
+  sizeKb       Int
+  uploadedAt   DateTime @default(now())
+  verifiedById String?
+  verifiedBy   User?    @relation("VerifiedPayments", fields: [verifiedById], references: [id])
+  verifiedAt   DateTime?
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model PortfolioItem {
+  id             String   @id @default(cuid())
+  photographerId String
+  photographer   User     @relation(fields: [photographerId], references: [id])
+  title          String
+  packageName    String   @default("")
+  clientName     String   @default("")
+  location       String   @default("")
+  shotDate       String
+  tone           String   @default("sage")
+  fileKey        String?
+
+  @@index([photographerId])
+}
+
+model HighlightCard {
+  id             String @id @default(cuid())
+  photographerId String
+  photographer   User   @relation(fields: [photographerId], references: [id])
+  icon           String
+  title          String
+  text           String
+
+  @@index([photographerId])
+}
+
+model Testimonial {
+  id             String @id @default(cuid())
+  photographerId String
+  photographer   User   @relation(fields: [photographerId], references: [id])
+  clientName     String
+  rating         Int
+  message        String
+
+  @@index([photographerId])
+}
+
+model LedgerEntry {
+  id        String   @id @default(cuid())
+  // Null for fund top-ups (outside capital), which belong to no booking.
+  bookingId String?
+  booking   Booking? @relation(fields: [bookingId], references: [id])
+  type      String
+  amount    Int
+  label     String
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+}
+
+model Withdrawal {
+  id             String   @id @default(cuid())
+  photographerId String
+  photographer   User     @relation(fields: [photographerId], references: [id])
+  amount         Int
+  bankAccount    String
+  status         String   @default("Menunggu")
+  createdAt      DateTime @default(now())
+
+  @@index([photographerId])
+}
+
+model Counter {
+  name  String @id
+  value Int    @default(0)
+}
