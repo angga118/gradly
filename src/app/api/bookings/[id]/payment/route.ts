@@ -1,7 +1,7 @@
 import { requireUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { serializeBooking } from "@/lib/serializers"
-import { StorageError, saveUpload } from "@/lib/storage"
+import { StorageError, deleteUpload, saveUpload } from "@/lib/storage"
 
 const bookingInclude = {
   photographer: { select: { name: true } },
@@ -46,19 +46,33 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     throw err
   }
 
-  await prisma.paymentProof.upsert({
+  // honey: read the old proof first so a successful replace can unlink it;
+  // a failed upsert unlinks the new file instead (DB is source of truth).
+  const previous = await prisma.paymentProof.findUnique({
     where: { bookingId: id },
-    create: { bookingId: id, fileKey: upload.key, name: upload.name, sizeKb: upload.sizeKb },
-    // Re-upload replaces the proof and clears any earlier verification.
-    update: {
-      fileKey: upload.key,
-      name: upload.name,
-      sizeKb: upload.sizeKb,
-      uploadedAt: new Date(),
-      verifiedById: null,
-      verifiedAt: null,
-    },
+    select: { fileKey: true },
   })
+
+  try {
+    await prisma.paymentProof.upsert({
+      where: { bookingId: id },
+      create: { bookingId: id, fileKey: upload.key, name: upload.name, sizeKb: upload.sizeKb },
+      // Re-upload replaces the proof and clears any earlier verification.
+      update: {
+        fileKey: upload.key,
+        name: upload.name,
+        sizeKb: upload.sizeKb,
+        uploadedAt: new Date(),
+        verifiedById: null,
+        verifiedAt: null,
+      },
+    })
+  } catch (err) {
+    await deleteUpload(upload.key)
+    throw err
+  }
+
+  if (previous && previous.fileKey !== upload.key) await deleteUpload(previous.fileKey)
 
   const updated = await prisma.booking.findUniqueOrThrow({
     where: { id },

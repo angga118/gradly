@@ -10,9 +10,15 @@ export async function GET() {
   const now = new Date()
   const months = lastMonthKeys()
   const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
+  // honey: bounded scan — window = oldest bucket key's 1st day; anything older
+  // is skipped by monthlyRevenue anyway, so output is unchanged.
+  const windowStart = new Date(`${months[0]}-01T00:00:00.000Z`)
 
   const [bookings, contributions, topups, distributions, monthlyContribution] = await Promise.all([
-    prisma.booking.findMany({ select: { total: true, subsidized: true, createdAt: true } }),
+    prisma.booking.findMany({
+      select: { total: true, subsidized: true, createdAt: true },
+      where: { createdAt: { gte: windowStart } },
+    }),
     prisma.ledgerEntry.aggregate({ _sum: { amount: true }, where: { type: "contribution" } }),
     prisma.ledgerEntry.aggregate({ _sum: { amount: true }, where: { type: "topup" } }),
     prisma.ledgerEntry.aggregate({ _sum: { amount: true }, where: { type: "distribution" } }),

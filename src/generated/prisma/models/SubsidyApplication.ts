@@ -557,10 +557,6 @@ export type SubsidyApplicationUncheckedUpdateManyWithoutReviewedByNestedInput = 
   deleteMany?: Prisma.SubsidyApplicationScalarWhereInput | Prisma.SubsidyApplicationScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type SubsidyApplicationCreateWithoutUserInput = {
   id: string
   docType: string

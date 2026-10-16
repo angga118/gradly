@@ -102,7 +102,7 @@ interface GradlyContextValue {
   withdrawals: Withdrawal[];
   stats: Stats;
   draft: BookingDraft;
-  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string; code?: string }>;
   register: (input: {
     name: string;
     email: string;
@@ -256,6 +256,13 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
         if (!res.ok || res.error) {
           if (res.code === "rate_limited") {
             return { ok: false, error: "Terlalu banyak percobaan masuk. Coba lagi dalam beberapa menit." };
+          }
+          if (res.code === "email_not_verified") {
+            return {
+              ok: false,
+              code: "email_not_verified",
+              error: "Email belum diverifikasi. Cek kotak masuk Anda untuk tautan verifikasi.",
+            };
           }
           return { ok: false, error: "Email atau kata sandi salah." };
         }

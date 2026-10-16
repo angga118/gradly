@@ -49,6 +49,7 @@ async function main() {
     ...seedUsers.map((u) => ({
       id: u.id,
       email: u.email,
+      emailVerified: new Date(),
       passwordHash,
       role: u.role,
       name: u.name,
@@ -66,6 +67,7 @@ async function main() {
     ...placeholderUsers.map((u) => ({
       id: u.id,
       email: u.email,
+      emailVerified: new Date(),
       passwordHash,
       role: "user",
       name: u.name,

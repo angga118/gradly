@@ -2,7 +2,7 @@ import { requireUser } from "@/lib/auth-helpers"
 import { nextSubsidyId } from "@/lib/ids"
 import { prisma } from "@/lib/prisma"
 import { serializeSubsidy } from "@/lib/serializers"
-import { StorageError, saveUpload } from "@/lib/storage"
+import { StorageError, deleteUpload, saveUpload } from "@/lib/storage"
 import { subsidySchema } from "@/lib/validators"
 
 const subsidyInclude = {
@@ -67,32 +67,39 @@ export async function POST(req: Request) {
   }
 
   const id = await nextSubsidyId()
-  const created = await prisma.$transaction(async (tx) => {
-    const application = await tx.subsidyApplication.create({
-      data: {
-        id,
-        userId: guard.user.id,
-        docType: input.docType,
-        docName: upload.name,
-        fileKey: upload.key,
-        kelurahan: input.kelurahan,
-        address: input.address,
-        status: "Menunggu review",
-      },
-      include: subsidyInclude,
-    })
+  let created
+  try {
+    created = await prisma.$transaction(async (tx) => {
+      const application = await tx.subsidyApplication.create({
+        data: {
+          id,
+          userId: guard.user.id,
+          docType: input.docType,
+          docName: upload.name,
+          fileKey: upload.key,
+          kelurahan: input.kelurahan,
+          address: input.address,
+          status: "Menunggu review",
+        },
+        include: subsidyInclude,
+      })
 
-    await tx.notification.create({
-      data: {
-        userId: guard.user.id,
-        type: "subsidi",
-        title: "Ajuan subsidi diterima",
-        body: `${id} sedang ditinjau admin. Hasil dikabari maksimal 1×24 jam kerja.`,
-      },
-    })
+      await tx.notification.create({
+        data: {
+          userId: guard.user.id,
+          type: "subsidi",
+          title: "Ajuan subsidi diterima",
+          body: `${id} sedang ditinjau admin. Hasil dikabari maksimal 1×24 jam kerja.`,
+        },
+      })
 
-    return application
-  })
+      return application
+    })
+  } catch (err) {
+    // honey: file precedes DB write — unlink it so a failed insert leaves no orphan.
+    await deleteUpload(upload.key)
+    throw err
+  }
 
   return Response.json({ subsidyApplication: serializeSubsidy(created) }, { status: 201 })
 }

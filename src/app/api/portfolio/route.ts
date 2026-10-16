@@ -2,7 +2,7 @@ import { connection } from "next/server"
 import { requireRole } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { serializePortfolio } from "@/lib/serializers"
-import { StorageError, saveUpload } from "@/lib/storage"
+import { StorageError, deleteUpload, saveUpload } from "@/lib/storage"
 import { portfolioSchema } from "@/lib/validators"
 
 export async function GET() {
@@ -59,18 +59,25 @@ export async function POST(req: Request) {
     throw err
   }
 
-  const item = await prisma.portfolioItem.create({
-    data: {
-      photographerId: guard.user.id,
-      title: input.title,
-      packageName: input.packageName ?? "",
-      clientName: input.clientName ?? "",
-      location: input.location ?? "",
-      shotDate: input.shotDate,
-      tone: input.tone ?? "sage",
-      fileKey: upload.key,
-    },
-  })
+  let item
+  try {
+    item = await prisma.portfolioItem.create({
+      data: {
+        photographerId: guard.user.id,
+        title: input.title,
+        packageName: input.packageName ?? "",
+        clientName: input.clientName ?? "",
+        location: input.location ?? "",
+        shotDate: input.shotDate,
+        tone: input.tone ?? "sage",
+        fileKey: upload.key,
+      },
+    })
+  } catch (err) {
+    // honey: file precedes DB write — unlink it so a failed insert leaves no orphan.
+    await deleteUpload(upload.key)
+    throw err
+  }
 
   return Response.json({ portfolio: serializePortfolio(item) }, { status: 201 })
 }

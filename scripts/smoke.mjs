@@ -118,6 +118,45 @@ check(
 const userLogin = await login(userJar, USER)
 check(`login ${USER.email} + GET /api/me`, userLogin.ok, userLogin.detail)
 
+// Email verification flow: register → login blocked → verify link → login works.
+const smokeEmail = `smoke+${Date.now()}@gradly.id`
+const smokePassword = "gradly123"
+const regRes = await req("/api/auth/register", null, {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({
+    name: "Smoke Verify",
+    email: smokeEmail,
+    password: smokePassword,
+    phone: "081200000001",
+    city: "Bandung",
+    role: "user",
+  }),
+})
+const regBody = await json(regRes)
+check(
+  "POST /api/auth/register → 200 + verifyUrl",
+  regRes.status === 200 && regBody?.ok === true && typeof regBody?.verifyUrl === "string",
+  `got ${regRes.status} ${regBody?.error ?? ""}`.trim(),
+)
+
+const unverifiedJar = new Jar()
+const unverifiedLogin = await login(unverifiedJar, { email: smokeEmail, password: smokePassword })
+check("login unverified → gagal", !unverifiedLogin.ok, unverifiedLogin.detail)
+
+const verifyUrl = new URL(regBody.verifyUrl)
+const verifyRes = await req(verifyUrl.pathname + verifyUrl.search, null, { redirect: "manual" })
+const verifyLocation = verifyRes.headers.get("location") ?? ""
+check(
+  "GET verifyUrl → 302 /masuk?verified=1",
+  (verifyRes.status === 302 || verifyRes.status === 307) && verifyLocation.includes("verified=1"),
+  `got ${verifyRes.status} location=${verifyLocation}`,
+)
+
+const verifiedJar = new Jar()
+const verifiedLogin = await login(verifiedJar, { email: smokeEmail, password: smokePassword })
+check("login setelah verifikasi → berhasil", verifiedLogin.ok, verifiedLogin.detail)
+
 const packages = (await json(await req("/api/packages", null)))?.packages
 check("packages[0] available", Boolean(packages?.[0]?.id), "empty package list")
 // Far-future date so reruns never collide with real bookings.

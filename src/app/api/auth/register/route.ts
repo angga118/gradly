@@ -1,6 +1,11 @@
+import { randomBytes } from "node:crypto"
 import { prisma } from "@/lib/prisma"
 import { hashPassword } from "@/lib/password"
+import { sendMail } from "@/lib/mailer"
 import { registerSchema } from "@/lib/validators"
+
+const APP_URL = process.env.APP_URL ?? "http://localhost:3000"
+const VERIFY_TTL_MS = 24 * 60 * 60 * 1000
 
 export async function POST(req: Request) {
   let body: unknown
@@ -25,6 +30,7 @@ export async function POST(req: Request) {
   }
 
   const passwordHash = await hashPassword(parsed.data.password)
+  const token = randomBytes(32).toString("hex")
   try {
     await prisma.user.create({
       data: {
@@ -34,6 +40,8 @@ export async function POST(req: Request) {
         name: parsed.data.name,
         phone: parsed.data.phone,
         city: parsed.data.city,
+        verifyToken: token,
+        verifyTokenExpiry: new Date(Date.now() + VERIFY_TTL_MS),
       },
     })
   } catch {
@@ -41,5 +49,13 @@ export async function POST(req: Request) {
     return Response.json({ error: "Email sudah terdaftar." }, { status: 409 })
   }
 
-  return Response.json({ ok: true })
+  const verifyUrl = `${APP_URL}/api/auth/verify?token=${token}`
+  const mail = await sendMail({
+    to: email,
+    subject: "Verifikasi akun Gradly",
+    text: `Terima kasih telah mendaftar di Gradly. Verifikasi akun Anda dengan membuka tautan berikut (berlaku 24 jam):\n\n${verifyUrl}`,
+  })
+
+  // honey: expose verifyUrl only when mail is skipped (dev without provider) so smoke/dev can finish the flow.
+  return Response.json(mail.skipped ? { ok: true, verifyUrl } : { ok: true })
 }
