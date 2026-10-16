@@ -1,4 +1,4 @@
-# Gradly (sebelumnya GradForAll) — Web App
+# Gradly — Web App
 
 Gradly adalah web app untuk memesan jasa foto wisuda, dengan program subsidi: pemegang SKTM atau KIP-K yang terverifikasi mendapat harga hingga 60% lebih murah. Subsidi berasal dari kontribusi klien reguler.
 
