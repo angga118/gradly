@@ -1,6 +1,18 @@
 import { prisma } from "@/lib/prisma"
 import { hashPassword } from "@/lib/password"
+import { checkRateLimit, type RateLimitResult } from "@/lib/rate-limit"
 import { registerSchema } from "@/lib/validators"
+import { clientIp } from "../../../../../auth"
+
+const REGISTER_WINDOW_MS = 60 * 60 * 1000
+const MAX_REGISTRATIONS_PER_EMAIL = 3
+const MAX_REGISTRATIONS_PER_IP = 10
+
+const tooManyAttempts = (retryAfterSeconds: number) =>
+  Response.json(
+    { error: "Terlalu banyak percobaan. Coba lagi nanti." },
+    { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } },
+  )
 
 export async function POST(req: Request) {
   let body: unknown
@@ -24,6 +36,20 @@ export async function POST(req: Request) {
     return Response.json({ error: "Email sudah terdaftar." }, { status: 409 })
   }
 
+  // Quota is checked before the insert; a duplicate email returns 409 above, so it never burns quota.
+  // The 429 message is identical for every cause — it must not reveal whether an email exists.
+  const emailLimit = checkRateLimit(
+    `register:email:${email}`,
+    MAX_REGISTRATIONS_PER_EMAIL,
+    REGISTER_WINDOW_MS,
+  )
+  const ip = clientIp(req)
+  const ipLimit: RateLimitResult = ip
+    ? checkRateLimit(`register:ip:${ip}`, MAX_REGISTRATIONS_PER_IP, REGISTER_WINDOW_MS)
+    : { ok: true }
+  if (!emailLimit.ok) return tooManyAttempts(emailLimit.retryAfterSeconds)
+  if (!ipLimit.ok) return tooManyAttempts(ipLimit.retryAfterSeconds)
+
   const passwordHash = await hashPassword(parsed.data.password)
   try {
     await prisma.user.create({
@@ -34,6 +60,7 @@ export async function POST(req: Request) {
         name: parsed.data.name,
         phone: parsed.data.phone,
         city: parsed.data.city,
+        // honey: email verification is deliberately deferred until launch — the site is not online yet.
         emailVerified: new Date(),
       },
     })

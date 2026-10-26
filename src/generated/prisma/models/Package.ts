@@ -44,6 +44,7 @@ export type PackageMinAggregateOutputType = {
   price: number | null
   subsidyPrice: number | null
   subsidyEnabled: boolean | null
+  kipkOnly: boolean | null
   features: string | null
   isActive: boolean | null
   popular: boolean | null
@@ -57,6 +58,7 @@ export type PackageMaxAggregateOutputType = {
   price: number | null
   subsidyPrice: number | null
   subsidyEnabled: boolean | null
+  kipkOnly: boolean | null
   features: string | null
   isActive: boolean | null
   popular: boolean | null
@@ -70,6 +72,7 @@ export type PackageCountAggregateOutputType = {
   price: number
   subsidyPrice: number
   subsidyEnabled: number
+  kipkOnly: number
   features: number
   isActive: number
   popular: number
@@ -95,6 +98,7 @@ export type PackageMinAggregateInputType = {
   price?: true
   subsidyPrice?: true
   subsidyEnabled?: true
+  kipkOnly?: true
   features?: true
   isActive?: true
   popular?: true
@@ -108,6 +112,7 @@ export type PackageMaxAggregateInputType = {
   price?: true
   subsidyPrice?: true
   subsidyEnabled?: true
+  kipkOnly?: true
   features?: true
   isActive?: true
   popular?: true
@@ -121,6 +126,7 @@ export type PackageCountAggregateInputType = {
   price?: true
   subsidyPrice?: true
   subsidyEnabled?: true
+  kipkOnly?: true
   features?: true
   isActive?: true
   popular?: true
@@ -221,6 +227,7 @@ export type PackageGroupByOutputType = {
   price: number
   subsidyPrice: number | null
   subsidyEnabled: boolean
+  kipkOnly: boolean
   features: string
   isActive: boolean
   popular: boolean
@@ -257,6 +264,7 @@ export type PackageWhereInput = {
   price?: Prisma.IntFilter<"Package"> | number
   subsidyPrice?: Prisma.IntNullableFilter<"Package"> | number | null
   subsidyEnabled?: Prisma.BoolFilter<"Package"> | boolean
+  kipkOnly?: Prisma.BoolFilter<"Package"> | boolean
   features?: Prisma.StringFilter<"Package"> | string
   isActive?: Prisma.BoolFilter<"Package"> | boolean
   popular?: Prisma.BoolFilter<"Package"> | boolean
@@ -272,6 +280,7 @@ export type PackageOrderByWithRelationInput = {
   price?: Prisma.SortOrder
   subsidyPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   subsidyEnabled?: Prisma.SortOrder
+  kipkOnly?: Prisma.SortOrder
   features?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   popular?: Prisma.SortOrder
@@ -290,6 +299,7 @@ export type PackageWhereUniqueInput = Prisma.AtLeast<{
   price?: Prisma.IntFilter<"Package"> | number
   subsidyPrice?: Prisma.IntNullableFilter<"Package"> | number | null
   subsidyEnabled?: Prisma.BoolFilter<"Package"> | boolean
+  kipkOnly?: Prisma.BoolFilter<"Package"> | boolean
   features?: Prisma.StringFilter<"Package"> | string
   isActive?: Prisma.BoolFilter<"Package"> | boolean
   popular?: Prisma.BoolFilter<"Package"> | boolean
@@ -305,6 +315,7 @@ export type PackageOrderByWithAggregationInput = {
   price?: Prisma.SortOrder
   subsidyPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   subsidyEnabled?: Prisma.SortOrder
+  kipkOnly?: Prisma.SortOrder
   features?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   popular?: Prisma.SortOrder
@@ -326,6 +337,7 @@ export type PackageScalarWhereWithAggregatesInput = {
   price?: Prisma.IntWithAggregatesFilter<"Package"> | number
   subsidyPrice?: Prisma.IntNullableWithAggregatesFilter<"Package"> | number | null
   subsidyEnabled?: Prisma.BoolWithAggregatesFilter<"Package"> | boolean
+  kipkOnly?: Prisma.BoolWithAggregatesFilter<"Package"> | boolean
   features?: Prisma.StringWithAggregatesFilter<"Package"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"Package"> | boolean
   popular?: Prisma.BoolWithAggregatesFilter<"Package"> | boolean
@@ -338,6 +350,7 @@ export type PackageCreateInput = {
   price: number
   subsidyPrice?: number | null
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: string
   isActive?: boolean
   popular?: boolean
@@ -353,6 +366,7 @@ export type PackageUncheckedCreateInput = {
   price: number
   subsidyPrice?: number | null
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: string
   isActive?: boolean
   popular?: boolean
@@ -366,6 +380,7 @@ export type PackageUpdateInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -381,6 +396,7 @@ export type PackageUncheckedUpdateInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -395,6 +411,7 @@ export type PackageCreateManyInput = {
   price: number
   subsidyPrice?: number | null
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: string
   isActive?: boolean
   popular?: boolean
@@ -407,6 +424,7 @@ export type PackageUpdateManyMutationInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -420,6 +438,7 @@ export type PackageUncheckedUpdateManyInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -443,6 +462,7 @@ export type PackageCountOrderByAggregateInput = {
   price?: Prisma.SortOrder
   subsidyPrice?: Prisma.SortOrder
   subsidyEnabled?: Prisma.SortOrder
+  kipkOnly?: Prisma.SortOrder
   features?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   popular?: Prisma.SortOrder
@@ -461,6 +481,7 @@ export type PackageMaxOrderByAggregateInput = {
   price?: Prisma.SortOrder
   subsidyPrice?: Prisma.SortOrder
   subsidyEnabled?: Prisma.SortOrder
+  kipkOnly?: Prisma.SortOrder
   features?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   popular?: Prisma.SortOrder
@@ -474,6 +495,7 @@ export type PackageMinOrderByAggregateInput = {
   price?: Prisma.SortOrder
   subsidyPrice?: Prisma.SortOrder
   subsidyEnabled?: Prisma.SortOrder
+  kipkOnly?: Prisma.SortOrder
   features?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   popular?: Prisma.SortOrder
@@ -560,6 +582,7 @@ export type PackageCreateWithoutPhotographerInput = {
   price: number
   subsidyPrice?: number | null
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: string
   isActive?: boolean
   popular?: boolean
@@ -573,6 +596,7 @@ export type PackageUncheckedCreateWithoutPhotographerInput = {
   price: number
   subsidyPrice?: number | null
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: string
   isActive?: boolean
   popular?: boolean
@@ -615,6 +639,7 @@ export type PackageScalarWhereInput = {
   price?: Prisma.IntFilter<"Package"> | number
   subsidyPrice?: Prisma.IntNullableFilter<"Package"> | number | null
   subsidyEnabled?: Prisma.BoolFilter<"Package"> | boolean
+  kipkOnly?: Prisma.BoolFilter<"Package"> | boolean
   features?: Prisma.StringFilter<"Package"> | string
   isActive?: Prisma.BoolFilter<"Package"> | boolean
   popular?: Prisma.BoolFilter<"Package"> | boolean
@@ -627,6 +652,7 @@ export type PackageCreateWithoutBookingsInput = {
   price: number
   subsidyPrice?: number | null
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: string
   isActive?: boolean
   popular?: boolean
@@ -641,6 +667,7 @@ export type PackageUncheckedCreateWithoutBookingsInput = {
   price: number
   subsidyPrice?: number | null
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: string
   isActive?: boolean
   popular?: boolean
@@ -669,6 +696,7 @@ export type PackageUpdateWithoutBookingsInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -683,6 +711,7 @@ export type PackageUncheckedUpdateWithoutBookingsInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -695,6 +724,7 @@ export type PackageCreateManyPhotographerInput = {
   price: number
   subsidyPrice?: number | null
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: string
   isActive?: boolean
   popular?: boolean
@@ -707,6 +737,7 @@ export type PackageUpdateWithoutPhotographerInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -720,6 +751,7 @@ export type PackageUncheckedUpdateWithoutPhotographerInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -733,6 +765,7 @@ export type PackageUncheckedUpdateManyWithoutPhotographerInput = {
   price?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyPrice?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   subsidyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  kipkOnly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   features?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   popular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -777,6 +810,7 @@ export type PackageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   price?: boolean
   subsidyPrice?: boolean
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: boolean
   isActive?: boolean
   popular?: boolean
@@ -793,6 +827,7 @@ export type PackageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   price?: boolean
   subsidyPrice?: boolean
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: boolean
   isActive?: boolean
   popular?: boolean
@@ -807,6 +842,7 @@ export type PackageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   price?: boolean
   subsidyPrice?: boolean
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: boolean
   isActive?: boolean
   popular?: boolean
@@ -821,12 +857,13 @@ export type PackageSelectScalar = {
   price?: boolean
   subsidyPrice?: boolean
   subsidyEnabled?: boolean
+  kipkOnly?: boolean
   features?: boolean
   isActive?: boolean
   popular?: boolean
 }
 
-export type PackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "photographerId" | "name" | "description" | "price" | "subsidyPrice" | "subsidyEnabled" | "features" | "isActive" | "popular", ExtArgs["result"]["package"]>
+export type PackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "photographerId" | "name" | "description" | "price" | "subsidyPrice" | "subsidyEnabled" | "kipkOnly" | "features" | "isActive" | "popular", ExtArgs["result"]["package"]>
 export type PackageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   photographer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   bookings?: boolean | Prisma.Package$bookingsArgs<ExtArgs>
@@ -853,6 +890,7 @@ export type $PackagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     price: number
     subsidyPrice: number | null
     subsidyEnabled: boolean
+    kipkOnly: boolean
     features: string
     isActive: boolean
     popular: boolean
@@ -1288,6 +1326,7 @@ export interface PackageFieldRefs {
   readonly price: Prisma.FieldRef<"Package", 'Int'>
   readonly subsidyPrice: Prisma.FieldRef<"Package", 'Int'>
   readonly subsidyEnabled: Prisma.FieldRef<"Package", 'Boolean'>
+  readonly kipkOnly: Prisma.FieldRef<"Package", 'Boolean'>
   readonly features: Prisma.FieldRef<"Package", 'String'>
   readonly isActive: Prisma.FieldRef<"Package", 'Boolean'>
   readonly popular: Prisma.FieldRef<"Package", 'Boolean'>

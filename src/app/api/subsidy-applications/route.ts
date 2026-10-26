@@ -66,10 +66,13 @@ export async function POST(req: Request) {
     throw err
   }
 
-  const id = await nextSubsidyId()
   let created
   try {
     created = await prisma.$transaction(async (tx) => {
+      // Id direserve di dalam transaksi yang sama, jadi create yang gagal
+      // tidak membuat nomor bolong.
+      const id = await nextSubsidyId(tx)
+
       const application = await tx.subsidyApplication.create({
         data: {
           id,

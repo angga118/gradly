@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGradly } from "@/lib/store";
+import { siteConfig } from "@/lib/site-config";
 import { formatDate, rupiah } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,6 +30,11 @@ export function BookingStepPayment() {
   const subsidyEligible = canUseSubsidy(pkg, session?.subsidyValidUntil);
   const useSubsidy = Boolean(draft.useSubsidy && subsidyEligible);
   const { price, contribution, total, subsidyApplies } = computePricing(pkg, useSubsidy);
+  const bankReady = Boolean(
+    siteConfig.paymentBankName &&
+      siteConfig.paymentBankAccount &&
+      siteConfig.paymentAccountHolder,
+  );
 
   const ready = Boolean(
     pkg &&
@@ -111,7 +117,11 @@ export function BookingStepPayment() {
                 <Icon name="bank" size={20} />
               </span>
               <div>
-                <p className="font-medium">Transfer Bank BNI</p>
+                <p className="font-medium">
+                  {siteConfig.paymentBankName
+                    ? `Transfer Bank ${siteConfig.paymentBankName}`
+                    : "Transfer bank"}
+                </p>
                 <p className="text-xs text-ink/60">Rekening penampung Gradly</p>
               </div>
             </div>
@@ -119,19 +129,25 @@ export function BookingStepPayment() {
               <dl className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-ink/10 bg-white/60 p-4">
                   <dt className="text-xs uppercase tracking-[0.14em] text-ink/50">Bank</dt>
-                  <dd className="mt-1 font-medium">BNI</dd>
+                  <dd className="mt-1 font-medium">
+                    {siteConfig.paymentBankName || "Belum dikonfigurasi"}
+                  </dd>
                 </div>
                 <div className="rounded-2xl border border-ink/10 bg-white/60 p-4">
                   <dt className="text-xs uppercase tracking-[0.14em] text-ink/50">
                     Nomor rekening
                   </dt>
-                  <dd className="mt-1 font-medium tracking-wide">[...]</dd>
+                  <dd className="mt-1 font-medium tracking-wide">
+                    {siteConfig.paymentBankAccount || "Belum dikonfigurasi"}
+                  </dd>
                 </div>
                 <div className="rounded-2xl border border-ink/10 bg-white/60 p-4">
                   <dt className="text-xs uppercase tracking-[0.14em] text-ink/50">
                     Atas nama
                   </dt>
-                  <dd className="mt-1 font-medium">[...]</dd>
+                  <dd className="mt-1 font-medium">
+                    {siteConfig.paymentAccountHolder || "Belum dikonfigurasi"}
+                  </dd>
                 </div>
                 <div className="rounded-2xl border border-ink/15 bg-butter/50 p-4">
                   <dt className="text-xs uppercase tracking-[0.14em] text-ink/50">
@@ -143,8 +159,8 @@ export function BookingStepPayment() {
 
               <ol className="mt-6 space-y-3">
                 {[
-                  "Buka aplikasi m-banking atau ATM dan pilih transfer antar bank ke BNI.",
-                  "Masukkan nomor rekening di atas dan nominal tepat sesuai total bayar.",
+                  "Buka aplikasi m-banking atau ATM lalu pilih transfer ke rekening di atas.",
+                  "Masukkan nomor rekening dan nominal tepat sesuai total bayar.",
                   "Simpan struk atau tangkapan layar bukti transfer yang berhasil.",
                   "Unggah bukti transfer di bawah agar admin bisa memverifikasi.",
                 ].map((step, i) => (
@@ -159,8 +175,9 @@ export function BookingStepPayment() {
 
               <p className="mt-5 flex items-start gap-2 rounded-2xl bg-sage/40 p-4 text-xs text-ink/70">
                 <Icon name="info" size={16} className="mt-0.5 shrink-0" />
-                Nomor rekening dan nominal masih placeholder dan akan dikonfirmasi admin.
-                Transfer nominal tepat sampai digit terakhir agar verifikasi lebih cepat.
+                {bankReady
+                  ? "Transfer nominal tepat sampai digit terakhir agar verifikasi lebih cepat."
+                  : "Rekening penampung belum dikonfigurasi. Hubungi admin lewat halaman bantuan untuk mendapat rekening resmi sebelum transfer."}
               </p>
             </div>
           </Card>
@@ -208,12 +225,17 @@ export function BookingStepPayment() {
               <SummaryRow icon="clock" label="Jam" value={`${draft.eventTime} WIB`} />
               <SummaryRow icon="mapPin" label="Lokasi" value={draft.location} />
             </ul>
-            {subsidyApplies ? (
-              <div className="mt-4">
-                <Chip tone="butter">
-                  <Icon name="tag" size={13} />
-                  Harga subsidi
-                </Chip>
+            {subsidyApplies || pkg.kipkOnly ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {subsidyApplies ? (
+                  <Chip tone="butter">
+                    <Icon name="tag" size={13} />
+                    Harga subsidi
+                  </Chip>
+                ) : null}
+                {pkg.kipkOnly ? (
+                  <Chip tone="sage">Khusus penerima KIP-K</Chip>
+                ) : null}
               </div>
             ) : null}
             <div className="mt-5 border-t border-ink/10 pt-5">

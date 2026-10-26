@@ -32,7 +32,11 @@ export async function POST(req: Request) {
 
   await prisma.user.update({
     where: { id: guard.user.id },
-    data: { passwordHash: await hashPassword(parsed.data.next) },
+    data: {
+      passwordHash: await hashPassword(parsed.data.next),
+      // Bumped so every JWT issued before this change stops working.
+      sessionVersion: { increment: 1 },
+    },
   })
 
   return Response.json({ ok: true })

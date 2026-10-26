@@ -21,17 +21,57 @@ Dokumen ini adalah ringkasan PRD untuk dibaca AI coding agent dan developer. Tar
 
 Satu akun punya satu peran. Peran menentukan halaman tujuan setelah login dan hak akses rute.
 
-## Tech stack (Usulan)
+## Tech stack
 
-- Frontend: Next.js (React) + TypeScript. Halaman publik dirender di server untuk SEO.
+- Frontend: Next.js 16 (App Router) + React + TypeScript. Halaman publik dirender di server untuk SEO.
 - Styling: Tailwind CSS dengan design token di bagian "Desain".
-- Backend: Node.js (NestJS) atau route handler Next.js.
-- Database: PostgreSQL.
-- File privat: object storage kompatibel S3, akses lewat tautan bertanda tangan berumur pendek.
-- Autentikasi: Auth.js atau penyedia auth terkelola. Email + kata sandi dan Google.
-- Email transaksional: verifikasi akun, hasil verifikasi, konfirmasi booking, pengingat sesi.
+- Backend: route handler Next.js — satu API untuk semua peran, tanpa service terpisah.
+- Database: SQLite lewat Prisma (`@prisma/adapter-better-sqlite3`), file lokal `prisma/dev.db`.
+- File privat: disk lokal `storage/private`, diakses lewat `/api/files/<key>` dengan cek kepemilikan (pemilik akun atau admin).
+- Autentikasi: Auth.js (NextAuth v5) — email + kata sandi, Google opsional.
+- Email transaksional: Resend — hasil verifikasi subsidi, konfirmasi booking, pengingat sesi.
+- Cron: route handler `/api/cron/*`, dijaga header `Authorization: Bearer $CRON_SECRET`.
 
 Arsitektur: satu frontend, satu API untuk semua peran, database, penyimpanan file privat, layanan email.
+
+## Environment
+
+Semua variabel ada di `.env.example`; salin ke `.env` lalu isi sesuai kebutuhan lokal.
+
+| Variabel | Kegunaan |
+| --- | --- |
+| `DATABASE_URL` | Koneksi database SQLite, contoh `file:./dev.db` (relatif terhadap folder `prisma/`) |
+| `AUTH_SECRET` | Kunci penanda tangan session Auth.js, minimal 32 karakter |
+| `AUTH_TRUST_HOST` | `true` saat mempercayai host/proxy di lingkungan lokal |
+| `APP_URL` | URL dasar aplikasi untuk tautan absolut (email, cron) |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Kredensial login Google; kosong = login Google nonaktif |
+| `RESEND_API_KEY` | API key Resend untuk email transaksional; kosong = email dilewati |
+| `MAIL_FROM` | Alamat pengirim yang sudah diverifikasi di Resend |
+| `CRON_SECRET` | Shared secret untuk `/api/cron/*`, contoh `openssl rand -hex 32` |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Email kontak yang tampil di situs |
+| `NEXT_PUBLIC_CONTACT_PHONE` | Nomor telepon/WhatsApp kontak yang tampil di situs |
+| `NEXT_PUBLIC_CONTACT_ADDRESS` | Alamat studio/operasional yang tampil di situs |
+| `NEXT_PUBLIC_PAYMENT_BANK_NAME` | Nama bank tujuan pembayaran manual |
+| `NEXT_PUBLIC_PAYMENT_BANK_ACCOUNT` | Nomor rekening tujuan pembayaran manual |
+| `NEXT_PUBLIC_PAYMENT_ACCOUNT_HOLDER` | Nama pemilik rekening tujuan pembayaran manual |
+
+Variabel `NEXT_PUBLIC_*` dibaca di browser (client-safe); sisanya server-only.
+
+## Perintah
+
+```bash
+npm install            # pasang dependensi + prisma generate
+npm run dev            # dev server di http://localhost:3000
+npm run build && npm start
+npm run db:generate    # generate Prisma client
+npm run db:migrate     # jalankan migrasi
+npm run db:seed        # isi data contoh (rani@gradly.id, admin@gradly.id; sandi: gradly)
+npm run db:reset       # reset database + seed ulang
+npm run lint
+npm run smoke          # smoke test end-to-end; butuh dev server jalan + database ter-seed
+```
+
+`npm run smoke` mengirim HTTP ke `BASE_URL` (default `http://localhost:3000`) dan mencetak PASS/FAIL per cek.
 
 ## Rute (Usulan)
 
@@ -80,47 +120,53 @@ Arsitektur: satu frontend, satu API untuk semua peran, database, penyimpanan fil
 ## Alur utama User (Figma)
 
 1. Buka landing, lihat paket dan program subsidi.
-2. Daftar atau masuk (email atau Google).
-3. Opsional: ajukan verifikasi SKTM/KIP-K. Admin memeriksa maksimal 1×24 jam hari kerja. Hasil dikabari lewat email.
+2. Daftar atau masuk (email atau Google). Registrasi langsung menghasilkan akun aktif — verifikasi email belum dipakai.
+3. Opsional: ajukan verifikasi SKTM/KIP-K. Admin memeriksa maksimal 1×24 jam hari kerja. Hasil dikabari lewat email. Paket khusus KIP-K (Harapan) hanya bisa dipesan setelah verifikasi KIP-K disetujui.
 4. Pilih paket, isi detail acara (nama, WhatsApp, tanggal, jam, lokasi, catatan).
 5. Bayar lewat transfer, unggah bukti.
 6. Status "Menunggu konfirmasi admin". Setelah dikonfirmasi menjadi CONFIRMED di Riwayat. Pengingat dikirim 3 hari sebelum sesi.
 
 ## Aturan bisnis
 
-Dari Figma:
+Dari Figma, ditambah keputusan yang sudah ditetapkan:
 
 - Total bayar klien reguler = harga paket + kontribusi subsidi 5%. Contoh: Rp 299.000 + Rp 14.950 = Rp 313.950.
-- Paket Harapan (Rp 89.000) hanya untuk penerima KIP-K yang sudah terverifikasi.
+- Paket Harapan (Rp 89.000) adalah paket terpisah dengan harga tetap Rp 89.000, khusus penerima KIP-K yang sudah terverifikasi — bukan diskon dari paket lain.
+- Paket bertanda `kipkOnly` tidak boleh memakai harga subsidi. Klien non-KIP-K yang memesan paket itu ditolak dengan 403.
 - Paket dengan harga di atas Rp 1 juta tidak bisa mensubsidi. Fotografer punya saklar "Aktifkan Subsidi KIP-K" per paket.
-- Komisi platform atas pendapatan fotografer: 10%.
+- Komisi platform atas pendapatan fotografer: 10%, dan tetap berlaku untuk booking subsidi.
+- Entri buku besar: `contribution` (kontribusi 5% dari klien reguler), `distribution` (subsidi yang dicairkan ke fotografer), `payout` (penarikan dana fotografer), `topup` (penambahan dana subsidi di luar modal, tanpa booking). Entri ditulis saat settlement, bukan saat booking dibuat.
 - Penarikan dana fotografer: jumlah tarik tidak boleh melebihi saldo tersedia.
 - Unggahan dokumen SKTM/KIP-K dan bukti transfer: JPG, PNG, PDF, maks. 5 MB.
 - Unggahan foto portofolio: JPG, PNG, maks. 100 MB.
-- ID mengikuti pola `BK_2026_0246` (booking) dan `SB_2026_0246` (ajuan subsidi).
+- ID booking dan ajuan subsidi memakai tabel `Counter` dengan pola `BK_2026_0246` (booking) dan `SB_2026_0246` (ajuan subsidi).
 - Fotografer dengan status "Tidak menerima booking" tidak tampil dan paketnya tidak bisa dipesan.
 - Hasil foto dikirim lewat Google Drive (disebut di deskripsi paket).
+- Verifikasi email belum diimplementasikan: registrasi langsung menghasilkan akun aktif, dan akun bisa langsung masuk. Alur verifikasi email ditambahkan saat situs online.
 
-Paket di Figma (sisi User): Basic Moment Rp 299.000, Harapan Rp 89.000 (subsidi KIP-K), Golden Graduate Rp 599.000, Prestige Memories Rp 999.000. Di sisi Fotografer ada tambahan contoh Paket Bebas Berekspresi Rp 1.200.000.
+Paket di Figma (sisi User): Basic Moment Rp 299.000, Harapan Rp 89.000 (paket khusus KIP-K), Golden Graduate Rp 599.000, Prestige Memories Rp 999.000. Di sisi Fotografer ada tambahan contoh Paket Bebas Berekspresi Rp 1.200.000.
 
 Status:
 
 - Booking: Menunggu konfirmasi, Confirmed, Selesai, Dibatalkan.
 - Ajuan subsidi: Menunggu review, Terverifikasi, Ditolak.
 
-## Model data (Usulan)
+## Model data
 
-- `users`: id, email, password_hash, role (`user` | `fotografer` | `admin`), name, phone, city, created_at.
-- `subsidy_applications`: id (SB_...), user_id, doc_type (`SKTM` | `KIP-K`), file_key, kelurahan, address, status, reviewed_by, reviewed_at, reject_reason.
-- `packages`: id, photographer_id, name, description, price, subsidy_price (nullable), subsidy_enabled, features[], is_active.
-- `bookings`: id (BK_...), user_id, photographer_id, package_id, event_date, event_time, location, note, price, contribution, total, status, subsidized (bool).
-- `payment_proofs`: id, booking_id, file_key, uploaded_at, verified_by, verified_at.
-- `notifications`: id, user_id, type, title, body, read_at, created_at.
-- `portfolio_items`: id, photographer_id, file_key, package_name, client_name, location, shot_date.
-- `highlight_cards`: id, photographer_id, icon, text.
-- `testimonials`: id, photographer_id, client_name, rating, message.
-- `subsidy_ledger`: id, booking_id, type (`contribution` | `distribution`), amount, created_at.
-- `withdrawals`: id, photographer_id, amount, bank_account, status, created_at.
+Skema Prisma di `prisma/schema.prisma` (SQLite). Nilai enum disimpan sebagai kolom `String` biasa, bukan enum database.
+
+- `User`: id, email, emailVerified, passwordHash, role (`user` | `fotografer` | `admin`), name, phone, city, bio, studio, tags[], acceptingBookings, rating, sessions, subsidyValidUntil, subsidyDocType (`SKTM` | `KIP-K`), sessionVersion.
+- `SubsidyApplication`: id (SB_...), userId, docType (`SKTM` | `KIP-K`), docName, fileKey, kelurahan, address, status, submittedAt, reviewedById, reviewedAt, rejectReason.
+- `Package`: id, photographerId, name, description, price, subsidyPrice (nullable), subsidyEnabled, kipkOnly, features[], isActive, popular.
+- `Booking`: id (BK_...), userId, photographerId, packageId, eventDate, eventTime, location, note, price, contribution, total, status, subsidized, reminderSentAt, createdAt.
+- `PaymentProof`: id, bookingId, fileKey, name, sizeKb, uploadedAt, verifiedById, verifiedAt.
+- `Notification`: id, userId, type, title, body, readAt, createdAt.
+- `PortfolioItem`: id, photographerId, title, packageName, clientName, location, shotDate, tone, fileKey.
+- `HighlightCard`: id, photographerId, icon, title, text.
+- `Testimonial`: id, photographerId, clientName, rating, message.
+- `LedgerEntry`: id, bookingId (nullable — null untuk `topup`), type (`contribution` | `distribution` | `payout` | `topup`), amount, label, createdAt.
+- `Withdrawal`: id, photographerId, amount, bankAccount, status, createdAt.
+- `Counter`: name, value — sumber nomor urut `BK_...` dan `SB_...`.
 
 Setiap keputusan verifikasi dan konfirmasi pembayaran harus tercatat (siapa, kapan, hasil).
 
@@ -131,8 +177,8 @@ Setiap keputusan verifikasi dan konfirmasi pembayaran harus tercatat (siapa, kap
 - Performa halaman publik: LCP ≤ 2,5 dtk, CLS ≤ 0,1.
 - SEO: halaman publik (landing, paket, portofolio, subsidi, FAQ) dirender di server, dengan meta tag dan Open Graph.
 - Aksesibilitas: WCAG 2.2 AA. Label form, navigasi keyboard, teks alternatif foto.
-- Keamanan: HTTPS, kata sandi di-hash, rate limiting login, proteksi CSRF/XSS, hak akses per peran di server.
-- Privasi: dokumen SKTM/KIP-K dan bukti transfer di penyimpanan privat, hanya bisa dibuka pemilik akun dan admin. Persetujuan data pribadi saat daftar, hak hapus akun, mengikuti UU PDP.
+- Keamanan: HTTPS, kata sandi di-hash, rate limiting login dan registrasi, proteksi CSRF/XSS, hak akses per peran di server.
+- Privasi: dokumen SKTM/KIP-K dan bukti transfer di penyimpanan privat (`storage/private`), hanya bisa dibuka lewat `/api/files/<key>` oleh pemilik akun atau admin. Persetujuan data pribadi saat daftar, hak hapus akun, mengikuti UU PDP.
 - Validasi tipe file di server, bukan hanya ekstensi.
 
 ## Desain
@@ -168,16 +214,11 @@ Catatan: nama brand di Figma masih "GradForAll" dan "LensaID". Gunakan **Gradly*
 
 ## Belum diputuskan (jangan diasumsikan)
 
-1. Aliran uang: klien membayar ke platform atau langsung ke fotografer? Bagaimana komisi 10%, kontribusi 5% (di landing tertulis 5–10%), dan kompensasi subsidi untuk fotografer dihitung?
+1. Aliran uang: klien membayar ke platform atau langsung ke fotografer? Termasuk perilaku saat dana subsidi habis.
 2. Metode pembayaran: transfer manual + unggah bukti (form booking) atau juga QRIS (detail booking)? Bank dan nomor rekening: BNI di layar pembayaran, BCA di panduan.
 3. Masa berlaku verifikasi subsidi: "satu kali transaksi" (FAQ) atau punya masa aktif tanggal tertentu (profil)?
-4. Tombol "Gunakan Harga Subsidi" disebut di panduan tetapi tidak ada di frame booking. Perlu ditambahkan.
-5. Kuota dan perilaku saat dana subsidi habis.
-6. Kebijakan pembatalan dan pengembalian dana (notifikasi "Booking Dibatalkan" ada).
-7. Pencegahan dua booking pada jadwal yang sama (tidak ada kalender ketersediaan di Figma).
-8. Nama paket: sisi Fotografer dan Admin memakai Dasar/Premium, sisi User memakai Basic Moment/Golden Graduate/Prestige Memories.
-9. Angka statistik landing (500+ sesi, 120+ klien subsidi, Rp 23 jt) berbeda dengan dashboard admin (127 klien subsidi, Rp 48,2 jt terkumpul). Ambil dari data, bukan teks tetap.
-10. Domain baru untuk Gradly dan alamat email admin.
+4. Kebijakan pembatalan dan pengembalian dana (notifikasi "Booking Dibatalkan" ada).
+5. Domain baru untuk Gradly dan alamat email admin.
 
 ## Fase rilis (Usulan)
 

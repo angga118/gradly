@@ -29,19 +29,19 @@ export type AggregateUser = {
 export type UserAvgAggregateOutputType = {
   rating: number | null
   sessions: number | null
+  sessionVersion: number | null
 }
 
 export type UserSumAggregateOutputType = {
   rating: number | null
   sessions: number | null
+  sessionVersion: number | null
 }
 
 export type UserMinAggregateOutputType = {
   id: string | null
   email: string | null
   emailVerified: Date | null
-  verifyToken: string | null
-  verifyTokenExpiry: Date | null
   passwordHash: string | null
   role: string | null
   name: string | null
@@ -55,14 +55,14 @@ export type UserMinAggregateOutputType = {
   rating: number | null
   sessions: number | null
   subsidyValidUntil: string | null
+  subsidyDocType: string | null
+  sessionVersion: number | null
 }
 
 export type UserMaxAggregateOutputType = {
   id: string | null
   email: string | null
   emailVerified: Date | null
-  verifyToken: string | null
-  verifyTokenExpiry: Date | null
   passwordHash: string | null
   role: string | null
   name: string | null
@@ -76,14 +76,14 @@ export type UserMaxAggregateOutputType = {
   rating: number | null
   sessions: number | null
   subsidyValidUntil: string | null
+  subsidyDocType: string | null
+  sessionVersion: number | null
 }
 
 export type UserCountAggregateOutputType = {
   id: number
   email: number
   emailVerified: number
-  verifyToken: number
-  verifyTokenExpiry: number
   passwordHash: number
   role: number
   name: number
@@ -97,6 +97,8 @@ export type UserCountAggregateOutputType = {
   rating: number
   sessions: number
   subsidyValidUntil: number
+  subsidyDocType: number
+  sessionVersion: number
   _all: number
 }
 
@@ -104,19 +106,19 @@ export type UserCountAggregateOutputType = {
 export type UserAvgAggregateInputType = {
   rating?: true
   sessions?: true
+  sessionVersion?: true
 }
 
 export type UserSumAggregateInputType = {
   rating?: true
   sessions?: true
+  sessionVersion?: true
 }
 
 export type UserMinAggregateInputType = {
   id?: true
   email?: true
   emailVerified?: true
-  verifyToken?: true
-  verifyTokenExpiry?: true
   passwordHash?: true
   role?: true
   name?: true
@@ -130,14 +132,14 @@ export type UserMinAggregateInputType = {
   rating?: true
   sessions?: true
   subsidyValidUntil?: true
+  subsidyDocType?: true
+  sessionVersion?: true
 }
 
 export type UserMaxAggregateInputType = {
   id?: true
   email?: true
   emailVerified?: true
-  verifyToken?: true
-  verifyTokenExpiry?: true
   passwordHash?: true
   role?: true
   name?: true
@@ -151,14 +153,14 @@ export type UserMaxAggregateInputType = {
   rating?: true
   sessions?: true
   subsidyValidUntil?: true
+  subsidyDocType?: true
+  sessionVersion?: true
 }
 
 export type UserCountAggregateInputType = {
   id?: true
   email?: true
   emailVerified?: true
-  verifyToken?: true
-  verifyTokenExpiry?: true
   passwordHash?: true
   role?: true
   name?: true
@@ -172,6 +174,8 @@ export type UserCountAggregateInputType = {
   rating?: true
   sessions?: true
   subsidyValidUntil?: true
+  subsidyDocType?: true
+  sessionVersion?: true
   _all?: true
 }
 
@@ -265,8 +269,6 @@ export type UserGroupByOutputType = {
   id: string
   email: string
   emailVerified: Date | null
-  verifyToken: string | null
-  verifyTokenExpiry: Date | null
   passwordHash: string | null
   role: string
   name: string
@@ -280,6 +282,8 @@ export type UserGroupByOutputType = {
   rating: number
   sessions: number
   subsidyValidUntil: string | null
+  subsidyDocType: string | null
+  sessionVersion: number
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -309,8 +313,6 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  verifyToken?: Prisma.StringNullableFilter<"User"> | string | null
-  verifyTokenExpiry?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringFilter<"User"> | string
@@ -324,6 +326,8 @@ export type UserWhereInput = {
   rating?: Prisma.FloatFilter<"User"> | number
   sessions?: Prisma.IntFilter<"User"> | number
   subsidyValidUntil?: Prisma.StringNullableFilter<"User"> | string | null
+  subsidyDocType?: Prisma.StringNullableFilter<"User"> | string | null
+  sessionVersion?: Prisma.IntFilter<"User"> | number
   packages?: Prisma.PackageListRelationFilter
   bookingsAsCustomer?: Prisma.BookingListRelationFilter
   bookingsAsPhotographer?: Prisma.BookingListRelationFilter
@@ -341,8 +345,6 @@ export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder
-  verifyToken?: Prisma.SortOrderInput | Prisma.SortOrder
-  verifyTokenExpiry?: Prisma.SortOrderInput | Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -356,6 +358,8 @@ export type UserOrderByWithRelationInput = {
   rating?: Prisma.SortOrder
   sessions?: Prisma.SortOrder
   subsidyValidUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  subsidyDocType?: Prisma.SortOrderInput | Prisma.SortOrder
+  sessionVersion?: Prisma.SortOrder
   packages?: Prisma.PackageOrderByRelationAggregateInput
   bookingsAsCustomer?: Prisma.BookingOrderByRelationAggregateInput
   bookingsAsPhotographer?: Prisma.BookingOrderByRelationAggregateInput
@@ -372,12 +376,10 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
-  verifyToken?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  verifyTokenExpiry?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringFilter<"User"> | string
@@ -391,6 +393,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   rating?: Prisma.FloatFilter<"User"> | number
   sessions?: Prisma.IntFilter<"User"> | number
   subsidyValidUntil?: Prisma.StringNullableFilter<"User"> | string | null
+  subsidyDocType?: Prisma.StringNullableFilter<"User"> | string | null
+  sessionVersion?: Prisma.IntFilter<"User"> | number
   packages?: Prisma.PackageListRelationFilter
   bookingsAsCustomer?: Prisma.BookingListRelationFilter
   bookingsAsPhotographer?: Prisma.BookingListRelationFilter
@@ -402,14 +406,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   testimonials?: Prisma.TestimonialListRelationFilter
   withdrawals?: Prisma.WithdrawalListRelationFilter
   verifiedPayments?: Prisma.PaymentProofListRelationFilter
-}, "id" | "email" | "verifyToken">
+}, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder
-  verifyToken?: Prisma.SortOrderInput | Prisma.SortOrder
-  verifyTokenExpiry?: Prisma.SortOrderInput | Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -423,6 +425,8 @@ export type UserOrderByWithAggregationInput = {
   rating?: Prisma.SortOrder
   sessions?: Prisma.SortOrder
   subsidyValidUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  subsidyDocType?: Prisma.SortOrderInput | Prisma.SortOrder
+  sessionVersion?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -437,8 +441,6 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   emailVerified?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-  verifyToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  verifyTokenExpiry?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   passwordHash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringWithAggregatesFilter<"User"> | string
@@ -452,14 +454,14 @@ export type UserScalarWhereWithAggregatesInput = {
   rating?: Prisma.FloatWithAggregatesFilter<"User"> | number
   sessions?: Prisma.IntWithAggregatesFilter<"User"> | number
   subsidyValidUntil?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  subsidyDocType?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  sessionVersion?: Prisma.IntWithAggregatesFilter<"User"> | number
 }
 
 export type UserCreateInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -473,6 +475,8 @@ export type UserCreateInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -490,8 +494,6 @@ export type UserUncheckedCreateInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -505,6 +507,8 @@ export type UserUncheckedCreateInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -522,8 +526,6 @@ export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -537,6 +539,8 @@ export type UserUpdateInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -554,8 +558,6 @@ export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -569,6 +571,8 @@ export type UserUncheckedUpdateInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -586,8 +590,6 @@ export type UserCreateManyInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -601,14 +603,14 @@ export type UserCreateManyInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
 }
 
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -622,14 +624,14 @@ export type UserUpdateManyMutationInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -643,14 +645,14 @@ export type UserUncheckedUpdateManyInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
-  verifyToken?: Prisma.SortOrder
-  verifyTokenExpiry?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -664,19 +666,20 @@ export type UserCountOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   sessions?: Prisma.SortOrder
   subsidyValidUntil?: Prisma.SortOrder
+  subsidyDocType?: Prisma.SortOrder
+  sessionVersion?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   sessions?: Prisma.SortOrder
+  sessionVersion?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
-  verifyToken?: Prisma.SortOrder
-  verifyTokenExpiry?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -690,14 +693,14 @@ export type UserMaxOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   sessions?: Prisma.SortOrder
   subsidyValidUntil?: Prisma.SortOrder
+  subsidyDocType?: Prisma.SortOrder
+  sessionVersion?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
-  verifyToken?: Prisma.SortOrder
-  verifyTokenExpiry?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -711,11 +714,14 @@ export type UserMinOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   sessions?: Prisma.SortOrder
   subsidyValidUntil?: Prisma.SortOrder
+  subsidyDocType?: Prisma.SortOrder
+  sessionVersion?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   sessions?: Prisma.SortOrder
+  sessionVersion?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -926,8 +932,6 @@ export type UserCreateWithoutApplicationsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -941,6 +945,8 @@ export type UserCreateWithoutApplicationsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -957,8 +963,6 @@ export type UserUncheckedCreateWithoutApplicationsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -972,6 +976,8 @@ export type UserUncheckedCreateWithoutApplicationsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -993,8 +999,6 @@ export type UserCreateWithoutReviewedApplicationsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1008,6 +1012,8 @@ export type UserCreateWithoutReviewedApplicationsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -1024,8 +1030,6 @@ export type UserUncheckedCreateWithoutReviewedApplicationsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1039,6 +1043,8 @@ export type UserUncheckedCreateWithoutReviewedApplicationsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -1071,8 +1077,6 @@ export type UserUpdateWithoutApplicationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1086,6 +1090,8 @@ export type UserUpdateWithoutApplicationsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -1102,8 +1108,6 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1117,6 +1121,8 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -1144,8 +1150,6 @@ export type UserUpdateWithoutReviewedApplicationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1159,6 +1163,8 @@ export type UserUpdateWithoutReviewedApplicationsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -1175,8 +1181,6 @@ export type UserUncheckedUpdateWithoutReviewedApplicationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1190,6 +1194,8 @@ export type UserUncheckedUpdateWithoutReviewedApplicationsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -1206,8 +1212,6 @@ export type UserCreateWithoutPackagesInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1221,6 +1225,8 @@ export type UserCreateWithoutPackagesInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
   applications?: Prisma.SubsidyApplicationCreateNestedManyWithoutUserInput
@@ -1237,8 +1243,6 @@ export type UserUncheckedCreateWithoutPackagesInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1252,6 +1256,8 @@ export type UserUncheckedCreateWithoutPackagesInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
   applications?: Prisma.SubsidyApplicationUncheckedCreateNestedManyWithoutUserInput
@@ -1284,8 +1290,6 @@ export type UserUpdateWithoutPackagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1299,6 +1303,8 @@ export type UserUpdateWithoutPackagesInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
   applications?: Prisma.SubsidyApplicationUpdateManyWithoutUserNestedInput
@@ -1315,8 +1321,6 @@ export type UserUncheckedUpdateWithoutPackagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1330,6 +1334,8 @@ export type UserUncheckedUpdateWithoutPackagesInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
   applications?: Prisma.SubsidyApplicationUncheckedUpdateManyWithoutUserNestedInput
@@ -1346,8 +1352,6 @@ export type UserCreateWithoutBookingsAsCustomerInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1361,6 +1365,8 @@ export type UserCreateWithoutBookingsAsCustomerInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
   applications?: Prisma.SubsidyApplicationCreateNestedManyWithoutUserInput
@@ -1377,8 +1383,6 @@ export type UserUncheckedCreateWithoutBookingsAsCustomerInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1392,6 +1396,8 @@ export type UserUncheckedCreateWithoutBookingsAsCustomerInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
   applications?: Prisma.SubsidyApplicationUncheckedCreateNestedManyWithoutUserInput
@@ -1413,8 +1419,6 @@ export type UserCreateWithoutBookingsAsPhotographerInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1428,6 +1432,8 @@ export type UserCreateWithoutBookingsAsPhotographerInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   applications?: Prisma.SubsidyApplicationCreateNestedManyWithoutUserInput
@@ -1444,8 +1450,6 @@ export type UserUncheckedCreateWithoutBookingsAsPhotographerInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1459,6 +1463,8 @@ export type UserUncheckedCreateWithoutBookingsAsPhotographerInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   applications?: Prisma.SubsidyApplicationUncheckedCreateNestedManyWithoutUserInput
@@ -1491,8 +1497,6 @@ export type UserUpdateWithoutBookingsAsCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1506,6 +1510,8 @@ export type UserUpdateWithoutBookingsAsCustomerInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
   applications?: Prisma.SubsidyApplicationUpdateManyWithoutUserNestedInput
@@ -1522,8 +1528,6 @@ export type UserUncheckedUpdateWithoutBookingsAsCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1537,6 +1541,8 @@ export type UserUncheckedUpdateWithoutBookingsAsCustomerInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
   applications?: Prisma.SubsidyApplicationUncheckedUpdateManyWithoutUserNestedInput
@@ -1564,8 +1570,6 @@ export type UserUpdateWithoutBookingsAsPhotographerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1579,6 +1583,8 @@ export type UserUpdateWithoutBookingsAsPhotographerInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   applications?: Prisma.SubsidyApplicationUpdateManyWithoutUserNestedInput
@@ -1595,8 +1601,6 @@ export type UserUncheckedUpdateWithoutBookingsAsPhotographerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1610,6 +1614,8 @@ export type UserUncheckedUpdateWithoutBookingsAsPhotographerInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   applications?: Prisma.SubsidyApplicationUncheckedUpdateManyWithoutUserNestedInput
@@ -1626,8 +1632,6 @@ export type UserCreateWithoutVerifiedPaymentsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1641,6 +1645,8 @@ export type UserCreateWithoutVerifiedPaymentsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -1657,8 +1663,6 @@ export type UserUncheckedCreateWithoutVerifiedPaymentsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1672,6 +1676,8 @@ export type UserUncheckedCreateWithoutVerifiedPaymentsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -1704,8 +1710,6 @@ export type UserUpdateWithoutVerifiedPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1719,6 +1723,8 @@ export type UserUpdateWithoutVerifiedPaymentsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -1735,8 +1741,6 @@ export type UserUncheckedUpdateWithoutVerifiedPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1750,6 +1754,8 @@ export type UserUncheckedUpdateWithoutVerifiedPaymentsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -1766,8 +1772,6 @@ export type UserCreateWithoutNotificationsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1781,6 +1785,8 @@ export type UserCreateWithoutNotificationsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -1797,8 +1803,6 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1812,6 +1816,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -1844,8 +1850,6 @@ export type UserUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1859,6 +1863,8 @@ export type UserUpdateWithoutNotificationsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -1875,8 +1881,6 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1890,6 +1894,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -1906,8 +1912,6 @@ export type UserCreateWithoutPortfolioInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1921,6 +1925,8 @@ export type UserCreateWithoutPortfolioInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -1937,8 +1943,6 @@ export type UserUncheckedCreateWithoutPortfolioInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -1952,6 +1956,8 @@ export type UserUncheckedCreateWithoutPortfolioInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -1984,8 +1990,6 @@ export type UserUpdateWithoutPortfolioInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1999,6 +2003,8 @@ export type UserUpdateWithoutPortfolioInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -2015,8 +2021,6 @@ export type UserUncheckedUpdateWithoutPortfolioInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2030,6 +2034,8 @@ export type UserUncheckedUpdateWithoutPortfolioInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -2046,8 +2052,6 @@ export type UserCreateWithoutHighlightsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -2061,6 +2065,8 @@ export type UserCreateWithoutHighlightsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -2077,8 +2083,6 @@ export type UserUncheckedCreateWithoutHighlightsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -2092,6 +2096,8 @@ export type UserUncheckedCreateWithoutHighlightsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -2124,8 +2130,6 @@ export type UserUpdateWithoutHighlightsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2139,6 +2143,8 @@ export type UserUpdateWithoutHighlightsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -2155,8 +2161,6 @@ export type UserUncheckedUpdateWithoutHighlightsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2170,6 +2174,8 @@ export type UserUncheckedUpdateWithoutHighlightsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -2186,8 +2192,6 @@ export type UserCreateWithoutTestimonialsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -2201,6 +2205,8 @@ export type UserCreateWithoutTestimonialsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -2217,8 +2223,6 @@ export type UserUncheckedCreateWithoutTestimonialsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -2232,6 +2236,8 @@ export type UserUncheckedCreateWithoutTestimonialsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -2264,8 +2270,6 @@ export type UserUpdateWithoutTestimonialsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2279,6 +2283,8 @@ export type UserUpdateWithoutTestimonialsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -2295,8 +2301,6 @@ export type UserUncheckedUpdateWithoutTestimonialsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2310,6 +2314,8 @@ export type UserUncheckedUpdateWithoutTestimonialsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -2326,8 +2332,6 @@ export type UserCreateWithoutWithdrawalsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -2341,6 +2345,8 @@ export type UserCreateWithoutWithdrawalsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
@@ -2357,8 +2363,6 @@ export type UserUncheckedCreateWithoutWithdrawalsInput = {
   id?: string
   email: string
   emailVerified?: Date | string | null
-  verifyToken?: string | null
-  verifyTokenExpiry?: Date | string | null
   passwordHash?: string | null
   role: string
   name: string
@@ -2372,6 +2376,8 @@ export type UserUncheckedCreateWithoutWithdrawalsInput = {
   rating?: number
   sessions?: number
   subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
   packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
   bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
@@ -2404,8 +2410,6 @@ export type UserUpdateWithoutWithdrawalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2419,6 +2423,8 @@ export type UserUpdateWithoutWithdrawalsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
@@ -2435,8 +2441,6 @@ export type UserUncheckedUpdateWithoutWithdrawalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verifyTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2450,6 +2454,8 @@ export type UserUncheckedUpdateWithoutWithdrawalsInput = {
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   sessions?: Prisma.IntFieldUpdateOperationsInput | number
   subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
   packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
   bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
@@ -2587,8 +2593,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   email?: boolean
   emailVerified?: boolean
-  verifyToken?: boolean
-  verifyTokenExpiry?: boolean
   passwordHash?: boolean
   role?: boolean
   name?: boolean
@@ -2602,6 +2606,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   rating?: boolean
   sessions?: boolean
   subsidyValidUntil?: boolean
+  subsidyDocType?: boolean
+  sessionVersion?: boolean
   packages?: boolean | Prisma.User$packagesArgs<ExtArgs>
   bookingsAsCustomer?: boolean | Prisma.User$bookingsAsCustomerArgs<ExtArgs>
   bookingsAsPhotographer?: boolean | Prisma.User$bookingsAsPhotographerArgs<ExtArgs>
@@ -2620,8 +2626,6 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   email?: boolean
   emailVerified?: boolean
-  verifyToken?: boolean
-  verifyTokenExpiry?: boolean
   passwordHash?: boolean
   role?: boolean
   name?: boolean
@@ -2635,14 +2639,14 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   rating?: boolean
   sessions?: boolean
   subsidyValidUntil?: boolean
+  subsidyDocType?: boolean
+  sessionVersion?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   email?: boolean
   emailVerified?: boolean
-  verifyToken?: boolean
-  verifyTokenExpiry?: boolean
   passwordHash?: boolean
   role?: boolean
   name?: boolean
@@ -2656,14 +2660,14 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   rating?: boolean
   sessions?: boolean
   subsidyValidUntil?: boolean
+  subsidyDocType?: boolean
+  sessionVersion?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
   id?: boolean
   email?: boolean
   emailVerified?: boolean
-  verifyToken?: boolean
-  verifyTokenExpiry?: boolean
   passwordHash?: boolean
   role?: boolean
   name?: boolean
@@ -2677,9 +2681,11 @@ export type UserSelectScalar = {
   rating?: boolean
   sessions?: boolean
   subsidyValidUntil?: boolean
+  subsidyDocType?: boolean
+  sessionVersion?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "emailVerified" | "verifyToken" | "verifyTokenExpiry" | "passwordHash" | "role" | "name" | "phone" | "city" | "createdAt" | "bio" | "studio" | "tags" | "acceptingBookings" | "rating" | "sessions" | "subsidyValidUntil", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "emailVerified" | "passwordHash" | "role" | "name" | "phone" | "city" | "createdAt" | "bio" | "studio" | "tags" | "acceptingBookings" | "rating" | "sessions" | "subsidyValidUntil" | "subsidyDocType" | "sessionVersion", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   packages?: boolean | Prisma.User$packagesArgs<ExtArgs>
   bookingsAsCustomer?: boolean | Prisma.User$bookingsAsCustomerArgs<ExtArgs>
@@ -2716,8 +2722,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     email: string
     emailVerified: Date | null
-    verifyToken: string | null
-    verifyTokenExpiry: Date | null
     passwordHash: string | null
     role: string
     name: string
@@ -2731,6 +2735,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     rating: number
     sessions: number
     subsidyValidUntil: string | null
+    subsidyDocType: string | null
+    sessionVersion: number
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -3168,8 +3174,6 @@ export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly emailVerified: Prisma.FieldRef<"User", 'DateTime'>
-  readonly verifyToken: Prisma.FieldRef<"User", 'String'>
-  readonly verifyTokenExpiry: Prisma.FieldRef<"User", 'DateTime'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
@@ -3183,6 +3187,8 @@ export interface UserFieldRefs {
   readonly rating: Prisma.FieldRef<"User", 'Float'>
   readonly sessions: Prisma.FieldRef<"User", 'Int'>
   readonly subsidyValidUntil: Prisma.FieldRef<"User", 'String'>
+  readonly subsidyDocType: Prisma.FieldRef<"User", 'String'>
+  readonly sessionVersion: Prisma.FieldRef<"User", 'Int'>
 }
     
 

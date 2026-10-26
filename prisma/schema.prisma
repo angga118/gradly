@@ -11,8 +11,6 @@ model User {
   id                String    @id @default(cuid())
   email             String    @unique
   emailVerified     DateTime?
-  verifyToken       String?   @unique
-  verifyTokenExpiry DateTime?
   passwordHash      String?
   role              String
   name              String
@@ -26,6 +24,10 @@ model User {
   rating            Float     @default(0)
   sessions          Int       @default(0)
   subsidyValidUntil String?
+  // SKTM | KIP-K — the document type the subsidy verification was granted for.
+  subsidyDocType    String?
+  // Bumped on credential changes so previously issued JWTs stop working.
+  sessionVersion    Int       @default(0)
 
   packages                Package[]
   bookingsAsCustomer      Booking[]            @relation("CustomerBookings")
@@ -69,6 +71,8 @@ model Package {
   price          Int
   subsidyPrice   Int?
   subsidyEnabled Boolean @default(false)
+  // Restricted to verified KIP-K recipients (e.g. Paket Harapan).
+  kipkOnly       Boolean @default(false)
   features       String  @default("[]")
   isActive       Boolean @default(true)
   popular        Boolean @default(false)

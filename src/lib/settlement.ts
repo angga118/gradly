@@ -1,5 +1,5 @@
 import type { Prisma } from "@/generated/prisma/client"
-import { PLATFORM_FEE } from "@/lib/stats"
+import { photographerNet } from "@/lib/rules"
 
 /**
  * Recognize revenue at settlement: write the booking's ledger entries once the
@@ -22,11 +22,12 @@ export async function settleBooking(
 
   const subsidized = booking.subsidized
   if (subsidized) {
+    // Platform fee also applies to subsidy bookings — the photographer nets the price minus commission.
     await tx.ledgerEntry.create({
       data: {
         bookingId,
         type: "distribution",
-        amount: booking.price,
+        amount: photographerNet(booking.price),
         label: `Kompensasi subsidi · ${booking.package.name}`,
       },
     })
@@ -38,7 +39,7 @@ export async function settleBooking(
       {
         bookingId,
         type: "payout",
-        amount: booking.price - Math.round(booking.price * PLATFORM_FEE),
+        amount: photographerNet(booking.price),
         label: `Pendapatan sesi · ${booking.package.name}`,
       },
       {

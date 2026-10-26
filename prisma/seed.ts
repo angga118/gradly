@@ -24,6 +24,16 @@ const placeholderUsers = [
   { id: "u5", email: "nadia@gradly.id", name: "Nadia Kusuma" },
 ]
 
+// Subsidy grant = an approved application (single source of truth): a user
+// whose application is "Terverifikasi" carries that application's docType and
+// a validity window running to the end of the current calendar year.
+const verifiedDocType = new Map(
+  seedSubsidyApplications
+    .filter((a) => a.status === "Terverifikasi")
+    .map((a) => [a.userId, a.docType] as const),
+)
+const subsidyValidUntil = `${new Date().getFullYear()}-12-31`
+
 async function main() {
   // Clear in FK-safe order (idempotent re-seed).
   await prisma.ledgerEntry.deleteMany()
@@ -58,7 +68,8 @@ async function main() {
       acceptingBookings: u.acceptingBookings ?? true,
       rating: u.rating ?? 0,
       sessions: u.sessions ?? 0,
-      subsidyValidUntil: u.subsidyValidUntil ?? null,
+      subsidyValidUntil: verifiedDocType.has(u.id) ? subsidyValidUntil : null,
+      subsidyDocType: verifiedDocType.get(u.id) ?? null,
     })),
     ...placeholderUsers.map((u) => ({
       id: u.id,
@@ -77,6 +88,7 @@ async function main() {
       rating: 0,
       sessions: 0,
       subsidyValidUntil: null,
+      subsidyDocType: null,
     })),
   ]
   await prisma.user.createMany({ data: users })
@@ -92,6 +104,7 @@ async function main() {
       price: p.price,
       subsidyPrice: p.subsidyPrice,
       subsidyEnabled: p.subsidyEnabled,
+      kipkOnly: p.kipkOnly,
       features: JSON.stringify(p.features),
       isActive: p.isActive,
       popular: p.popular ?? false,

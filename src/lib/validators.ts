@@ -54,12 +54,25 @@ export const packageSchema = z.object({
   price: z.number().positive(),
   subsidyPrice: z.number().positive().optional(),
   subsidyEnabled: z.boolean(),
+  kipkOnly: z.boolean().optional().default(false),
   features: z.array(z.string()),
   isActive: z.boolean(),
   popular: z.boolean().optional(),
 }).refine((d) => d.subsidyPrice == null || d.subsidyPrice < d.price, {
   message: "Harga subsidi harus lebih rendah dari harga normal.",
 })
+
+/** Paket khusus KIP-K tidak boleh memakai harga subsidi. */
+export const KIPK_ONLY_CONFLICT = "Paket khusus KIP-K tidak boleh memakai harga subsidi."
+
+/** True when a kipkOnly package carries a subsidy price or subsidy flag. */
+export function violatesKipkOnlyRule(p: {
+  kipkOnly: boolean
+  subsidyPrice?: number | null
+  subsidyEnabled: boolean
+}): boolean {
+  return p.kipkOnly && (p.subsidyPrice != null || p.subsidyEnabled)
+}
 
 export const portfolioSchema = z.object({
   title: z.string().min(1),

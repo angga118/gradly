@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { Icon } from "./icons";
 
@@ -26,6 +26,7 @@ export function FileDrop({
   className?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
   const [file, setFile] = useState<PickedFile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -50,9 +51,13 @@ export function FileDrop({
       <div
         role="button"
         tabIndex={0}
+        aria-label={label}
         onClick={() => inputRef.current?.click()}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
         }}
         onDragOver={(e) => {
           e.preventDefault();
@@ -85,8 +90,12 @@ export function FileDrop({
             </p>
           </>
         )}
+        <label htmlFor={inputId} className="sr-only">
+          {label}
+        </label>
         <input
           ref={inputRef}
+          id={inputId}
           type="file"
           accept={accept}
           className="hidden"

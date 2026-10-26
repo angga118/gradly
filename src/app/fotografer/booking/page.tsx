@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Field, Input, Select } from "@/components/ui/field";
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs, TabPanel } from "@/components/ui/tabs";
 import { Avatar, EmptyState, Stat } from "@/components/ui/misc";
 import { StatusChip } from "@/components/ui/status-chip";
 import { Icon } from "@/components/ui/icons";
@@ -109,7 +109,8 @@ export default function BookingFotografer() {
         </div>
       </Card>
 
-      {filtered.length === 0 ? (
+      <TabPanel value={status}>
+        {filtered.length === 0 ? (
         <EmptyState
           icon="search"
           title="Tidak ada booking yang cocok"
@@ -208,6 +209,7 @@ export default function BookingFotografer() {
           })}
         </ul>
       )}
+      </TabPanel>
 
       <BookingDetailModal
         booking={selected}

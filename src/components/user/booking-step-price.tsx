@@ -21,11 +21,17 @@ import { canUseSubsidy, computePricing } from "./pricing";
 export function BookingStepPrice() {
   const params = useSearchParams();
   const router = useRouter();
-  const { session, draft, setDraft, packageById } = useGradly();
+  const { session, draft, setDraft, packageById, userById, portfolio } = useGradly();
 
   const queryId = params.get("paket");
   const resolvedId = queryId && packageById(queryId) ? queryId : draft.packageId;
   const pkg = resolvedId ? packageById(resolvedId) : undefined;
+  const photographer = pkg ? userById(pkg.photographerId) : undefined;
+  const cover = pkg
+    ? portfolio.find((item) => item.photographerId === pkg.photographerId && item.key)
+    : undefined;
+  const kipkVerified =
+    session?.subsidyDocType === "KIP-K" && Boolean(session?.subsidyValidUntil);
 
   // Simpan pilihan dari query ke draft agar langkah berikutnya punya konteks.
   useEffect(() => {
@@ -80,11 +86,23 @@ export function BookingStepPrice() {
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-start">
         <Reveal className="space-y-6">
           <Card className="overflow-hidden">
-            <PackageBanner name={pkg.name} tone="sky" />
+            <PackageBanner
+              name={pkg.name}
+              tone="sky"
+              fileKey={cover?.key}
+              alt={
+                cover
+                  ? `Karya terbaru ${cover.title}${photographer ? ` oleh ${photographer.name}` : ""}`
+                  : ""
+              }
+            />
             <div className="p-6">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-2xl">{pkg.name}</h2>
                 {pkg.popular ? <Chip tone="butter">Favorit</Chip> : null}
+                {pkg.kipkOnly ? (
+                  <Chip tone="sage">Khusus penerima KIP-K</Chip>
+                ) : null}
                 {subsidyEligible ? <Chip tone="sage">Bisa subsidi</Chip> : null}
               </div>
               <p className="mt-2 text-sm text-ink/65">{pkg.description}</p>
@@ -98,18 +116,24 @@ export function BookingStepPrice() {
               </ul>
               <div className="mt-5 flex items-center justify-between gap-3 border-t border-ink/10 pt-4">
                 <span className="text-sm text-ink/60">Fotografer</span>
-                <span className="text-sm font-medium">Kirana Larasati</span>
+                <span className="text-sm font-medium">
+                  {photographer?.name ?? "Fotografer"}
+                </span>
               </div>
             </div>
           </Card>
 
-          <SubsidyToggle
-            eligible={subsidyEligible}
-            active={subsidyApplies}
-            pkg={pkg}
-            sessionVerified={Boolean(session?.subsidyValidUntil)}
-            onToggle={() => setDraft({ useSubsidy: !draft.useSubsidy })}
-          />
+          {pkg.kipkOnly ? (
+            <KipkNotice verified={kipkVerified} />
+          ) : (
+            <SubsidyToggle
+              eligible={subsidyEligible}
+              active={subsidyApplies}
+              pkg={pkg}
+              sessionVerified={Boolean(session?.subsidyValidUntil)}
+              onToggle={() => setDraft({ useSubsidy: !draft.useSubsidy })}
+            />
+          )}
 
           <div className="text-center lg:hidden">
             <Button href="/paket" variant="ghost" size="sm">
@@ -155,6 +179,35 @@ export function BookingStepPrice() {
         </Reveal>
       </div>
     </div>
+  );
+}
+
+function KipkNotice({ verified }: { verified: boolean }) {
+  return (
+    <Card className="flex items-start gap-4 p-5">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage/70 text-ink">
+        <Icon name="graduation" size={18} />
+      </span>
+      <div className="min-w-0">
+        <p className="font-medium">Paket khusus penerima KIP-K</p>
+        <p className="mt-1 text-xs text-ink/60">
+          {verified ? (
+            "Verifikasi KIP-K kamu masih aktif, paket ini bisa langsung dipesan."
+          ) : (
+            <>
+              Paket ini hanya untuk penerima KIP-K yang sudah diverifikasi.{" "}
+              <Link
+                href="/subsidi/ajukan"
+                className="font-medium underline underline-offset-4"
+              >
+                Ajukan verifikasi KIP-K
+              </Link>{" "}
+              dulu.
+            </>
+          )}
+        </p>
+      </div>
+    </Card>
   );
 }
 

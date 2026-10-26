@@ -23,7 +23,6 @@ export const seedUsers: User[] = [
     phone: "0812-3456-7890",
     city: "Bandung",
     createdAt: "2026-03-04T09:12:00.000Z",
-    subsidyValidUntil: null,
   },
   {
     id: "u2",
@@ -34,7 +33,6 @@ export const seedUsers: User[] = [
     phone: "0857-1122-3344",
     city: "Bandung",
     createdAt: "2026-05-18T14:40:00.000Z",
-    subsidyValidUntil: "2026-12-31",
   },
   {
     id: PHOTOGRAPHER_ID,
@@ -122,6 +120,7 @@ export const seedPackages: Package[] = [
     price: 299000,
     subsidyPrice: null,
     subsidyEnabled: true,
+    kipkOnly: false,
     features: [
       "Sesi 1 jam, 1 lokasi",
       "20 foto edit pilihan",
@@ -137,8 +136,9 @@ export const seedPackages: Package[] = [
     description:
       "Paket khusus penerima KIP-K. Sesi 1 jam dengan pendampingan ramah.",
     price: 89000,
-    subsidyPrice: 89000,
-    subsidyEnabled: true,
+    subsidyPrice: null,
+    subsidyEnabled: false,
+    kipkOnly: true,
     features: [
       "Sesi 1 jam, 1 lokasi",
       "12 foto edit pilihan",
@@ -156,6 +156,7 @@ export const seedPackages: Package[] = [
     price: 599000,
     subsidyPrice: null,
     subsidyEnabled: true,
+    kipkOnly: false,
     features: [
       "Sesi 2 jam, 2 lokasi",
       "40 foto edit pilihan",
@@ -174,6 +175,7 @@ export const seedPackages: Package[] = [
     price: 999000,
     subsidyPrice: null,
     subsidyEnabled: true,
+    kipkOnly: false,
     features: [
       "Sesi 3 jam, 3 lokasi",
       "80 foto edit pilihan",
@@ -191,6 +193,7 @@ export const seedPackages: Package[] = [
     price: 1200000,
     subsidyPrice: null,
     subsidyEnabled: false,
+    kipkOnly: false,
     features: [
       "Sesi 4 jam, lokasi bebas",
       "100 foto edit pilihan",
@@ -208,6 +211,7 @@ export const seedPackages: Package[] = [
     price: 399000,
     subsidyPrice: null,
     subsidyEnabled: true,
+    kipkOnly: false,
     features: [
       "Sesi 1,5 jam, 1 lokasi",
       "25 foto edit pilihan",
@@ -225,6 +229,7 @@ export const seedPackages: Package[] = [
     price: 749000,
     subsidyPrice: null,
     subsidyEnabled: true,
+    kipkOnly: false,
     features: [
       "Sesi 2,5 jam, 2 lokasi",
       "50 foto edit pilihan",
@@ -243,6 +248,7 @@ export const seedPackages: Package[] = [
     price: 349000,
     subsidyPrice: null,
     subsidyEnabled: true,
+    kipkOnly: false,
     features: [
       "Sesi 1 jam di studio",
       "20 foto edit pilihan",
@@ -260,6 +266,7 @@ export const seedPackages: Package[] = [
     price: 899000,
     subsidyPrice: null,
     subsidyEnabled: true,
+    kipkOnly: false,
     features: [
       "Sesi 2 jam, studio + indoor",
       "45 foto edit pilihan",
@@ -278,6 +285,7 @@ export const seedPackages: Package[] = [
     price: 549000,
     subsidyPrice: null,
     subsidyEnabled: true,
+    kipkOnly: false,
     features: [
       "Sesi 2 jam, 2 lokasi urban",
       "35 foto edit pilihan",
@@ -295,6 +303,7 @@ export const seedPackages: Package[] = [
     price: 1150000,
     subsidyPrice: null,
     subsidyEnabled: false,
+    kipkOnly: false,
     features: [
       "Sesi 4 jam, lokasi bebas",
       "90 foto edit pilihan",
@@ -498,6 +507,20 @@ export const seedBookings: Booking[] = [
 
 export const seedSubsidyApplications: SubsidyApplication[] = [
   {
+    id: "SB_2026_0247",
+    userId: "u1",
+    userName: "Rani Puspita",
+    docType: "KIP-K",
+    docName: "kipk-rani.pdf",
+    docKey: "seed/kipk-rani.pdf",
+    kelurahan: "Coblong",
+    address: "Jl. Dago Atas No. 21, Bandung",
+    status: "Terverifikasi",
+    submittedAt: "2026-04-02T03:00:00.000Z",
+    reviewedBy: "Dimas Ardiansyah",
+    reviewedAt: "2026-04-02T08:15:00.000Z",
+  },
+  {
     id: "SB_2026_0246",
     userId: "u2",
     userName: "Bagas Nugroho",
@@ -602,6 +625,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Dago Pakar",
     shotDate: "2026-06-14",
     tone: "butter",
+    key: "",
   },
   {
     id: "pf2",
@@ -612,6 +636,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Unpad",
     shotDate: "2026-05-30",
     tone: "sky",
+    key: "",
   },
   {
     id: "pf3",
@@ -622,6 +647,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "ITB",
     shotDate: "2026-04-22",
     tone: "sage",
+    key: "",
   },
   {
     id: "pf4",
@@ -632,6 +658,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Balai Kota",
     shotDate: "2026-03-18",
     tone: "butter",
+    key: "",
   },
   {
     id: "pf5",
@@ -642,6 +669,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Cibaduyut",
     shotDate: "2026-02-09",
     tone: "sky",
+    key: "",
   },
   {
     id: "pf6",
@@ -652,6 +680,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Antapani",
     shotDate: "2026-01-27",
     tone: "sage",
+    key: "",
   },
   {
     id: "pf7",
@@ -662,6 +691,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Unpad",
     shotDate: "2026-06-20",
     tone: "sky",
+    key: "",
   },
   {
     id: "pf8",
@@ -672,6 +702,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Balai Kota",
     shotDate: "2026-05-11",
     tone: "butter",
+    key: "",
   },
   {
     id: "pf9",
@@ -682,6 +713,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "ITB",
     shotDate: "2026-04-02",
     tone: "sage",
+    key: "",
   },
   {
     id: "pf10",
@@ -692,6 +724,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Sekar Frame",
     shotDate: "2026-06-08",
     tone: "butter",
+    key: "",
   },
   {
     id: "pf11",
@@ -702,6 +735,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Sekar Frame",
     shotDate: "2026-05-02",
     tone: "sky",
+    key: "",
   },
   {
     id: "pf12",
@@ -712,6 +746,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Sekar Frame",
     shotDate: "2026-03-27",
     tone: "sage",
+    key: "",
   },
   {
     id: "pf13",
@@ -722,6 +757,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Jalan Braga",
     shotDate: "2026-06-01",
     tone: "sky",
+    key: "",
   },
   {
     id: "pf14",
@@ -732,6 +768,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Dago Pakar",
     shotDate: "2026-04-19",
     tone: "butter",
+    key: "",
   },
   {
     id: "pf15",
@@ -742,6 +779,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Antapani",
     shotDate: "2026-02-23",
     tone: "sage",
+    key: "",
   },
 ];
 

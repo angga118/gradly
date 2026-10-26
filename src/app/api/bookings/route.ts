@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/auth-helpers"
 import { nextBookingId } from "@/lib/ids"
 import { prisma } from "@/lib/prisma"
+import { contributionFor } from "@/lib/rules"
 import { serializeBooking } from "@/lib/serializers"
 import { bookingSchema } from "@/lib/validators"
 
@@ -52,7 +53,10 @@ export async function POST(req: Request) {
   }
   const input = parsed.data
 
-  const pkg = await prisma.package.findUnique({ where: { id: input.packageId } })
+  const pkg = await prisma.package.findUnique({
+    where: { id: input.packageId },
+    include: { photographer: { select: { acceptingBookings: true } } },
+  })
   if (!pkg || !pkg.isActive) {
     return Response.json({ error: "Paket tidak ditemukan." }, { status: 404 })
   }
@@ -62,25 +66,40 @@ export async function POST(req: Request) {
       { status: 400 },
     )
   }
+  if (!pkg.photographer.acceptingBookings) {
+    return Response.json(
+      { error: "Fotografer sedang tidak menerima booking." },
+      { status: 400 },
+    )
+  }
 
   const customer = await prisma.user.findUnique({
     where: { id: guard.user.id },
-    select: { subsidyValidUntil: true },
+    select: { subsidyValidUntil: true, subsidyDocType: true },
   })
   const today = new Date().toISOString().slice(0, 10)
   const subsidyValid = Boolean(customer?.subsidyValidUntil && customer.subsidyValidUntil >= today)
+
+  // Paket khusus KIP-K hanya untuk penerima KIP-K yang sudah terverifikasi.
+  if (pkg.kipkOnly && !(subsidyValid && customer?.subsidyDocType === "KIP-K")) {
+    return Response.json(
+      { error: "Paket ini khusus untuk penerima KIP-K yang sudah terverifikasi." },
+      { status: 403 },
+    )
+  }
+
   const subsidized =
     input.subsidized &&
+    !pkg.kipkOnly &&
     subsidyValid &&
     pkg.subsidyEnabled &&
     pkg.subsidyPrice !== null &&
     pkg.subsidyPrice < pkg.price
 
   const price = subsidized ? (pkg.subsidyPrice as number) : pkg.price
-  const contribution = subsidized ? 0 : Math.round(price * 0.05)
+  const contribution = subsidized ? 0 : contributionFor(price)
   const total = price + contribution
 
-  const id = await nextBookingId()
   const SCHEDULE_CONFLICT = "SCHEDULE_CONFLICT"
   let created
   try {
@@ -94,6 +113,10 @@ export async function POST(req: Request) {
         },
       })
       if (conflict > 0) throw new Error(SCHEDULE_CONFLICT)
+
+      // Id direserve di dalam transaksi yang sama, jadi create yang gagal
+      // tidak membuat nomor bolong.
+      const id = await nextBookingId(tx)
 
       const booking = await tx.booking.create({
         data: {
@@ -124,7 +147,7 @@ export async function POST(req: Request) {
           userId: guard.user.id,
           type: "booking",
           title: "Booking terkirim",
-          body: `${id} (${pkg.name}) menunggu konfirmasi admin.`,
+          body: `${id} (${pkg.name}) menunggu konfirmasi.`,
         },
       })
 

@@ -7,7 +7,7 @@ import { rupiah } from "@/lib/format";
 import { Select } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icons";
 import { EmptyState } from "@/components/ui/misc";
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs, TabPanel } from "@/components/ui/tabs";
 import { PackageCard } from "./package-card";
 import { PageHeader } from "./page-header";
 import { Reveal } from "./reveal";
@@ -114,23 +114,23 @@ export function PaketView() {
         </div>
       </Reveal>
 
-      {visible.length === 0 ? (
-        <div className="mt-10">
+      <TabPanel value={filter} className="mt-10">
+        {visible.length === 0 ? (
           <EmptyState
             icon="grid"
             title="Belum ada paket yang cocok"
             description="Coba ubah filter atau urutkan ulang untuk melihat paket lain."
           />
-        </div>
-      ) : (
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((pkg, i) => (
-            <Reveal key={pkg.id} delay={i * 70} className="h-full">
-              <PackageCard pkg={pkg} className="h-full" />
-            </Reveal>
-          ))}
-        </div>
-      )}
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map((pkg, i) => (
+              <Reveal key={pkg.id} delay={i * 70} className="h-full">
+                <PackageCard pkg={pkg} className="h-full" />
+              </Reveal>
+            ))}
+          </div>
+        )}
+      </TabPanel>
 
       <Reveal>
         <div className="mt-12 flex items-start gap-3 rounded-[var(--radius-card)] border border-ink/10 bg-butter/40 p-5 text-sm text-ink/75">

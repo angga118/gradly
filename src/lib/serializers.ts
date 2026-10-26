@@ -102,6 +102,7 @@ export function serializeUser(u: UserRow): Omit<User, "password"> {
     city: u.city,
     createdAt: iso(u.createdAt),
     subsidyValidUntil: u.subsidyValidUntil,
+    subsidyDocType: u.subsidyDocType ? (u.subsidyDocType as DocType) : undefined,
   }
   if (role === "fotografer") {
     out.bio = u.bio ?? ""
@@ -164,6 +165,7 @@ export function serializePackage(p: PackageRow): Package {
     price: p.price,
     subsidyPrice: p.subsidyPrice,
     subsidyEnabled: p.subsidyEnabled,
+    kipkOnly: p.kipkOnly,
     features: parseStringArray(p.features),
     isActive: p.isActive,
     popular: p.popular,
@@ -246,6 +248,7 @@ export function serializePortfolio(p: PortfolioItemRow): PortfolioItem {
     location: p.location,
     shotDate: p.shotDate,
     tone: p.tone,
+    key: p.fileKey ?? "",
   }
 }
 

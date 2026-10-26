@@ -33,5 +33,6 @@ export const config = {
     "/riwayat",
     "/notifikasi",
     "/booking/:path*",
+    "/subsidi/ajukan",
   ],
 }

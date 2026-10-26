@@ -1,7 +1,8 @@
 import { requireRole } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
+import { SUBSIDY_MAX_PACKAGE_PRICE } from "@/lib/rules"
 import { serializePackage } from "@/lib/serializers"
-import { packageSchema } from "@/lib/validators"
+import { KIPK_ONLY_CONFLICT, packageSchema, violatesKipkOnlyRule } from "@/lib/validators"
 
 /** PATCH — owner fotografer updates a package. */
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -34,6 +35,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
   const input = parsed.data
 
+  if (violatesKipkOnlyRule(input)) {
+    return Response.json({ error: KIPK_ONLY_CONFLICT }, { status: 400 })
+  }
+
   if (input.subsidyPrice != null && input.subsidyPrice >= input.price) {
     return Response.json(
       { error: "Harga subsidi harus lebih rendah dari harga normal." },
@@ -41,8 +46,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     )
   }
 
-  // Packages above Rp 1 juta can never be subsidized.
-  const subsidyEnabled = input.price > 1_000_000 ? false : input.subsidyEnabled
+  // Packages above the subsidy ceiling can never be subsidized.
+  const subsidyEnabled =
+    input.price > SUBSIDY_MAX_PACKAGE_PRICE ? false : input.subsidyEnabled
 
   const updated = await prisma.package.update({
     where: { id },
@@ -52,6 +58,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       price: input.price,
       subsidyPrice: input.subsidyPrice ?? null,
       subsidyEnabled,
+      kipkOnly: input.kipkOnly,
       features: JSON.stringify(input.features),
       isActive: input.isActive,
       popular: input.popular ?? false,

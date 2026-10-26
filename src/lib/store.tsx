@@ -30,23 +30,32 @@ import type {
 } from "./types";
 
 /* ------------------------------------------------------------------ *
- * Fetch helpers — every call is best-effort; failures leave state as-is.
+ * Fetch helpers — nilai balik tetap sama (null/false), tapi kegagalan
+ * dilaporkan lewat `report` supaya UI bisa menampilkannya.
  * ------------------------------------------------------------------ */
 
-async function getJSON<T>(path: string): Promise<T | null> {
+type ErrorReporter = (message: string | null) => void;
+
+async function httpJSON<T>(path: string, report?: ErrorReporter): Promise<T | null> {
   try {
     const res = await fetch(path, { cache: "no-store" });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      report?.(`Gagal memuat data (HTTP ${res.status}).`);
+      return null;
+    }
+    report?.(null);
     return (await res.json()) as T;
   } catch {
+    report?.("Tidak dapat menghubungi server.");
     return null;
   }
 }
 
-async function sendJSON<T>(
+async function httpSend<T>(
   path: string,
   method: string,
   body?: unknown,
+  report?: ErrorReporter,
 ): Promise<{ ok: boolean; data?: T; error?: string }> {
   try {
     const res = await fetch(path, {
@@ -55,26 +64,42 @@ async function sendJSON<T>(
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
     const data = (await res.json().catch(() => null)) as (T & { error?: string }) | null;
-    if (!res.ok) return { ok: false, error: data?.error ?? "Terjadi kesalahan." };
+    if (!res.ok) {
+      const message = data?.error ?? "Terjadi kesalahan.";
+      report?.(message);
+      return { ok: false, error: message };
+    }
+    report?.(null);
     return { ok: true, data: data ?? undefined };
   } catch {
+    report?.("Tidak dapat menghubungi server.");
     return { ok: false, error: "Tidak dapat menghubungi server." };
   }
 }
 
-async function sendForm<T>(
+async function httpForm<T>(
   path: string,
   form: FormData,
+  report?: ErrorReporter,
 ): Promise<{ ok: boolean; data?: T; error?: string }> {
   try {
     const res = await fetch(path, { method: "POST", body: form });
     const data = (await res.json().catch(() => null)) as (T & { error?: string }) | null;
-    if (!res.ok) return { ok: false, error: data?.error ?? "Terjadi kesalahan." };
+    if (!res.ok) {
+      const message = data?.error ?? "Terjadi kesalahan.";
+      report?.(message);
+      return { ok: false, error: message };
+    }
+    report?.(null);
     return { ok: true, data: data ?? undefined };
   } catch {
+    report?.("Tidak dapat menghubungi server.");
     return { ok: false, error: "Tidak dapat menghubungi server." };
   }
 }
+
+/** Kunci draft booking di sessionStorage (per tab, hilang saat tab ditutup). */
+const DRAFT_KEY = "gradly:booking-draft";
 
 const emptyDraftState: BookingDraft = {
   packageId: null,
@@ -102,6 +127,11 @@ interface GradlyContextValue {
   withdrawals: Withdrawal[];
   stats: Stats;
   draft: BookingDraft;
+  /** Pesan kegagalan request terakhir; null saat request terakhir sukses. */
+  error: string | null;
+  clearError: () => void;
+  /** Pesan succes yang perlu ditampilkan sebentar (mis. "silakan masuk kembali"). */
+  notice: string | null;
   login: (email: string, password: string) => Promise<{ ok: boolean; error?: string; code?: string }>;
   register: (input: {
     name: string;
@@ -183,6 +213,54 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [stats, setStats] = useState<Stats>(() => emptyStats());
   const [draft, setDraftState] = useState<BookingDraft>(emptyDraftState);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  const report = useCallback((message: string | null) => setError(message), []);
+  const clearError = useCallback(() => setError(null), []);
+
+  // Wrapper request: kegagalan dilaporkan ke `error`, setiap sukses membersihkannya.
+  const getJSON = useCallback(
+    <T,>(path: string) => httpJSON<T>(path, report),
+    [report],
+  );
+  const sendJSON = useCallback(
+    <T,>(path: string, method: string, body?: unknown) =>
+      httpSend<T>(path, method, body, report),
+    [report],
+  );
+  const sendForm = useCallback(
+    <T,>(path: string, form: FormData) => httpForm<T>(path, form, report),
+    [report],
+  );
+
+  // Draft booking 3 langkah bertahan antar halaman (refresh tidak mengembalikan ke langkah 1).
+  // Efek hanya jalan di klien, jadi sessionStorage aman dipakai tanpa cek SSR.
+  const [draftReady, setDraftReady] = useState(false);
+  useEffect(() => {
+    try {
+      const raw = window.sessionStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        setDraftState({ ...emptyDraftState, ...(JSON.parse(raw) as Partial<BookingDraft>) });
+      }
+    } catch {
+      // Draft rusak di storage — abaikan, mulai dari draft kosong.
+      setDraftState(emptyDraftState);
+    } finally {
+      setDraftReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!draftReady) return;
+    try {
+      // Draft kosong = tidak ada draft tersimpan (mis. setelah booking berhasil).
+      if (draft === emptyDraftState) window.sessionStorage.removeItem(DRAFT_KEY);
+      else window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // Storage diblokir atau penuh — draft tetap hidup di state.
+    }
+  }, [draft, draftReady]);
 
   const loadPublic = useCallback(async () => {
     const [pkgs, port, hi, testi, photogs, st] = await Promise.all([
@@ -257,13 +335,6 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
           if (res.code === "rate_limited") {
             return { ok: false, error: "Terlalu banyak percobaan masuk. Coba lagi dalam beberapa menit." };
           }
-          if (res.code === "email_not_verified") {
-            return {
-              ok: false,
-              code: "email_not_verified",
-              error: "Email belum diverifikasi. Cek kotak masuk Anda untuk tautan verifikasi.",
-            };
-          }
           return { ok: false, error: "Email atau kata sandi salah." };
         }
       } catch {
@@ -271,6 +342,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       }
       const user = await refetchMe();
       if (!user) return { ok: false, error: "Gagal memuat sesi." };
+      setNotice(null);
       await loadScoped(user);
       return { ok: true };
     },
@@ -279,23 +351,23 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback<GradlyContextValue["register"]>(
     async (input) => {
-      const res = await sendJSON<{ ok: boolean; verifyUrl?: string }>(
-        "/api/auth/register",
-        "POST",
-        input,
-      );
+      const res = await sendJSON<{ ok: boolean }>("/api/auth/register", "POST", input);
       if (!res.ok) return { ok: false, error: res.error };
-      const loginRes = await login(input.email, input.password);
-      // Dev fallback: when mail is skipped the account stays unverified, so login
-      // fails — but the API returned the verification link. Surface it so the
-      // register flow can finish locally without an email provider.
-      if (!loginRes.ok && res.data?.verifyUrl) {
-        return { ...loginRes, verifyUrl: res.data.verifyUrl };
-      }
-      return loginRes;
+      // Verifikasi email belum ada: akun langsung bisa masuk.
+      return login(input.email, input.password);
     },
     [login],
   );
+
+  /** Buang state sesi di klien (dipakai logout dan setelah ganti kata sandi). */
+  const clearSessionState = useCallback(() => {
+    setSession(null);
+    setBookings([]);
+    setSubsidyApplications([]);
+    setNotifications([]);
+    setLedger([]);
+    setWithdrawals([]);
+  }, []);
 
   const logout = useCallback(async () => {
     try {
@@ -303,14 +375,10 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
     } catch {
       /* ignore */
     }
-    setSession(null);
-    setBookings([]);
-    setSubsidyApplications([]);
-    setNotifications([]);
-    setLedger([]);
-    setWithdrawals([]);
+    clearSessionState();
+    setNotice(null);
     setDraftState(emptyDraftState);
-  }, []);
+  }, [clearSessionState]);
 
   const updateProfile = useCallback<GradlyContextValue["updateProfile"]>(async (patch) => {
     const res = await sendJSON<{ user: User }>("/api/profile", "PATCH", patch);
@@ -327,9 +395,18 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
         current,
         next,
       });
-      return res.ok ? { ok: true } : { ok: false, error: res.error };
+      if (!res.ok) return { ok: false, error: res.error };
+      // Server menaikkan sessionVersion → semua JWT lama mati. Buang sesi di klien.
+      try {
+        await signOut({ redirect: false });
+      } catch {
+        /* ignore */
+      }
+      clearSessionState();
+      setNotice("Kata sandi berhasil diubah. Silakan masuk kembali.");
+      return { ok: true };
     },
-    [],
+    [clearSessionState],
   );
 
   const savePackage = useCallback<GradlyContextValue["savePackage"]>(
@@ -553,6 +630,9 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       withdrawals,
       stats,
       draft,
+      error,
+      clearError,
+      notice,
       login,
       register,
       logout,
@@ -592,6 +672,9 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       withdrawals,
       stats,
       draft,
+      error,
+      clearError,
+      notice,
       login,
       register,
       logout,

@@ -4,6 +4,7 @@ import Google from "next-auth/providers/google"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { verifyPassword } from "@/lib/password"
+import { checkRateLimit, resetRateLimit } from "@/lib/rate-limit"
 import type { Role } from "@/lib/types"
 
 const credentialsSchema = z.object({
@@ -18,15 +19,9 @@ class RateLimitedError extends CredentialsSignin {
   code = "rate_limited"
 }
 
-class EmailNotVerifiedError extends CredentialsSignin {
-  code = "email_not_verified"
-}
-
 const MAX_LOGIN_ATTEMPTS = 5
+const MAX_LOGIN_ATTEMPTS_PER_IP = 20
 const LOGIN_WINDOW_MS = 15 * 60 * 1000
-const MAX_ATTEMPT_KEYS = 10_000
-// honey: in-memory per instance, resets on process restart; revisit with Redis/DB if deployed multi-instance.
-const loginAttempts = new Map<string, number[]>()
 
 function toRole(s: string | null | undefined): Role {
   if (!s) return "user"
@@ -34,28 +29,10 @@ function toRole(s: string | null | undefined): Role {
 }
 
 // honey: trust x-forwarded-for/x-real-ip only behind a trusted proxy; spoofable otherwise.
-function clientIp(request: Request): string | null {
+export function clientIp(request: Request): string | null {
   const xff = request.headers.get("x-forwarded-for")
   if (xff) return xff.split(",")[0]?.trim() || null
   return request.headers.get("x-real-ip")
-}
-
-// Drop keys whose timestamps have all aged out; cap total keys so memory stays bounded.
-// honey: O(keys) scan per login, fine under the 10k cap; move to Redis TTL if login volume grows.
-function pruneAttempts(now: number) {
-  for (const [k, times] of loginAttempts) {
-    const kept = times.filter((t) => now - t < LOGIN_WINDOW_MS)
-    if (kept.length === 0) loginAttempts.delete(k)
-    else loginAttempts.set(k, kept)
-  }
-  if (loginAttempts.size > MAX_ATTEMPT_KEYS) {
-    const excess = loginAttempts.size - MAX_ATTEMPT_KEYS
-    let i = 0
-    for (const k of loginAttempts.keys()) {
-      if (i++ >= excess) break
-      loginAttempts.delete(k)
-    }
-  }
 }
 
 const providers: NextAuthConfig["providers"] = [
@@ -66,23 +43,29 @@ const providers: NextAuthConfig["providers"] = [
       if (!parsed.success) return null
       const { email, password } = parsed.data
       const normalizedEmail = email.trim().toLowerCase()
-      const now = Date.now()
-      pruneAttempts(now)
-      const ip = clientIp(request)
-      const key = ip ? `${ip}|${normalizedEmail}` : normalizedEmail
-      const recent = loginAttempts.get(key) ?? []
-      if (recent.length >= MAX_LOGIN_ATTEMPTS) {
+      // Primary bucket — keyed by the normalized email, so it cannot be spoofed.
+      const emailKey = `login:email:${normalizedEmail}`
+      if (!checkRateLimit(emailKey, MAX_LOGIN_ATTEMPTS, LOGIN_WINDOW_MS).ok) {
         throw new RateLimitedError()
       }
       const user = await prisma.user.findUnique({ where: { email: normalizedEmail } })
       if (!user?.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
-        recent.push(now)
-        loginAttempts.set(key, recent)
+        // Secondary best-effort bucket — keyed by client IP (spoofable); only failures count.
+        const ip = clientIp(request)
+        if (ip && !checkRateLimit(`login:ip:${ip}`, MAX_LOGIN_ATTEMPTS_PER_IP, LOGIN_WINDOW_MS).ok) {
+          throw new RateLimitedError()
+        }
         return null
       }
 
-      loginAttempts.delete(key)
-      return { id: user.id, email: user.email, name: user.name, role: toRole(user.role) }
+      resetRateLimit(emailKey)
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: toRole(user.role),
+        sessionVersion: user.sessionVersion,
+      }
     },
   }),
 ]
@@ -135,6 +118,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.id = user.id
         token.role = toRole((user as { role?: string }).role)
+        // Written once at sign-in only — a later bump of User.sessionVersion must invalidate this token.
+        token.sv = (user as { sessionVersion?: number }).sessionVersion ?? 0
       }
       // OAuth: map the provider identity onto our DB user id.
       if (account?.provider === "google" && token.email) {
@@ -143,9 +128,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (dbUser) {
           token.id = dbUser.id
           token.role = toRole(dbUser.role)
+          token.sv = dbUser.sessionVersion
         }
       }
       // Refresh role from DB whenever token.id is present; clear if user no longer exists.
+      // token.sv is deliberately NOT refreshed — a stale token must stop matching the DB.
       if (token.id) {
         const dbUser = await prisma.user.findUnique({ where: { id: token.id as string } })
         if (dbUser) {
@@ -163,6 +150,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           session.user.id = token.id as string
         }
         session.user.role = toRole(token.role as string | undefined)
+        session.user.sessionVersion = Number(token.sv ?? 0)
       }
       return session
     },

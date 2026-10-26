@@ -1,12 +1,26 @@
+import { createHash, timingSafeEqual } from "node:crypto"
 import { sendMail } from "@/lib/mailer"
 import { prisma } from "@/lib/prisma"
+
+/** Constant-time string compare (sha256 digests keep the lengths equal). */
+function safeEqual(a: string, b: string): boolean {
+  const ha = createHash("sha256").update(a).digest()
+  const hb = createHash("sha256").update(b).digest()
+  return timingSafeEqual(ha, hb)
+}
 
 /** GET — secret-guarded cron: kirim pengingat H-3 untuk booking Confirmed. */
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET
+  if (!secret) {
+    return Response.json(
+      { error: "CRON_SECRET belum dikonfigurasi di server." },
+      { status: 503 },
+    )
+  }
+
   const auth = req.headers.get("authorization")
-  // honey: plain === leeks timing; fine for a read-mostly cron gate, swap to timingSafeEqual if abused
-  if (!secret || auth !== `Bearer ${secret}`) {
+  if (!safeEqual(auth ?? "", `Bearer ${secret}`)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }
 

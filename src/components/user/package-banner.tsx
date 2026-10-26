@@ -1,5 +1,6 @@
 import { cn } from "@/lib/cn";
 import { Icon } from "@/components/ui/icons";
+import { FileImage } from "@/components/ui/file-image";
 
 type Tone = "sky" | "butter" | "sage";
 
@@ -9,15 +10,19 @@ const tones: Record<Tone, string> = {
   sage: "from-sage via-sage-deep to-paper",
 };
 
-/** Placeholder foto paket: gradasi palet + pola lembut, tanpa gambar asli. */
+/** Sampul paket: gradasi palet + pola lembut, atau foto asli bila ada. */
 export function PackageBanner({
   name,
   tone = "sky",
+  fileKey,
+  alt,
   className,
   ratio = "aspect-[16/9]",
 }: {
   name: string;
   tone?: Tone;
+  fileKey?: string;
+  alt?: string;
   className?: string;
   ratio?: string;
 }) {
@@ -42,6 +47,7 @@ export function PackageBanner({
         <Icon name="camera" size={16} />
         <span className="text-xs font-medium uppercase tracking-[0.16em]">{name}</span>
       </div>
+      {fileKey ? <FileImage fileKey={fileKey} alt={alt ?? ""} /> : null}
     </div>
   );
 }

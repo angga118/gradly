@@ -6,7 +6,7 @@ import { formatDateTime, rupiah } from "@/lib/format";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs, TabPanel } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/ui/misc";
 import { StatusChip } from "@/components/ui/status-chip";
 import { Icon } from "@/components/ui/icons";
@@ -83,87 +83,89 @@ export default function AdminPenarikan() {
         </div>
       ) : null}
 
-      <p className="text-sm text-ink/55">
-        Menampilkan {list.length} dari {withdrawals.length} penarikan
-      </p>
+      <TabPanel value={tab}>
+        <p className="text-sm text-ink/55">
+          Menampilkan {list.length} dari {withdrawals.length} penarikan
+        </p>
 
-      {list.length === 0 ? (
-        <EmptyState
-          icon="wallet"
-          title="Belum ada penarikan"
-          description="Pengajuan pencairan dana dari fotografer akan muncul di sini."
-        />
-      ) : (
-        <ul className="space-y-3">
-          {list.map((w) => (
-            <li key={w.id}>
-              <Card className="p-4 transition-shadow hover:shadow-soft sm:p-5">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex min-w-0 gap-3">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky/60 text-ink">
-                      <Icon name="bank" size={18} />
-                    </span>
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-medium">{w.photographerName}</p>
-                        <StatusChip status={w.status} />
-                      </div>
-                      <p className="mt-0.5 text-xs text-ink/50">{w.id}</p>
-                      <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/70">
-                        <span className="inline-flex items-center gap-1.5">
-                          <Icon name="bank" size={14} className="text-ink/45" />
-                          <span className="break-all">{w.bankAccount}</span>
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                          <Icon name="clock" size={14} className="text-ink/45" />
-                          {formatDateTime(w.createdAt)}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex shrink-0 flex-col gap-3 sm:items-end">
-                    <div className="text-left sm:text-right">
-                      <p className="font-medium tabular-nums">
-                        {rupiah(w.amount)}
-                      </p>
-                      <p className="text-xs text-ink/50">Nominal penarikan</p>
-                    </div>
-                    {w.status === "Selesai" ? (
-                      <span className="inline-flex items-center gap-1.5 text-xs text-ink/45">
-                        <Icon name="check" size={14} />
-                        Selesai
+        {list.length === 0 ? (
+          <EmptyState
+            icon="wallet"
+            title="Belum ada penarikan"
+            description="Pengajuan pencairan dana dari fotografer akan muncul di sini."
+          />
+        ) : (
+          <ul className="space-y-3">
+            {list.map((w) => (
+              <li key={w.id}>
+                <Card className="p-4 transition-shadow hover:shadow-soft sm:p-5">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex min-w-0 gap-3">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky/60 text-ink">
+                        <Icon name="bank" size={18} />
                       </span>
-                    ) : (
-                      <Button
-                        variant={w.status === "Menunggu" ? "butter" : "primary"}
-                        size="sm"
-                        disabled={busy === w.id}
-                        onClick={() =>
-                          advance(
-                            w,
-                            w.status === "Menunggu" ? "Diproses" : "Selesai",
-                          )
-                        }
-                      >
-                        <Icon
-                          name={w.status === "Menunggu" ? "refresh" : "check"}
-                          size={16}
-                        />
-                        {busy === w.id
-                          ? "Memproses…"
-                          : w.status === "Menunggu"
-                            ? "Proses"
-                            : "Selesaikan"}
-                      </Button>
-                    )}
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-medium">{w.photographerName}</p>
+                          <StatusChip status={w.status} />
+                        </div>
+                        <p className="mt-0.5 text-xs text-ink/50">{w.id}</p>
+                        <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/70">
+                          <span className="inline-flex items-center gap-1.5">
+                            <Icon name="bank" size={14} className="text-ink/45" />
+                            <span className="break-all">{w.bankAccount}</span>
+                          </span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <Icon name="clock" size={14} className="text-ink/45" />
+                            {formatDateTime(w.createdAt)}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex shrink-0 flex-col gap-3 sm:items-end">
+                      <div className="text-left sm:text-right">
+                        <p className="font-medium tabular-nums">
+                          {rupiah(w.amount)}
+                        </p>
+                        <p className="text-xs text-ink/50">Nominal penarikan</p>
+                      </div>
+                      {w.status === "Selesai" ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs text-ink/45">
+                          <Icon name="check" size={14} />
+                          Selesai
+                        </span>
+                      ) : (
+                        <Button
+                          variant={w.status === "Menunggu" ? "butter" : "primary"}
+                          size="sm"
+                          disabled={busy === w.id}
+                          onClick={() =>
+                            advance(
+                              w,
+                              w.status === "Menunggu" ? "Diproses" : "Selesai",
+                            )
+                          }
+                        >
+                          <Icon
+                            name={w.status === "Menunggu" ? "refresh" : "check"}
+                            size={16}
+                          />
+                          {busy === w.id
+                            ? "Memproses…"
+                            : w.status === "Menunggu"
+                              ? "Proses"
+                              : "Selesaikan"}
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Card>
-            </li>
-          ))}
-        </ul>
-      )}
+                </Card>
+              </li>
+            ))}
+          </ul>
+        )}
+      </TabPanel>
     </div>
   );
 }

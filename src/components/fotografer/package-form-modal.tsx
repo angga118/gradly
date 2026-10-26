@@ -32,6 +32,7 @@ export function PackageFormModal({
   const [price, setPrice] = useState("");
   const [subsidyPrice, setSubsidyPrice] = useState("");
   const [subsidyEnabled, setSubsidyEnabled] = useState(false);
+  const [kipkOnly, setKipkOnly] = useState(false);
   const [features, setFeatures] = useState<string[]>([""]);
   const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +46,7 @@ export function PackageFormModal({
       initial?.subsidyPrice != null ? String(initial.subsidyPrice) : "",
     );
     setSubsidyEnabled(initial?.subsidyEnabled ?? false);
+    setKipkOnly(initial?.kipkOnly ?? false);
     setFeatures(initial && initial.features.length ? initial.features : [""]);
     setIsActive(initial?.isActive ?? true);
     setError(null);
@@ -56,6 +58,17 @@ export function PackageFormModal({
   useEffect(() => {
     if (subsidyBlocked) setSubsidyEnabled(false);
   }, [subsidyBlocked]);
+
+  // Paket KIP-K dan harga subsidi saling meniadakan (aturan server).
+  function toggleKipkOnly(next: boolean) {
+    setKipkOnly(next);
+    if (next) setSubsidyEnabled(false);
+  }
+
+  function toggleSubsidy(next: boolean) {
+    setSubsidyEnabled(next);
+    if (next) setKipkOnly(false);
+  }
 
   function submit() {
     if (!name.trim()) {
@@ -86,6 +99,7 @@ export function PackageFormModal({
       price: priceNum,
       subsidyPrice: subsidyEnabled ? subsidyNum : null,
       subsidyEnabled,
+      kipkOnly,
       features: features.map((f) => f.trim()).filter(Boolean),
       isActive,
       popular: initial?.popular,
@@ -171,14 +185,23 @@ export function PackageFormModal({
         </div>
 
         <Toggle
+          checked={kipkOnly}
+          onChange={toggleKipkOnly}
+          title="Khusus penerima KIP-K"
+          description="Paket ini hanya untuk penerima KIP-K yang sudah diverifikasi, dan tidak memakai harga subsidi."
+        />
+
+        <Toggle
           checked={subsidyEnabled}
-          disabled={subsidyBlocked}
-          onChange={setSubsidyEnabled}
+          disabled={subsidyBlocked || kipkOnly}
+          onChange={toggleSubsidy}
           title="Aktifkan harga subsidi"
           description={
-            subsidyBlocked
-              ? "Paket di atas Rp 1.000.000 tidak bisa disubsidi."
-              : "Paket maksimal Rp 1.000.000 bisa ditawarkan dengan harga subsidi."
+            kipkOnly
+              ? "Tidak bisa aktif bersamaan dengan paket khusus KIP-K."
+              : subsidyBlocked
+                ? "Paket di atas Rp 1.000.000 tidak bisa disubsidi."
+                : "Paket maksimal Rp 1.000.000 bisa ditawarkan dengan harga subsidi."
           }
         />
 

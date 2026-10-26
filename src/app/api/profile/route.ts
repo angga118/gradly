@@ -23,6 +23,8 @@ export async function PATCH(req: Request) {
   }
 
   const { tags, ...rest } = parsed.data
+  // honey: profileSchema has no email field, so the login identity cannot change here.
+  // If email editing is added later, bump sessionVersion in the same update to kill old JWTs.
   const user = await prisma.user.update({
     where: { id: guard.user.id },
     data: {

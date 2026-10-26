@@ -122,7 +122,10 @@ export function PortalShell({
             <Icon name="bell" size={20} />
           </Link>
         </header>
-        <main className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 sm:py-8">
+        <main
+          id="konten"
+          className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 sm:py-8"
+        >
           {children}
         </main>
       </div>

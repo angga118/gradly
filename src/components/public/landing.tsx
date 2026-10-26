@@ -55,6 +55,8 @@ export function Landing() {
 
   const fotografer = users.find((u) => u.role === "fotografer");
   const activePackages = packages.filter((p) => p.isActive);
+  const harapan = activePackages.find((p) => p.kipkOnly);
+  const heroShot = portfolio.find((item) => item.key);
   const featured = [...activePackages]
     .sort((a, b) => Number(Boolean(b.popular)) - Number(Boolean(a.popular)))
     .slice(0, 3);
@@ -69,14 +71,18 @@ export function Landing() {
   const statItems = [
     {
       label: "Sesi difoto",
-      value: String(fotografer?.sessions ?? 128),
+      value:
+        fotografer?.sessions != null ? String(fotografer.sessions) : "—",
       hint: "sejak 2025 di Bandung",
       icon: <Icon name="camera" size={18} />,
       tone: "sky" as const,
     },
     {
       label: "Rating rata-rata",
-      value: (fotografer?.rating ?? 4.9).toFixed(1).replace(".", ","),
+      value:
+        fotografer?.rating != null
+          ? fotografer.rating.toFixed(1).replace(".", ",")
+          : "—",
       hint: "dari klien yang sudah sesi",
       icon: <Icon name="star" size={18} />,
       tone: "butter" as const,
@@ -139,9 +145,15 @@ export function Landing() {
 
             <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-ink/70">
               <span className="inline-flex items-center gap-2">
-                <Rating value={fotografer?.rating ?? 4.9} />
+                {fotografer?.rating != null ? (
+                  <Rating value={fotografer.rating} />
+                ) : (
+                  <span className="text-ink/50">Belum ada rating</span>
+                )}
                 <span className="text-ink/50">·</span>
-                <span>{fotografer?.sessions ?? 128} sesi</span>
+                <span>
+                  {fotografer ? `${fotografer.sessions} sesi` : "Belum ada sesi"}
+                </span>
               </span>
               <span className="inline-flex items-center gap-2">
                 <Icon name="shield" size={16} className="text-ink/55" />
@@ -164,25 +176,33 @@ export function Landing() {
               <div className="absolute left-1/2 top-1/2 w-[74%] -translate-x-1/2 -translate-y-1/2 rotate-[-2deg]">
                 <PhotoTile
                   tone="sage"
-                  label="Senja di Dago"
-                  meta="Golden Graduate · Bandung"
+                  fileKey={heroShot?.key}
+                  alt={heroShot?.title ?? "Karya fotografer Gradly"}
+                  label={heroShot?.title ?? "Senja di Dago"}
+                  meta={heroShot?.location ?? "Golden Graduate · Bandung"}
                   className="aspect-[4/5] rounded-[1.75rem] shadow-lift"
                 />
               </div>
 
-              <div className="absolute right-0 top-0 rounded-full border border-ink/10 bg-paper/95 px-3 py-2 shadow-soft">
-                <Rating value={fotografer?.rating ?? 4.9} />
-              </div>
-
-              <Card className="absolute -bottom-1 left-0 w-[60%] rotate-[-2deg] bg-paper/95 p-4 shadow-lift">
-                <p className="text-[0.7rem] uppercase tracking-[0.14em] text-ink/50">
-                  Mulai dari
-                </p>
-                <p className="mt-1 font-serif text-2xl leading-none">Rp 89.000</p>
-                <div className="mt-2">
-                  <Chip tone="butter">Paket Harapan · KIP-K</Chip>
+              {fotografer?.rating != null ? (
+                <div className="absolute right-0 top-0 rounded-full border border-ink/10 bg-paper/95 px-3 py-2 shadow-soft">
+                  <Rating value={fotografer.rating} />
                 </div>
-              </Card>
+              ) : null}
+
+              {harapan ? (
+                <Card className="absolute -bottom-1 left-0 w-[60%] rotate-[-2deg] bg-paper/95 p-4 shadow-lift">
+                  <p className="text-[0.7rem] uppercase tracking-[0.14em] text-ink/50">
+                    Mulai dari
+                  </p>
+                  <p className="mt-1 font-serif text-2xl leading-none">
+                    {rupiah(harapan.price)}
+                  </p>
+                  <div className="mt-2">
+                    <Chip tone="butter">{harapan.name} · KIP-K</Chip>
+                  </div>
+                </Card>
+              ) : null}
             </div>
           </Reveal>
         </div>
@@ -332,8 +352,10 @@ export function Landing() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-ink/50">Paket Harapan</p>
-                  <p className="mt-1 font-serif text-xl">Rp 89.000</p>
+                  <p className="text-xs text-ink/50">Paket KIP-K</p>
+                  <p className="mt-1 font-serif text-xl">
+                    {harapan ? rupiah(harapan.price) : "Belum tersedia"}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -361,6 +383,8 @@ export function Landing() {
             <Reveal key={item.id} delay={i * 70}>
               <PhotoTile
                 tone={item.tone as "butter" | "sky" | "sage"}
+                fileKey={item.key}
+                alt={item.title}
                 label={item.title}
                 meta={item.location}
                 className="aspect-[4/5] rounded-[var(--radius-card)] shadow-soft transition-transform duration-300 hover:-translate-y-1 hover:shadow-lift"

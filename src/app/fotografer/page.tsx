@@ -15,7 +15,7 @@ import { BookingDetailModal } from "@/components/fotografer/booking-detail-modal
 import type { Booking } from "@/lib/types";
 
 export default function DashboardFotografer() {
-  const { session, bookings, setBookingStatus } = useGradly();
+  const { session, bookings, setBookingStatus, portfolio } = useGradly();
   const [selected, setSelected] = useState<Booking | null>(null);
 
   const mine = useMemo(
@@ -35,7 +35,9 @@ export default function DashboardFotografer() {
     (b) => b.status === "Menunggu konfirmasi",
   ).length;
   const doneCount = mine.filter((b) => b.status === "Selesai").length;
-  const photosSent = doneCount * 40;
+  const portfolioCount = portfolio.filter(
+    (item) => item.photographerId === session?.id,
+  ).length;
 
   const recent = useMemo(
     () =>
@@ -101,11 +103,11 @@ export default function DashboardFotografer() {
           hint={`Reguler ${rupiahShort(revenue.reguler)} · Subsidi ${rupiahShort(revenue.subsidi)}`}
         />
         <Stat
-          label="Foto dikirim"
-          value={photosSent}
+          label="Karya portofolio"
+          value={portfolioCount}
           tone="sage"
           icon={<Icon name="image" size={18} />}
-          hint="Estimasi ±40 foto per sesi selesai"
+          hint={`Foto dipublikasikan · ${doneCount} sesi selesai`}
         />
       </section>
 

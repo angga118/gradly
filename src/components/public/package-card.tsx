@@ -5,6 +5,7 @@ import { useGradly } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icons";
+import { PhotoTile } from "@/components/public/photo-tile";
 import { cn } from "@/lib/cn";
 import { rupiah } from "@/lib/format";
 import type { Package } from "@/lib/types";
@@ -20,10 +21,13 @@ export function PackageCard({
   pkg: Package;
   className?: string;
 }) {
-  const { userById } = useGradly();
+  const { userById, portfolio } = useGradly();
   const photographer = userById(pkg.photographerId);
   const hasSubsidy = pkg.subsidyEnabled && pkg.subsidyPrice != null;
   const popular = Boolean(pkg.popular);
+  const cover = portfolio.find(
+    (item) => item.photographerId === pkg.photographerId && item.key,
+  );
 
   return (
     <article
@@ -40,9 +44,19 @@ export function PackageCard({
         </span>
       ) : null}
 
+      {cover ? (
+        <PhotoTile
+          fileKey={cover.key}
+          alt={`Karya terbaru ${cover.title}${photographer ? ` oleh ${photographer.name}` : ""}`}
+          tone="sky"
+          className="-m-6 mb-6 aspect-[16/9] rounded-t-[var(--radius-card)]"
+        />
+      ) : null}
+
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="font-serif text-2xl leading-tight">{pkg.name}</h3>
         {hasSubsidy ? <Chip tone="butter">Harga subsidi</Chip> : null}
+        {pkg.kipkOnly ? <Chip tone="sage">Khusus penerima KIP-K</Chip> : null}
       </div>
 
       {photographer ? (
@@ -69,9 +83,11 @@ export function PackageCard({
           <span className="font-serif text-3xl leading-none">{rupiah(pkg.price)}</span>
         )}
         <p className="mt-1.5 text-xs text-ink/55">
-          {hasSubsidy
-            ? "Wajib verifikasi SKTM atau KIP-K"
-            : "Belum termasuk kontribusi subsidi 5%"}
+          {pkg.kipkOnly
+            ? "Khusus penerima KIP-K terverifikasi · belum termasuk kontribusi 5%"
+            : hasSubsidy
+              ? "Wajib verifikasi SKTM atau KIP-K"
+              : "Belum termasuk kontribusi subsidi 5%"}
         </p>
       </div>
 

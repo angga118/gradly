@@ -2,6 +2,7 @@
 
 import { FAQ } from "@/lib/mock-data";
 import { useGradly } from "@/lib/store";
+import { cn } from "@/lib/cn";
 import { rupiah, rupiahShort } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -45,9 +46,10 @@ const FLOW = [
 ];
 
 export function SubsidiView() {
-  const { stats } = useGradly();
+  const { stats, packages } = useGradly();
   const fund = stats.subsidyFund;
   const fundPct = Math.round((fund.available / fund.target) * 100);
+  const harapan = packages.find((p) => p.kipkOnly);
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6 sm:py-16">
@@ -146,7 +148,12 @@ export function SubsidiView() {
       </section>
 
       {/* ── Dana + Paket Harapan ───────────────────────────── */}
-      <section className="mt-16 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <section
+        className={cn(
+          "mt-16 grid gap-6",
+          harapan ? "lg:grid-cols-[1.1fr_0.9fr]" : "lg:grid-cols-1",
+        )}
+      >
         <Reveal>
           <Card className="h-full p-6 sm:p-8">
             <div className="flex items-start justify-between gap-4">
@@ -195,44 +202,40 @@ export function SubsidiView() {
           </Card>
         </Reveal>
 
-        <Reveal delay={120}>
-          <Card className="flex h-full flex-col bg-ink p-6 text-paper sm:p-8">
-            <Chip tone="butter" className="self-start">
-              Paket unggulan
-            </Chip>
-            <h3 className="mt-4 font-serif text-3xl leading-tight text-paper">
-              Paket Harapan
-            </h3>
-            <p className="mt-3 text-sm text-paper/70">
-              Paket khusus penerima KIP-K. Sesi 1 jam dengan pendampingan ramah, tanpa
-              biaya tambahan kontribusi.
-            </p>
-            <div className="mt-6 flex items-end gap-2">
-              <span className="font-serif text-4xl leading-none text-paper">Rp 89.000</span>
-              <span className="pb-1 text-xs text-paper/60">/ sesi</span>
-            </div>
-            <ul className="mt-6 flex-1 space-y-2.5 text-sm text-paper/80">
-              {[
-                "Sesi 1 jam, 1 lokasi",
-                "12 foto edit pilihan",
-                "Khusus penerima KIP-K terverifikasi",
-                "Semua file via Google Drive",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2.5">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-butter text-ink">
-                    <Icon name="check" size={11} />
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-7">
-              <Button href="/subsidi/ajukan" variant="butter" className="w-full">
-                Ajukan verifikasi dulu
-              </Button>
-            </div>
-          </Card>
-        </Reveal>
+        {harapan ? (
+          <Reveal delay={120}>
+            <Card className="flex h-full flex-col bg-ink p-6 text-paper sm:p-8">
+              <Chip tone="butter" className="self-start">
+                Paket unggulan
+              </Chip>
+              <h3 className="mt-4 font-serif text-3xl leading-tight text-paper">
+                {harapan.name}
+              </h3>
+              <p className="mt-3 text-sm text-paper/70">{harapan.description}</p>
+              <div className="mt-6 flex items-end gap-2">
+                <span className="font-serif text-4xl leading-none text-paper">
+                  {rupiah(harapan.price)}
+                </span>
+                <span className="pb-1 text-xs text-paper/60">/ sesi</span>
+              </div>
+              <ul className="mt-6 flex-1 space-y-2.5 text-sm text-paper/80">
+                {harapan.features.map((item) => (
+                  <li key={item} className="flex items-start gap-2.5">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-butter text-ink">
+                      <Icon name="check" size={11} />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-7">
+                <Button href="/subsidi/ajukan" variant="butter" className="w-full">
+                  Ajukan verifikasi dulu
+                </Button>
+              </div>
+            </Card>
+          </Reveal>
+        ) : null}
       </section>
 
       {/* ── Verifikasi ─────────────────────────────────────── */}

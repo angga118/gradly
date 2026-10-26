@@ -29,6 +29,8 @@ export interface User {
   rating?: number;
   sessions?: number;
   subsidyValidUntil?: string | null;
+  /** Document type the subsidy verification was granted for. */
+  subsidyDocType?: DocType;
 }
 
 export interface SubsidyApplication {
@@ -55,6 +57,8 @@ export interface Package {
   price: number;
   subsidyPrice: number | null;
   subsidyEnabled: boolean;
+  /** Reserved for verified KIP-K recipients only. */
+  kipkOnly: boolean;
   features: string[];
   isActive: boolean;
   popular?: boolean;
@@ -110,6 +114,8 @@ export interface PortfolioItem {
   location: string;
   shotDate: string;
   tone: string;
+  /** Storage key of the showcase image ("" when the item has no file). */
+  key: string;
 }
 
 export interface HighlightCard {

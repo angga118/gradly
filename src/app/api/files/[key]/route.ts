@@ -31,16 +31,28 @@ async function canAccessFile(key: string, userId: string, role: Role): Promise<b
   return Boolean(subsidy || payment || portfolio)
 }
 
+/** Portfolio showcase images are public; subsidy docs and payment proofs are not. */
+async function isPublicPortfolioFile(key: string): Promise<boolean> {
+  const item = await prisma.portfolioItem.findFirst({
+    where: { fileKey: key },
+    select: { id: true },
+  })
+  return item !== null
+}
+
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ key: string }> },
 ) {
-  const guard = await requireUser()
-  if ("response" in guard) return guard.response
-
   const { key } = await params
-  if (!(await canAccessFile(key, guard.user.id, guard.user.role))) {
-    return new Response("Forbidden", { status: 403 })
+
+  if (!(await isPublicPortfolioFile(key))) {
+    const guard = await requireUser()
+    if ("response" in guard) return guard.response
+
+    if (!(await canAccessFile(key, guard.user.id, guard.user.role))) {
+      return new Response("Forbidden", { status: 403 })
+    }
   }
 
   const stored = await readUpload(key)

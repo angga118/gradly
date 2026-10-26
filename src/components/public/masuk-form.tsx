@@ -13,22 +13,21 @@ import { roleHome } from "./role-home";
 
 export function MasukForm() {
   const router = useRouter();
-  const { login, session } = useGradly();
+  const { login, session, testimonials } = useGradly();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [needsVerify, setNeedsVerify] = useState(false);
-  const [resending, setResending] = useState(false);
-  const [resendStatus, setResendStatus] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
   const rawNext = searchParams.get("next");
   const next = rawNext && rawNext.startsWith("/") ? rawNext : null;
-  const verified = searchParams.get("verified") === "1";
-  const verifyError = searchParams.get("verify_error") === "1";
+
+  const quote = testimonials[0]
+    ? { text: testimonials[0].message, name: testimonials[0].clientName }
+    : undefined;
 
   // Setelah sesi terisi, arahkan ke tujuan (next atau beranda sesuai peran).
   useEffect(() => {
@@ -40,8 +39,6 @@ export function MasukForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setNeedsVerify(false);
-    setResendStatus(null);
     if (!email.trim() || !password) {
       setError("Email dan kata sandi wajib diisi.");
       return;
@@ -51,39 +48,13 @@ export function MasukForm() {
     setSubmitting(false);
     if (!res.ok) {
       setError(res.error ?? "Gagal masuk. Coba lagi.");
-      setNeedsVerify(res.code === "email_not_verified");
       return;
     }
     setSubmitted(true);
   }
 
-  async function onResend() {
-    setResending(true);
-    setResendStatus(null);
-    try {
-      const res = await fetch("/api/auth/resend-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      setResendStatus(
-        res.ok
-          ? "Email verifikasi telah dikirim ulang. Cek kotak masuk Anda."
-          : "Gagal mengirim ulang. Coba lagi.",
-      );
-    } catch {
-      setResendStatus("Gagal mengirim ulang. Coba lagi.");
-    }
-    setResending(false);
-  }
-
   return (
-    <AuthShell
-      quote={{
-        text: "Hasilnya hangat banget dan prosesnya santai. Aku yang awalnya kaku jadi lupa sedang difoto.",
-        name: "Rani Puspita",
-      }}
-    >
+    <AuthShell quote={quote}>
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/50">
           Masuk
@@ -102,26 +73,6 @@ export function MasukForm() {
           </div>
         ) : null}
 
-        {verified ? (
-          <div
-            role="status"
-            className="mt-5 flex items-start gap-2 rounded-2xl bg-sage/50 p-3.5 text-sm text-ink/80"
-          >
-            <Icon name="check" size={16} className="mt-0.5 shrink-0" />
-            Email berhasil diverifikasi. Silakan masuk.
-          </div>
-        ) : null}
-
-        {verifyError ? (
-          <div
-            role="alert"
-            className="mt-5 flex items-start gap-2 rounded-2xl border border-danger/20 bg-danger-soft/70 p-3.5 text-sm text-danger"
-          >
-            <Icon name="alert" size={16} className="mt-0.5 shrink-0" />
-            Tautan verifikasi tidak valid atau kedaluwarsa.
-          </div>
-        ) : null}
-
         <form onSubmit={onSubmit} noValidate className="mt-6 space-y-4">
           {error ? (
             <div
@@ -130,25 +81,6 @@ export function MasukForm() {
             >
               <Icon name="alert" size={16} className="mt-0.5 shrink-0" />
               {error}
-            </div>
-          ) : null}
-
-          {needsVerify ? (
-            <div className="rounded-2xl border border-ink/15 bg-white/60 p-3.5 text-sm">
-              <p className="text-ink/70">Belum menerima email verifikasi?</p>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                className="mt-2"
-                onClick={onResend}
-                disabled={resending}
-              >
-                {resending ? "Mengirim…" : "Kirim ulang email verifikasi"}
-              </Button>
-              {resendStatus ? (
-                <p className="mt-2 text-xs text-ink/60">{resendStatus}</p>
-              ) : null}
             </div>
           ) : null}
 

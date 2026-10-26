@@ -82,8 +82,6 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   emailVerified: 'emailVerified',
-  verifyToken: 'verifyToken',
-  verifyTokenExpiry: 'verifyTokenExpiry',
   passwordHash: 'passwordHash',
   role: 'role',
   name: 'name',
@@ -96,7 +94,9 @@ export const UserScalarFieldEnum = {
   acceptingBookings: 'acceptingBookings',
   rating: 'rating',
   sessions: 'sessions',
-  subsidyValidUntil: 'subsidyValidUntil'
+  subsidyValidUntil: 'subsidyValidUntil',
+  subsidyDocType: 'subsidyDocType',
+  sessionVersion: 'sessionVersion'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -128,6 +128,7 @@ export const PackageScalarFieldEnum = {
   price: 'price',
   subsidyPrice: 'subsidyPrice',
   subsidyEnabled: 'subsidyEnabled',
+  kipkOnly: 'kipkOnly',
   features: 'features',
   isActive: 'isActive',
   popular: 'popular'

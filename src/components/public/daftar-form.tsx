@@ -40,15 +40,19 @@ const EMPTY: FormState = { name: "", email: "", password: "", phone: "", city: "
 
 export function DaftarForm() {
   const router = useRouter();
-  const { register } = useGradly();
+  const { register, testimonials } = useGradly();
 
   const [form, setForm] = useState<FormState>(EMPTY);
   const [role, setRole] = useState<Role>("user");
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
-  const [verifyUrl, setVerifyUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const picked = testimonials[1] ?? testimonials[0];
+  const quote = picked
+    ? { text: picked.message, name: picked.clientName }
+    : undefined;
 
   function set<K extends keyof FormState>(key: K, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -74,7 +78,6 @@ export function DaftarForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setFormError(null);
-    setVerifyUrl(null);
     if (!validate()) return;
 
     setSubmitting(true);
@@ -89,10 +92,6 @@ export function DaftarForm() {
     setSubmitting(false);
 
     if (!res.ok) {
-      if (res.verifyUrl) {
-        setVerifyUrl(res.verifyUrl);
-        return;
-      }
       setFormError(res.error ?? "Pendaftaran gagal. Coba lagi.");
       return;
     }
@@ -100,12 +99,7 @@ export function DaftarForm() {
   }
 
   return (
-    <AuthShell
-      quote={{
-        text: "Sebagai penerima KIP-K, harga subsidinya sangat membantu. Kualitasnya tetap juara.",
-        name: "Bagas Nugroho",
-      }}
-    >
+    <AuthShell quote={quote}>
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/50">
           Daftar
@@ -125,27 +119,6 @@ export function DaftarForm() {
             >
               <Icon name="alert" size={16} className="mt-0.5 shrink-0" />
               {formError}
-            </div>
-          ) : null}
-
-          {verifyUrl ? (
-            <div
-              role="status"
-              className="flex items-start gap-2 rounded-2xl bg-sage/50 p-3.5 text-sm text-ink/80"
-            >
-              <Icon name="check" size={16} className="mt-0.5 shrink-0" />
-              <div>
-                <p>
-                  Akun berhasil dibuat, tetapi email belum diverifikasi. Di
-                  lingkungan lokal email dilewati, jadi gunakan tautan ini.
-                </p>
-                <a
-                  href={verifyUrl}
-                  className="mt-1 inline-block font-medium text-ink underline underline-offset-4 transition-colors hover:text-ink-soft"
-                >
-                  Verifikasi sekarang
-                </a>
-              </div>
             </div>
           ) : null}
 

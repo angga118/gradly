@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { FAQ } from "@/lib/mock-data";
+import { siteConfig } from "@/lib/site-config";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icons";
@@ -36,27 +37,34 @@ const GUIDES = [
   },
 ];
 
+const CONTACT_CARD =
+  "flex h-full items-start gap-4 rounded-[var(--radius-card)] border border-ink/10 bg-white/60 p-6 transition-all duration-200 hover:-translate-y-1 hover:border-ink/25 hover:shadow-lift";
+
 const CONTACTS = [
   {
     icon: "mail" as const,
     label: "Email",
-    value: "halo@gradly.id",
+    value: siteConfig.contactEmail,
     hint: "Dibalas dalam 1×24 jam kerja",
-    href: "mailto:halo@gradly.id",
+    href: siteConfig.contactEmail ? `mailto:${siteConfig.contactEmail}` : null,
   },
   {
     icon: "phone" as const,
     label: "WhatsApp",
-    value: "0812-3456-7890",
+    value: siteConfig.contactPhone,
     hint: "Senin–Sabtu, 08.00–20.00 WIB",
-    href: "https://wa.me/6281234567890",
+    href: siteConfig.contactPhone
+      ? `https://wa.me/${siteConfig.contactPhone.replace(/\D/g, "")}`
+      : null,
   },
   {
     icon: "mapPin" as const,
     label: "Studio",
-    value: "Kirana Studio, Bandung",
-    hint: "Jl. Cihampelas, Bandung",
-    href: "https://maps.google.com/?q=Kirana+Studio+Bandung",
+    value: siteConfig.contactAddress,
+    hint: "Kunjungi saat jam kerja",
+    href: siteConfig.contactAddress
+      ? `https://maps.google.com/?q=${encodeURIComponent(siteConfig.contactAddress)}`
+      : null,
   },
 ];
 
@@ -166,21 +174,37 @@ export function BantuanView() {
         <div className="mt-8 grid gap-5 sm:grid-cols-3">
           {CONTACTS.map((c, i) => (
             <Reveal key={c.label} delay={i * 90}>
-              <a
-                href={c.href}
-                className="flex h-full items-start gap-4 rounded-[var(--radius-card)] border border-ink/10 bg-white/60 p-6 transition-all duration-200 hover:-translate-y-1 hover:border-ink/25 hover:shadow-lift"
-              >
+              <div className={CONTACT_CARD}>
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink text-paper">
                   <Icon name={c.icon} size={20} />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs uppercase tracking-[0.14em] text-ink/50">
                     {c.label}
                   </p>
-                  <p className="mt-1 font-serif text-lg leading-tight">{c.value}</p>
-                  <p className="mt-1 text-xs text-ink/55">{c.hint}</p>
+                  {c.value ? (
+                    c.href ? (
+                      <a
+                        href={c.href}
+                        className="mt-1 block truncate font-serif text-lg leading-tight underline-offset-4 hover:underline"
+                      >
+                        {c.value}
+                      </a>
+                    ) : (
+                      <p className="mt-1 truncate font-serif text-lg leading-tight">
+                        {c.value}
+                      </p>
+                    )
+                  ) : (
+                    <p className="mt-1 font-serif text-lg leading-tight text-ink/45">
+                      Belum tersedia
+                    </p>
+                  )}
+                  <p className="mt-1 text-xs text-ink/55">
+                    {c.value ? c.hint : "Belum dikonfigurasi"}
+                  </p>
                 </div>
-              </a>
+              </div>
             </Reveal>
           ))}
         </div>

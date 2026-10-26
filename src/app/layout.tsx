@@ -53,6 +53,12 @@ export default function RootLayout({
       className={`${fraunces.variable} ${dmSans.variable} h-full`}
     >
       <body className="min-h-full">
+        <a
+          href="#konten"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-paper focus:shadow-lift"
+        >
+          Lewati ke konten utama
+        </a>
         <GradlyProvider>{children}</GradlyProvider>
       </body>
     </html>

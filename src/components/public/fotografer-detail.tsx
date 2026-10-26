@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icons";
 import { Avatar, EmptyState, Rating, SectionHeading } from "@/components/ui/misc";
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs, TabPanel } from "@/components/ui/tabs";
 import { PackageCard } from "./package-card";
 import { PhotoTile } from "./photo-tile";
 import { Reveal } from "./reveal";
@@ -140,7 +140,7 @@ export function FotograferDetail({ id }: { id: string }) {
                 Lihat paket
                 <Icon name="arrowRight" size={16} />
               </Button>
-              <Button href="/bantuan" variant="secondary">
+              <Button href={`/portofolio/${id}/chat`} variant="secondary">
                 Tanya dulu
               </Button>
             </div>
@@ -197,24 +197,28 @@ export function FotograferDetail({ id }: { id: string }) {
             </div>
           </Reveal>
 
-          <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
-            {visible.map((item, i) => (
-              <Reveal key={item.id} delay={i * 60}>
-                <figure>
-                  <PhotoTile
-                    tone={item.tone as "butter" | "sky" | "sage"}
-                    label={item.title}
-                    meta={item.location}
-                    className="aspect-[4/5] rounded-[var(--radius-card)] shadow-soft transition-transform duration-300 hover:-translate-y-1 hover:shadow-lift"
-                  />
-                  <figcaption className="mt-2 flex items-center justify-between gap-2 text-xs text-ink/55">
-                    <span className="truncate">{item.packageName}</span>
-                    <span className="shrink-0">{formatDate(item.shotDate, { short: true })}</span>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
+          <TabPanel value={year} className="mt-8">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+              {visible.map((item, i) => (
+                <Reveal key={item.id} delay={i * 60}>
+                  <figure>
+                    <PhotoTile
+                      tone={item.tone as "butter" | "sky" | "sage"}
+                      fileKey={item.key}
+                      alt={item.title}
+                      label={item.title}
+                      meta={item.location}
+                      className="aspect-[4/5] rounded-[var(--radius-card)] shadow-soft transition-transform duration-300 hover:-translate-y-1 hover:shadow-lift"
+                    />
+                    <figcaption className="mt-2 flex items-center justify-between gap-2 text-xs text-ink/55">
+                      <span className="truncate">{item.packageName}</span>
+                      <span className="shrink-0">{formatDate(item.shotDate, { short: true })}</span>
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </TabPanel>
         </section>
       ) : null}
 

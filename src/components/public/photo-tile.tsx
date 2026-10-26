@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { Icon } from "@/components/ui/icons";
+import { FileImage } from "@/components/ui/file-image";
 
 type Tone = "butter" | "sky" | "sage" | "ink";
 
@@ -12,19 +13,24 @@ const TONES: Record<Tone, string> = {
 };
 
 /**
- * Placeholder foto tanpa gambar asli: gradasi palet + pola garis diagonal
- * dan satu blob lembut supaya terasa seperti cetakan foto, bukan kotak kosong.
+ * Placeholder foto: gradasi palet + pola garis diagonal dan satu blob
+ * lembut supaya terasa seperti cetakan foto. Kalau `fileKey` tersedia,
+ * foto asli menimpa gradasi itu.
  */
 export function PhotoTile({
   tone = "sage",
   label,
   meta,
+  fileKey,
+  alt,
   className,
   children,
 }: {
   tone?: Tone;
   label?: string;
   meta?: string;
+  fileKey?: string;
+  alt?: string;
   className?: string;
   children?: ReactNode;
 }) {
@@ -51,6 +57,9 @@ export function PhotoTile({
       <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-ink/20">
         <Icon name="camera" size={30} />
       </span>
+      {fileKey ? (
+        <FileImage fileKey={fileKey} alt={alt ?? label ?? "Foto portofolio"} />
+      ) : null}
       {label ? (
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/45 to-transparent p-4 pt-10">
           <p className="truncate font-serif text-base leading-tight text-paper">

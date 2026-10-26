@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export function Toggle({
@@ -16,6 +16,9 @@ export function Toggle({
   title?: ReactNode;
   description?: ReactNode;
 }) {
+  const titleId = useId();
+  const descId = useId();
+
   return (
     <button
       type="button"
@@ -23,6 +26,9 @@ export function Toggle({
       aria-checked={checked}
       disabled={disabled}
       onClick={() => onChange(!checked)}
+      aria-labelledby={title ? titleId : undefined}
+      aria-label={!title ? "Aktifkan" : undefined}
+      aria-describedby={description ? descId : undefined}
       className={cn(
         "flex w-full items-center justify-between gap-4 rounded-xl border px-4 py-3 text-left transition-colors",
         disabled
@@ -32,10 +38,14 @@ export function Toggle({
     >
       <span className="min-w-0">
         {title ? (
-          <span className="block text-sm font-medium text-ink">{title}</span>
+          <span id={titleId} className="block text-sm font-medium text-ink">
+            {title}
+          </span>
         ) : null}
         {description ? (
-          <span className="mt-0.5 block text-xs text-ink/55">{description}</span>
+          <span id={descId} className="mt-0.5 block text-xs text-ink/55">
+            {description}
+          </span>
         ) : null}
       </span>
       <span

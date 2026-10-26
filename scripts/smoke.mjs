@@ -1,17 +1,21 @@
 #!/usr/bin/env node
+// Smoke test: butuh dev server berjalan + database sudah di-seed (`npm run db:seed`).
+// Jalankan: `npm run smoke` (BASE_URL=http://localhost:3000 by default).
 const BASE = process.env.BASE_URL ?? "http://localhost:3000"
 const USER = { email: "rani@gradly.id", password: "gradly" }
 const ADMIN = { email: "admin@gradly.id", password: "gradly" }
+const SMOKE_PASSWORD = "gradly123"
 
 let passed = 0
+let failed = 0
 function check(name, ok, detail) {
-  if (!ok) {
+  if (ok) {
+    passed++
+    console.log(`PASS  ${name}`)
+  } else {
+    failed++
     console.log(`FAIL  ${name}${detail ? ` — ${detail}` : ""}`)
-    console.log(`Summary: ${passed} passed, 1 failed`)
-    process.exit(1)
   }
-  passed++
-  console.log(`PASS  ${name}`)
 }
 
 class Jar {
@@ -80,6 +84,47 @@ async function waitForServer() {
   process.exit(1)
 }
 
+// Slot jadwal turunan dari waktu jalan supaya smoke test tidak bentrok
+// dengan booking lama maupun dengan run sebelumnya (semua paket uji satu fotografer).
+const runAt = new Date()
+const baseMinute = runAt.getUTCHours() * 60 + runAt.getUTCMinutes()
+const slot = (offset) => {
+  const m = (baseMinute + offset) % 1440
+  return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`
+}
+const eventDate = new Date(runAt.getTime() + 400 * 86_400_000).toISOString().slice(0, 10)
+const runTag = runAt.getTime()
+
+const register = (email, headers = {}) =>
+  req("/api/auth/register", null, {
+    method: "POST",
+    headers: { "content-type": "application/json", ...headers },
+    body: JSON.stringify({
+      name: "Smoke Test",
+      email,
+      password: SMOKE_PASSWORD,
+      phone: "081200000001",
+      city: "Bandung",
+      role: "user",
+    }),
+  })
+
+const book = (jar, packageId, eventTime) =>
+  req("/api/bookings", jar, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      packageId,
+      customerName: "Smoke Test",
+      customerPhone: "081200000000",
+      eventDate,
+      eventTime,
+      location: "Studio Gradly, Jakarta",
+      note: "smoke test run",
+      subsidized: false,
+    }),
+  })
+
 const PAGES = ["/", "/paket", "/subsidi", "/portofolio", "/bantuan", "/masuk", "/daftar"]
 const APIS = [
   ["/api/stats", (d) => Array.isArray(d?.monthlyRevenue) && typeof d?.subsidyFund === "object" && d.subsidyFund !== null],
@@ -92,6 +137,7 @@ const APIS = [
 
 const userJar = new Jar()
 const adminJar = new Jar()
+const smokeJar = new Jar()
 await waitForServer()
 
 for (const p of PAGES) {
@@ -118,77 +164,38 @@ check(
 const userLogin = await login(userJar, USER)
 check(`login ${USER.email} + GET /api/me`, userLogin.ok, userLogin.detail)
 
-// Email verification flow: register → login blocked → verify link → login works.
-const smokeEmail = `smoke+${Date.now()}@gradly.id`
-const smokePassword = "gradly123"
-const regRes = await req("/api/auth/register", null, {
-  method: "POST",
-  headers: { "content-type": "application/json" },
-  body: JSON.stringify({
-    name: "Smoke Verify",
-    email: smokeEmail,
-    password: smokePassword,
-    phone: "081200000001",
-    city: "Bandung",
-    role: "user",
-  }),
-})
+const packages = (await json(await req("/api/packages", null)))?.packages
+check("packages non-empty", Array.isArray(packages) && packages.length > 0, "empty package list")
+const pick = (name) => packages?.find((p) => p.name === name)
+const basic = pick("Basic Moment")
+const harapan = pick("Harapan")
+check("paket 'Basic Moment' tersedia", basic?.id != null, "not found")
+check("paket 'Harapan' tersedia + kipkOnly", harapan?.id != null && harapan?.kipkOnly === true, "not found or not kipkOnly")
+
+// Registrasi tanpa verifikasi email: user baru langsung bisa login.
+const smokeEmail = `smoke+${runTag}@gradly.id`
+const regRes = await register(smokeEmail)
 const regBody = await json(regRes)
 check(
-  "POST /api/auth/register → 200 + verifyUrl",
-  regRes.status === 200 && regBody?.ok === true && typeof regBody?.verifyUrl === "string",
+  "POST /api/auth/register → 200 + ok",
+  regRes.status === 200 && regBody?.ok === true,
   `got ${regRes.status} ${regBody?.error ?? ""}`.trim(),
 )
+const smokeLogin = await login(smokeJar, { email: smokeEmail, password: SMOKE_PASSWORD })
+check("login user baru tanpa verifikasi → berhasil", smokeLogin.ok, smokeLogin.detail)
 
-const unverifiedJar = new Jar()
-const unverifiedLogin = await login(unverifiedJar, { email: smokeEmail, password: smokePassword })
-check("login unverified → gagal", !unverifiedLogin.ok, unverifiedLogin.detail)
-
-const verifyUrl = new URL(regBody.verifyUrl)
-const verifyRes = await req(verifyUrl.pathname + verifyUrl.search, null, { redirect: "manual" })
-const verifyLocation = verifyRes.headers.get("location") ?? ""
-check(
-  "GET verifyUrl → 302 /masuk?verified=1",
-  (verifyRes.status === 302 || verifyRes.status === 307) && verifyLocation.includes("verified=1"),
-  `got ${verifyRes.status} location=${verifyLocation}`,
-)
-
-const verifiedJar = new Jar()
-const verifiedLogin = await login(verifiedJar, { email: smokeEmail, password: smokePassword })
-check("login setelah verifikasi → berhasil", verifiedLogin.ok, verifiedLogin.detail)
-
-const packages = (await json(await req("/api/packages", null)))?.packages
-check("packages[0] available", Boolean(packages?.[0]?.id), "empty package list")
-// Far-future date so reruns never collide with real bookings.
-const bookingBody = {
-  packageId: packages[0].id,
-  customerName: "Smoke Test",
-  customerPhone: "081200000000",
-  eventDate: "2027-06-15",
-  eventTime: "09:00",
-  location: "Studio Gradly, Jakarta",
-  note: "smoke test run",
-  subsidized: false,
-}
-const post = () =>
-  req("/api/bookings", userJar, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(bookingBody),
-  })
-
-const createRes = await post()
+const createRes = await book(userJar, basic?.id, slot(0))
 const created = await json(createRes)
 check("POST /api/bookings → 201", createRes.status === 201 && created?.booking?.id != null, `got ${createRes.status} ${created?.error ?? ""}`.trim())
 
-const dupe = await post()
+const dupe = await book(userJar, basic.id, slot(0))
 check("duplicate POST /api/bookings → 409", dupe.status === 409, `got ${dupe.status}`)
 
 const adminLogin = await login(adminJar, ADMIN)
 check(`login ${ADMIN.email}`, adminLogin.ok, adminLogin.detail)
 
 const patch = (jar, status) =>
-  req(`/api/bookings/${created.booking.id}`, jar, {
+  req(`/api/bookings/${created?.booking?.id}`, jar, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ status }),
@@ -203,4 +210,29 @@ check("admin PATCH booking → 200 Selesai", patched?.booking?.status === "Seles
 const denied = await patch(userJar, "Selesai")
 check("user PATCH booking → 403", denied.status === 403, `got ${denied.status}`)
 
-console.log(`Summary: ${passed} passed, 0 failed`)
+// Paket khusus KIP-K: non-KIP-K ditolak 403, penerima KIP-K terverifikasi boleh.
+const nonKipk = await book(smokeJar, harapan?.id, slot(30))
+check("POST /api/bookings paket Harapan (non-KIP-K) → 403", nonKipk.status === 403, `got ${nonKipk.status}`)
+
+const kipk = await book(userJar, harapan?.id, slot(30))
+check("POST /api/bookings paket Harapan (KIP-K) → 201", kipk.status === 201, `got ${kipk.status}`)
+
+const ledger = await json(await req("/api/ledger", adminJar))
+check("GET /api/ledger (admin) → 200 + array", Array.isArray(ledger?.ledger), "unexpected shape")
+const ledgerAnon = await req("/api/ledger", null)
+check("GET /api/ledger unauthenticated → 401", ledgerAnon.status === 401, `got ${ledgerAnon.status}`)
+
+// Rate limit registrasi: 10 per IP per jam. Bucket per-IP hanya terisi kalau
+// ada header x-forwarded-for, jadi simulasi IP dengan alamat TEST-NET-2.
+// Dijalankan terakhir supaya kuota tidak mengganggu cek lain.
+const RL_IP = "198.51.100.7"
+let limited = null
+for (let i = 0; i < 12 && !limited; i++) {
+  const res = await register(`smoke+rl${runTag}-${i}@gradly.id`, { "x-forwarded-for": RL_IP })
+  if (res.status === 429) limited = res
+}
+check("register rate limit → 429", limited?.status === 429, "tidak pernah 429")
+check("429 menyertakan Retry-After", limited != null && limited.headers.get("retry-after") != null, "header tidak ada")
+
+console.log(`Summary: ${passed} passed, ${failed} failed`)
+process.exit(failed ? 1 : 0)

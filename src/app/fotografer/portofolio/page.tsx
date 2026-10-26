@@ -159,6 +159,9 @@ export default function PortofolioFotografer() {
             <Card key={item.id} className="group overflow-hidden">
               <PhotoPlaceholder
                 tone={item.tone}
+                fileKey={item.key}
+                alt={item.title}
+                label={item.title}
                 className="aspect-[4/3] w-full"
               />
               <div className="p-4">

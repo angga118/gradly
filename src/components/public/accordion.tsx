@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { cn } from "@/lib/cn";
 import { Icon } from "@/components/ui/icons";
 
@@ -20,6 +20,7 @@ export function Accordion({
   className?: string;
 }) {
   const [open, setOpen] = useState<number | null>(defaultOpen);
+  const base = useId();
 
   return (
     <div
@@ -34,8 +35,10 @@ export function Accordion({
           <div key={item.q}>
             <button
               type="button"
-              onClick={() => setOpen(isOpen ? null : i)}
+              id={`${base}-tombol-${i}`}
               aria-expanded={isOpen}
+              aria-controls={`${base}-panel-${i}`}
+              onClick={() => setOpen(isOpen ? null : i)}
               className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-ink/[0.035]"
             >
               <span className="font-medium text-ink">{item.q}</span>
@@ -49,6 +52,10 @@ export function Accordion({
               />
             </button>
             <div
+              id={`${base}-panel-${i}`}
+              role="region"
+              aria-labelledby={`${base}-tombol-${i}`}
+              inert={!isOpen}
               className={cn(
                 "grid transition-all duration-300 ease-out motion-reduce:transition-none",
                 isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",

@@ -1,7 +1,8 @@
 import type { Package } from "@/lib/types";
+import { contributionFor } from "@/lib/rules";
 
-/** Kontribusi subsidi dari klien reguler (README aturan bisnis: 5%). */
-export const CONTRIBUTION_RATE = 0.05;
+/** Kontribusi subsidi dari klien reguler (sumber tunggal: src/lib/rules.ts). */
+export { CONTRIBUTION_RATE } from "@/lib/rules";
 
 /**
  * Hitung harga satu paket untuk draft booking.
@@ -11,7 +12,7 @@ export const CONTRIBUTION_RATE = 0.05;
 export function computePricing(pkg: Package | undefined, useSubsidy: boolean) {
   const subsidyApplies = Boolean(useSubsidy && pkg?.subsidyPrice != null);
   const price = subsidyApplies && pkg?.subsidyPrice ? pkg.subsidyPrice : pkg?.price ?? 0;
-  const contribution = subsidyApplies ? 0 : Math.round(price * CONTRIBUTION_RATE);
+  const contribution = subsidyApplies ? 0 : contributionFor(price);
   return { price, contribution, total: price + contribution, subsidyApplies };
 }
 

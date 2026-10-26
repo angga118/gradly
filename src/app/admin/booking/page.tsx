@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Input } from "@/components/ui/field";
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs, TabPanel } from "@/components/ui/tabs";
 import { Avatar, EmptyState } from "@/components/ui/misc";
 import { StatusChip } from "@/components/ui/status-chip";
 import { Icon } from "@/components/ui/icons";
@@ -95,115 +95,117 @@ export default function AdminBooking() {
         })}
       </div>
 
-      <p className="text-sm text-ink/55">
-        Menampilkan {list.length} dari {bookings.length} booking
-      </p>
+      <TabPanel value={tab}>
+        <p className="text-sm text-ink/55">
+          Menampilkan {list.length} dari {bookings.length} booking
+        </p>
 
-      {list.length === 0 ? (
-        <EmptyState
-          icon="calendar"
-          title="Tidak ada booking cocok"
-          description="Coba ubah kata kunci pencarian atau filter status."
-        />
-      ) : (
-        <ul className="space-y-3">
-          {list.map((b) => {
-            const pending = b.status === "Menunggu konfirmasi";
-            return (
-              <li key={b.id}>
-                <Card className="p-4 transition-shadow hover:shadow-soft sm:p-5">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex min-w-0 gap-3">
-                      <Avatar name={b.customerName} size={42} />
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-medium">{b.customerName}</p>
-                          <StatusChip status={b.status} />
-                          {b.subsidized ? (
-                            <Chip tone="butter">Subsidi</Chip>
-                          ) : null}
+        {list.length === 0 ? (
+          <EmptyState
+            icon="calendar"
+            title="Tidak ada booking cocok"
+            description="Coba ubah kata kunci pencarian atau filter status."
+          />
+        ) : (
+          <ul className="space-y-3">
+            {list.map((b) => {
+              const pending = b.status === "Menunggu konfirmasi";
+              return (
+                <li key={b.id}>
+                  <Card className="p-4 transition-shadow hover:shadow-soft sm:p-5">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex min-w-0 gap-3">
+                        <Avatar name={b.customerName} size={42} />
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-medium">{b.customerName}</p>
+                            <StatusChip status={b.status} />
+                            {b.subsidized ? (
+                              <Chip tone="butter">Subsidi</Chip>
+                            ) : null}
+                          </div>
+                          <p className="mt-0.5 text-xs text-ink/50">{b.id}</p>
+                          <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/70">
+                            <span className="inline-flex items-center gap-1.5">
+                              <Icon name="tag" size={14} className="text-ink/45" />
+                              {b.packageName}
+                            </span>
+                            <span className="inline-flex items-center gap-1.5">
+                              <Icon
+                                name="calendar"
+                                size={14}
+                                className="text-ink/45"
+                              />
+                              {formatDate(b.eventDate, { short: true })} ·{" "}
+                              {b.eventTime}
+                            </span>
+                          </p>
                         </div>
-                        <p className="mt-0.5 text-xs text-ink/50">{b.id}</p>
-                        <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/70">
-                          <span className="inline-flex items-center gap-1.5">
-                            <Icon name="tag" size={14} className="text-ink/45" />
-                            {b.packageName}
-                          </span>
-                          <span className="inline-flex items-center gap-1.5">
-                            <Icon
-                              name="calendar"
-                              size={14}
-                              className="text-ink/45"
-                            />
-                            {formatDate(b.eventDate, { short: true })} ·{" "}
-                            {b.eventTime}
-                          </span>
-                        </p>
                       </div>
-                    </div>
 
-                    <div className="flex shrink-0 flex-col gap-3 sm:items-end">
-                      <div className="text-left sm:text-right">
-                        <p className="font-medium tabular-nums">
-                          {rupiah(b.total)}
-                        </p>
-                        <p className="text-xs text-ink/50">
-                          {b.payment
-                            ? "Bukti transfer ada"
-                            : "Belum ada bukti transfer"}
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => setSelected(b)}
-                        >
-                          Detail
-                        </Button>
-                        {pending ? (
+                      <div className="flex shrink-0 flex-col gap-3 sm:items-end">
+                        <div className="text-left sm:text-right">
+                          <p className="font-medium tabular-nums">
+                            {rupiah(b.total)}
+                          </p>
+                          <p className="text-xs text-ink/50">
+                            {b.payment
+                              ? "Bukti transfer ada"
+                              : "Belum ada bukti transfer"}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
                           <Button
-                            variant="butter"
+                            variant="secondary"
                             size="sm"
-                            onClick={() =>
-                              setBookingStatus(b.id, "Confirmed")
-                            }
+                            onClick={() => setSelected(b)}
                           >
-                            <Icon name="check" size={16} />
-                            Konfirmasi
+                            Detail
                           </Button>
-                        ) : null}
-                        {b.status !== "Selesai" && b.status !== "Dibatalkan" ? (
-                          <>
+                          {pending ? (
                             <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={() => setBookingStatus(b.id, "Selesai")}
-                            >
-                              <Icon name="check" size={16} />
-                              Tandai Selesai
-                            </Button>
-                            <Button
-                              variant="danger"
+                              variant="butter"
                               size="sm"
                               onClick={() =>
-                                setBookingStatus(b.id, "Dibatalkan")
+                                setBookingStatus(b.id, "Confirmed")
                               }
                             >
-                              <Icon name="x" size={16} />
-                              Batalkan
+                              <Icon name="check" size={16} />
+                              Konfirmasi
                             </Button>
-                          </>
-                        ) : null}
+                          ) : null}
+                          {b.status !== "Selesai" && b.status !== "Dibatalkan" ? (
+                            <>
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => setBookingStatus(b.id, "Selesai")}
+                              >
+                                <Icon name="check" size={16} />
+                                Tandai Selesai
+                              </Button>
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() =>
+                                  setBookingStatus(b.id, "Dibatalkan")
+                                }
+                              >
+                                <Icon name="x" size={16} />
+                                Batalkan
+                              </Button>
+                            </>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                  </Card>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </TabPanel>
 
       <AdminBookingDetailModal
         booking={selected}

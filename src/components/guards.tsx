@@ -25,21 +25,28 @@ export function RequireRole({
   const { session, hydrated } = useGradly();
   const router = useRouter();
   const roles = Array.isArray(role) ? role : [role];
-  const key = roles.join(",");
+  // Admin supervises every area, so it passes any role gate.
+  const allowed =
+    !!session && (session.role === "admin" || roles.includes(session.role));
 
   useEffect(() => {
     if (!hydrated) return;
-    if (!session || !key.split(",").includes(session.role)) {
+    if (!session) {
       const next =
         typeof window !== "undefined"
           ? window.location.pathname + window.location.search
           : "";
       router.replace(`/masuk?next=${encodeURIComponent(next)}`);
     }
-  }, [hydrated, session, router, key]);
+  }, [hydrated, session, router]);
 
   if (!hydrated) return <Loading />;
-  if (!session || !roles.includes(session.role)) return <Loading label="Mengalihkan…" />;
+  if (!session) return <Loading label="Mengalihkan…" />;
+  if (!allowed) {
+    return (
+      <AccessDenied message="Akun Anda tidak memiliki akses ke halaman ini." />
+    );
+  }
   return <>{children}</>;
 }
 

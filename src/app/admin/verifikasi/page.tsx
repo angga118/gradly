@@ -6,7 +6,7 @@ import { formatDateTime, relativeTime } from "@/lib/format";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs, TabPanel } from "@/components/ui/tabs";
 import { Avatar, EmptyState } from "@/components/ui/misc";
 import { StatusChip } from "@/components/ui/status-chip";
 import { Icon } from "@/components/ui/icons";
@@ -68,135 +68,137 @@ export default function AdminVerifikasi() {
         ) : null}
       </div>
 
-      {list.length === 0 ? (
-        <EmptyState
-          icon="shield"
-          title={
-            tab === "pending"
-              ? "Tidak ada pengajuan menunggu"
-              : tab === "verified"
-                ? "Belum ada pengajuan terverifikasi"
-                : "Belum ada pengajuan ditolak"
-          }
-          description={
-            tab === "pending"
-              ? "Semua pengajuan subsidi sudah ditinjau. Kerja bagus."
-              : "Pengajuan dengan status ini akan muncul di sini."
-          }
-        />
-      ) : (
-        <ul className="space-y-4">
-          {list.map((app) => (
-            <li key={app.id}>
-              <Card className="p-5">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex min-w-0 gap-3">
-                    <Avatar name={app.userName} size={44} />
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-medium">{app.userName}</p>
-                        <StatusChip status={app.status} />
-                      </div>
-                      <p className="mt-0.5 text-xs text-ink/50">{app.id}</p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <Chip tone={app.docType === "KIP-K" ? "sky" : "sage"}>
-                          {app.docType}
-                        </Chip>
-                        <Chip tone="outline">
-                          Kelurahan {app.kelurahan}
-                        </Chip>
+      <TabPanel value={tab}>
+        {list.length === 0 ? (
+          <EmptyState
+            icon="shield"
+            title={
+              tab === "pending"
+                ? "Tidak ada pengajuan menunggu"
+                : tab === "verified"
+                  ? "Belum ada pengajuan terverifikasi"
+                  : "Belum ada pengajuan ditolak"
+            }
+            description={
+              tab === "pending"
+                ? "Semua pengajuan subsidi sudah ditinjau. Kerja bagus."
+                : "Pengajuan dengan status ini akan muncul di sini."
+            }
+          />
+        ) : (
+          <ul className="space-y-4">
+            {list.map((app) => (
+              <li key={app.id}>
+                <Card className="p-5">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex min-w-0 gap-3">
+                      <Avatar name={app.userName} size={44} />
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-medium">{app.userName}</p>
+                          <StatusChip status={app.status} />
+                        </div>
+                        <p className="mt-0.5 text-xs text-ink/50">{app.id}</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <Chip tone={app.docType === "KIP-K" ? "sky" : "sage"}>
+                            {app.docType}
+                          </Chip>
+                          <Chip tone="outline">
+                            Kelurahan {app.kelurahan}
+                          </Chip>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="shrink-0 text-left sm:text-right">
-                    <p className="text-xs uppercase tracking-wide text-ink/45">
-                      Dikirim
-                    </p>
-                    <p className="text-sm text-ink/70">
-                      {relativeTime(app.submittedAt)}
-                    </p>
-                    <p className="text-xs text-ink/45">
-                      {formatDateTime(app.submittedAt)}
-                    </p>
-                  </div>
-                </div>
-
-                <dl className="mt-4 grid gap-3 rounded-xl border border-ink/10 bg-white/50 p-4 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-xs text-ink/50">Alamat</dt>
-                    <dd className="mt-0.5 text-sm">{app.address}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs text-ink/50">Dokumen</dt>
-                    <dd className="mt-0.5 flex items-center gap-1.5 text-sm">
-                      <Icon name="file" size={15} className="text-ink/50" />
-                      <span className="truncate">{app.docName}</span>
-                    </dd>
-                  </div>
-                </dl>
-
-                {app.status === "Ditolak" && app.rejectReason ? (
-                  <div className="mt-4 flex items-start gap-3 rounded-xl border border-danger-soft bg-danger-soft/40 p-4 text-sm text-ink/80">
-                    <Icon
-                      name="alert"
-                      size={18}
-                      className="mt-0.5 shrink-0 text-danger"
-                    />
-                    <div>
-                      <p className="font-medium text-danger">
-                        Alasan penolakan
+                    <div className="shrink-0 text-left sm:text-right">
+                      <p className="text-xs uppercase tracking-wide text-ink/45">
+                        Dikirim
                       </p>
-                      <p className="mt-0.5">{app.rejectReason}</p>
+                      <p className="text-sm text-ink/70">
+                        {relativeTime(app.submittedAt)}
+                      </p>
+                      <p className="text-xs text-ink/45">
+                        {formatDateTime(app.submittedAt)}
+                      </p>
                     </div>
                   </div>
-                ) : null}
 
-                {app.status === "Terverifikasi" ? (
-                  <p className="mt-4 text-xs text-ink/50">
-                    Diverifikasi oleh {app.reviewedBy ?? "Admin"}
-                    {app.reviewedAt
-                      ? ` · ${formatDateTime(app.reviewedAt)}`
-                      : ""}
-                  </p>
-                ) : null}
+                  <dl className="mt-4 grid gap-3 rounded-xl border border-ink/10 bg-white/50 p-4 sm:grid-cols-2">
+                    <div>
+                      <dt className="text-xs text-ink/50">Alamat</dt>
+                      <dd className="mt-0.5 text-sm">{app.address}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-ink/50">Dokumen</dt>
+                      <dd className="mt-0.5 flex items-center gap-1.5 text-sm">
+                        <Icon name="file" size={15} className="text-ink/50" />
+                        <span className="truncate">{app.docName}</span>
+                      </dd>
+                    </div>
+                  </dl>
 
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setPreview(app)}
-                  >
-                    <Icon name="eye" size={16} />
-                    Pratinjau dokumen
-                  </Button>
-                  {app.status === "Menunggu review" ? (
-                    <>
-                      <Button
-                        variant="butter"
-                        size="sm"
-                        onClick={() =>
-                          reviewSubsidy(app.id, "Terverifikasi")
-                        }
-                      >
-                        <Icon name="check" size={16} />
-                        Setujui
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => setRejecting(app)}
-                      >
-                        <Icon name="x" size={16} />
-                        Tolak
-                      </Button>
-                    </>
+                  {app.status === "Ditolak" && app.rejectReason ? (
+                    <div className="mt-4 flex items-start gap-3 rounded-xl border border-danger-soft bg-danger-soft/40 p-4 text-sm text-ink/80">
+                      <Icon
+                        name="alert"
+                        size={18}
+                        className="mt-0.5 shrink-0 text-danger"
+                      />
+                      <div>
+                        <p className="font-medium text-danger">
+                          Alasan penolakan
+                        </p>
+                        <p className="mt-0.5">{app.rejectReason}</p>
+                      </div>
+                    </div>
                   ) : null}
-                </div>
-              </Card>
-            </li>
-          ))}
-        </ul>
-      )}
+
+                  {app.status === "Terverifikasi" ? (
+                    <p className="mt-4 text-xs text-ink/50">
+                      Diverifikasi oleh {app.reviewedBy ?? "Admin"}
+                      {app.reviewedAt
+                        ? ` · ${formatDateTime(app.reviewedAt)}`
+                        : ""}
+                    </p>
+                  ) : null}
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setPreview(app)}
+                    >
+                      <Icon name="eye" size={16} />
+                      Pratinjau dokumen
+                    </Button>
+                    {app.status === "Menunggu review" ? (
+                      <>
+                        <Button
+                          variant="butter"
+                          size="sm"
+                          onClick={() =>
+                            reviewSubsidy(app.id, "Terverifikasi")
+                          }
+                        >
+                          <Icon name="check" size={16} />
+                          Setujui
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => setRejecting(app)}
+                        >
+                          <Icon name="x" size={16} />
+                          Tolak
+                        </Button>
+                      </>
+                    ) : null}
+                  </div>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        )}
+      </TabPanel>
 
       <DocumentPreviewModal
         application={preview}

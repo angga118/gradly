@@ -58,7 +58,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       // Subsidy validity runs to the end of the current calendar year.
       await tx.user.update({
         where: { id: application.userId },
-        data: { subsidyValidUntil: `${new Date().getFullYear()}-12-31` },
+        data: {
+          subsidyValidUntil: `${new Date().getFullYear()}-12-31`,
+          subsidyDocType: application.docType,
+        },
       })
     }
 

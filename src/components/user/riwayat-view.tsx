@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
 import { StatusChip } from "@/components/ui/status-chip";
-import { Tabs, type TabItem } from "@/components/ui/tabs";
+import { Tabs, TabPanel, type TabItem } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/ui/misc";
 import { Icon } from "@/components/ui/icons";
 import { PageIntro } from "./page-intro";
@@ -63,37 +63,39 @@ export function RiwayatView() {
       </div>
 
       <div className="mt-6">
-        {filtered.length === 0 ? (
-          <EmptyState
-            icon="camera"
-            title={
-              tab === "all"
-                ? "Belum ada booking"
-                : `Tidak ada booking ${tab.toLowerCase()}`
-            }
-            description={
-              tab === "all"
-                ? "Pesan sesi foto wisudamu dan riwayatnya akan muncul di sini."
-                : "Coba pilih tab lain untuk melihat booking dengan status berbeda."
-            }
-            action={
-              tab === "all" ? <Button href="/paket">Lihat paket</Button> : undefined
-            }
-          />
-        ) : (
-          <ul className="space-y-4">
-            {filtered.map((booking) => (
-              <BookingRow
-                key={booking.id}
-                booking={booking}
-                open={expanded === booking.id}
-                onToggle={() =>
-                  setExpanded((prev) => (prev === booking.id ? null : booking.id))
-                }
-              />
-            ))}
-          </ul>
-        )}
+        <TabPanel value={tab}>
+          {filtered.length === 0 ? (
+            <EmptyState
+              icon="camera"
+              title={
+                tab === "all"
+                  ? "Belum ada booking"
+                  : `Tidak ada booking ${tab.toLowerCase()}`
+              }
+              description={
+                tab === "all"
+                  ? "Pesan sesi foto wisudamu dan riwayatnya akan muncul di sini."
+                  : "Coba pilih tab lain untuk melihat booking dengan status berbeda."
+              }
+              action={
+                tab === "all" ? <Button href="/paket">Lihat paket</Button> : undefined
+              }
+            />
+          ) : (
+            <ul className="space-y-4">
+              {filtered.map((booking) => (
+                <BookingRow
+                  key={booking.id}
+                  booking={booking}
+                  open={expanded === booking.id}
+                  onToggle={() =>
+                    setExpanded((prev) => (prev === booking.id ? null : booking.id))
+                  }
+                />
+              ))}
+            </ul>
+          )}
+        </TabPanel>
       </div>
     </div>
   );

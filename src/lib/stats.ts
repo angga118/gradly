@@ -1,10 +1,8 @@
 import type { RevenuePoint, Stats } from "./types";
+import { SUBSIDY_TARGET } from "./rules";
 
-/** Subsidy programme funding goal (constant; not derivable from transactions). */
-export const SUBSIDY_TARGET = 60_000_000;
-
-/** Platform commission on photographer income. */
-export const PLATFORM_FEE = 0.1;
+// Re-exported so existing importers keep working; the literals live in rules.ts.
+export { PLATFORM_FEE, SUBSIDY_TARGET } from "./rules";
 
 /** Last `count` month keys (UTC), oldest first — e.g. ["2026-05", …, "2026-10"]. */
 export function lastMonthKeys(count = 6, now: Date = new Date()): string[] {

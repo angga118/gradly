@@ -1,5 +1,6 @@
 import { cn } from "@/lib/cn";
 import { Icon } from "@/components/ui/icons";
+import { FileImage } from "@/components/ui/file-image";
 
 const TONES: Record<string, string> = {
   butter: "from-butter via-butter/60 to-butter-deep/70",
@@ -10,10 +11,14 @@ const TONES: Record<string, string> = {
 export function PhotoPlaceholder({
   tone = "sage",
   label,
+  fileKey,
+  alt,
   className,
 }: {
   tone?: string;
   label?: string;
+  fileKey?: string;
+  alt?: string;
   className?: string;
 }) {
   return (
@@ -39,6 +44,9 @@ export function PhotoPlaceholder({
       <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-ink/25">
         <Icon name="camera" size={30} />
       </span>
+      {fileKey ? (
+        <FileImage fileKey={fileKey} alt={alt ?? label ?? "Foto portofolio"} />
+      ) : null}
       {label ? (
         <span className="absolute bottom-2.5 left-3.5 right-3.5 truncate font-serif text-sm text-ink/85">
           {label}
