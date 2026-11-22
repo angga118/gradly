@@ -4,6 +4,7 @@
 const BASE = process.env.BASE_URL ?? "http://localhost:3000"
 const USER = { email: "rani@gradly.id", password: "gradly" }
 const ADMIN = { email: "admin@gradly.id", password: "gradly" }
+const PHOTOGRAPHER = { email: "kirana@gradly.id", password: "gradly" }
 const SMOKE_PASSWORD = "gradly123"
 
 let passed = 0
@@ -32,7 +33,8 @@ class Jar {
       if (i < 1) continue
       const name = pair.slice(0, i).trim()
       const value = pair.slice(i + 1).trim()
-      value ? this.map.set(name, value) : this.map.delete(name)
+      if (value) this.map.set(name, value)
+      else this.map.delete(name)
     }
   }
   header() {
@@ -183,6 +185,65 @@ check(
 )
 const smokeLogin = await login(smokeJar, { email: smokeEmail, password: SMOKE_PASSWORD })
 check("login user baru tanpa verifikasi → berhasil", smokeLogin.ok, smokeLogin.detail)
+
+// Chat sebelum pilih paket: user baru boleh menanya, fotografer membalas dari inbox.
+const photoJar = new Jar()
+const photoLogin = await login(photoJar, PHOTOGRAPHER)
+check(`login ${PHOTOGRAPHER.email}`, photoLogin.ok, photoLogin.detail)
+const photoMe = (await json(await req("/api/me", photoJar)))?.user
+const smokeMe = (await json(await req("/api/me", smokeJar)))?.user
+const photographerId = photoMe?.id
+check("fotografer untuk chat tersedia", photographerId != null && photoMe.role === "fotografer", `got ${photoMe?.role ?? "no user"}`)
+
+const chatAnon = await req(`/api/messages?photographerId=${photographerId}`, null)
+check("GET /api/messages tanpa login → 401", chatAnon.status === 401, `got ${chatAnon.status}`)
+
+const chatBody = `Halo, boleh tanya sebelum pilih paket? ${runTag}`
+const chatRes = await req("/api/messages", smokeJar, {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ photographerId, customerId: smokeMe?.id, body: chatBody }),
+})
+const chatCreated = await json(chatRes)
+const chatId = chatCreated?.message?.id
+check(
+  "POST /api/messages sebelum pilih paket → 201",
+  chatRes.status === 201 && chatId != null && chatCreated.message.senderRole === "customer",
+  `got ${chatRes.status} ${chatCreated?.error ?? ""}`.trim(),
+)
+
+const customerThread = (await json(await req(`/api/messages?photographerId=${photographerId}`, smokeJar)))?.messages
+check(
+  "GET thread customer → pesan muncul",
+  Array.isArray(customerThread) && customerThread.some((m) => m.id === chatId),
+  "pesan tidak ditemukan",
+)
+
+const photoInbox = (await json(await req("/api/messages", photoJar)))?.messages
+check(
+  "GET inbox fotografer → pesan customer muncul",
+  Array.isArray(photoInbox) && photoInbox.some((m) => m.id === chatId),
+  "pesan tidak ditemukan",
+)
+
+const replyRes = await req("/api/messages", photoJar, {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ photographerId, customerId: smokeMe?.id, body: `Balasan smoke ${runTag}` }),
+})
+const replyCreated = await json(replyRes)
+check(
+  "POST balasan fotografer → 201 + senderRole photographer",
+  replyRes.status === 201 && replyCreated?.message?.senderRole === "photographer",
+  `got ${replyRes.status} ${replyCreated?.error ?? ""}`.trim(),
+)
+
+const customerThreadAfter = (await json(await req(`/api/messages?photographerId=${photographerId}`, smokeJar)))?.messages
+check(
+  "GET thread customer → balasan fotografer muncul",
+  Array.isArray(customerThreadAfter) && customerThreadAfter.some((m) => m.id === replyCreated?.message?.id),
+  "balasan tidak ditemukan",
+)
 
 const createRes = await book(userJar, basic?.id, slot(0))
 const created = await json(createRes)

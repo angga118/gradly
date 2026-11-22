@@ -62,7 +62,8 @@ export const ModelName = {
   Testimonial: 'Testimonial',
   LedgerEntry: 'LedgerEntry',
   Withdrawal: 'Withdrawal',
-  Counter: 'Counter'
+  Counter: 'Counter',
+  ChatMessage: 'ChatMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -254,6 +255,18 @@ export const CounterScalarFieldEnum = {
 } as const
 
 export type CounterScalarFieldEnum = (typeof CounterScalarFieldEnum)[keyof typeof CounterScalarFieldEnum]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  photographerId: 'photographerId',
+  senderRole: 'senderRole',
+  body: 'body',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -339,6 +339,8 @@ export type UserWhereInput = {
   testimonials?: Prisma.TestimonialListRelationFilter
   withdrawals?: Prisma.WithdrawalListRelationFilter
   verifiedPayments?: Prisma.PaymentProofListRelationFilter
+  messagesAsCustomer?: Prisma.ChatMessageListRelationFilter
+  messagesAsPhotographer?: Prisma.ChatMessageListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -371,6 +373,8 @@ export type UserOrderByWithRelationInput = {
   testimonials?: Prisma.TestimonialOrderByRelationAggregateInput
   withdrawals?: Prisma.WithdrawalOrderByRelationAggregateInput
   verifiedPayments?: Prisma.PaymentProofOrderByRelationAggregateInput
+  messagesAsCustomer?: Prisma.ChatMessageOrderByRelationAggregateInput
+  messagesAsPhotographer?: Prisma.ChatMessageOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -406,6 +410,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   testimonials?: Prisma.TestimonialListRelationFilter
   withdrawals?: Prisma.WithdrawalListRelationFilter
   verifiedPayments?: Prisma.PaymentProofListRelationFilter
+  messagesAsCustomer?: Prisma.ChatMessageListRelationFilter
+  messagesAsPhotographer?: Prisma.ChatMessageListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -488,6 +494,8 @@ export type UserCreateInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -520,6 +528,8 @@ export type UserUncheckedCreateInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUpdateInput = {
@@ -552,6 +562,8 @@ export type UserUpdateInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -584,6 +596,8 @@ export type UserUncheckedUpdateInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -928,6 +942,34 @@ export type UserUpdateOneRequiredWithoutWithdrawalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWithdrawalsInput, Prisma.UserUpdateWithoutWithdrawalsInput>, Prisma.UserUncheckedUpdateWithoutWithdrawalsInput>
 }
 
+export type UserCreateNestedOneWithoutMessagesAsCustomerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesAsCustomerInput, Prisma.UserUncheckedCreateWithoutMessagesAsCustomerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesAsCustomerInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutMessagesAsPhotographerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesAsPhotographerInput, Prisma.UserUncheckedCreateWithoutMessagesAsPhotographerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesAsPhotographerInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMessagesAsCustomerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesAsCustomerInput, Prisma.UserUncheckedCreateWithoutMessagesAsCustomerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesAsCustomerInput
+  upsert?: Prisma.UserUpsertWithoutMessagesAsCustomerInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesAsCustomerInput, Prisma.UserUpdateWithoutMessagesAsCustomerInput>, Prisma.UserUncheckedUpdateWithoutMessagesAsCustomerInput>
+}
+
+export type UserUpdateOneRequiredWithoutMessagesAsPhotographerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesAsPhotographerInput, Prisma.UserUncheckedCreateWithoutMessagesAsPhotographerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesAsPhotographerInput
+  upsert?: Prisma.UserUpsertWithoutMessagesAsPhotographerInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesAsPhotographerInput, Prisma.UserUpdateWithoutMessagesAsPhotographerInput>, Prisma.UserUncheckedUpdateWithoutMessagesAsPhotographerInput>
+}
+
 export type UserCreateWithoutApplicationsInput = {
   id?: string
   email: string
@@ -957,6 +999,8 @@ export type UserCreateWithoutApplicationsInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutApplicationsInput = {
@@ -988,6 +1032,8 @@ export type UserUncheckedCreateWithoutApplicationsInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutApplicationsInput = {
@@ -1024,6 +1070,8 @@ export type UserCreateWithoutReviewedApplicationsInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutReviewedApplicationsInput = {
@@ -1055,6 +1103,8 @@ export type UserUncheckedCreateWithoutReviewedApplicationsInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutReviewedApplicationsInput = {
@@ -1102,6 +1152,8 @@ export type UserUpdateWithoutApplicationsInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApplicationsInput = {
@@ -1133,6 +1185,8 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUpsertWithoutReviewedApplicationsInput = {
@@ -1175,6 +1229,8 @@ export type UserUpdateWithoutReviewedApplicationsInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewedApplicationsInput = {
@@ -1206,6 +1262,8 @@ export type UserUncheckedUpdateWithoutReviewedApplicationsInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateWithoutPackagesInput = {
@@ -1237,6 +1295,8 @@ export type UserCreateWithoutPackagesInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutPackagesInput = {
@@ -1268,6 +1328,8 @@ export type UserUncheckedCreateWithoutPackagesInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutPackagesInput = {
@@ -1315,6 +1377,8 @@ export type UserUpdateWithoutPackagesInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPackagesInput = {
@@ -1346,6 +1410,8 @@ export type UserUncheckedUpdateWithoutPackagesInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateWithoutBookingsAsCustomerInput = {
@@ -1377,6 +1443,8 @@ export type UserCreateWithoutBookingsAsCustomerInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutBookingsAsCustomerInput = {
@@ -1408,6 +1476,8 @@ export type UserUncheckedCreateWithoutBookingsAsCustomerInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutBookingsAsCustomerInput = {
@@ -1444,6 +1514,8 @@ export type UserCreateWithoutBookingsAsPhotographerInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutBookingsAsPhotographerInput = {
@@ -1475,6 +1547,8 @@ export type UserUncheckedCreateWithoutBookingsAsPhotographerInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutBookingsAsPhotographerInput = {
@@ -1522,6 +1596,8 @@ export type UserUpdateWithoutBookingsAsCustomerInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBookingsAsCustomerInput = {
@@ -1553,6 +1629,8 @@ export type UserUncheckedUpdateWithoutBookingsAsCustomerInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUpsertWithoutBookingsAsPhotographerInput = {
@@ -1595,6 +1673,8 @@ export type UserUpdateWithoutBookingsAsPhotographerInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBookingsAsPhotographerInput = {
@@ -1626,6 +1706,8 @@ export type UserUncheckedUpdateWithoutBookingsAsPhotographerInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateWithoutVerifiedPaymentsInput = {
@@ -1657,6 +1739,8 @@ export type UserCreateWithoutVerifiedPaymentsInput = {
   highlights?: Prisma.HighlightCardCreateNestedManyWithoutPhotographerInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutVerifiedPaymentsInput = {
@@ -1688,6 +1772,8 @@ export type UserUncheckedCreateWithoutVerifiedPaymentsInput = {
   highlights?: Prisma.HighlightCardUncheckedCreateNestedManyWithoutPhotographerInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutVerifiedPaymentsInput = {
@@ -1735,6 +1821,8 @@ export type UserUpdateWithoutVerifiedPaymentsInput = {
   highlights?: Prisma.HighlightCardUpdateManyWithoutPhotographerNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerifiedPaymentsInput = {
@@ -1766,6 +1854,8 @@ export type UserUncheckedUpdateWithoutVerifiedPaymentsInput = {
   highlights?: Prisma.HighlightCardUncheckedUpdateManyWithoutPhotographerNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -1797,6 +1887,8 @@ export type UserCreateWithoutNotificationsInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -1828,6 +1920,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -1875,6 +1969,8 @@ export type UserUpdateWithoutNotificationsInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -1906,6 +2002,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateWithoutPortfolioInput = {
@@ -1937,6 +2035,8 @@ export type UserCreateWithoutPortfolioInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutPortfolioInput = {
@@ -1968,6 +2068,8 @@ export type UserUncheckedCreateWithoutPortfolioInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutPortfolioInput = {
@@ -2015,6 +2117,8 @@ export type UserUpdateWithoutPortfolioInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPortfolioInput = {
@@ -2046,6 +2150,8 @@ export type UserUncheckedUpdateWithoutPortfolioInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateWithoutHighlightsInput = {
@@ -2077,6 +2183,8 @@ export type UserCreateWithoutHighlightsInput = {
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutHighlightsInput = {
@@ -2108,6 +2216,8 @@ export type UserUncheckedCreateWithoutHighlightsInput = {
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutHighlightsInput = {
@@ -2155,6 +2265,8 @@ export type UserUpdateWithoutHighlightsInput = {
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHighlightsInput = {
@@ -2186,6 +2298,8 @@ export type UserUncheckedUpdateWithoutHighlightsInput = {
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateWithoutTestimonialsInput = {
@@ -2217,6 +2331,8 @@ export type UserCreateWithoutTestimonialsInput = {
   highlights?: Prisma.HighlightCardCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutTestimonialsInput = {
@@ -2248,6 +2364,8 @@ export type UserUncheckedCreateWithoutTestimonialsInput = {
   highlights?: Prisma.HighlightCardUncheckedCreateNestedManyWithoutPhotographerInput
   withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutTestimonialsInput = {
@@ -2295,6 +2413,8 @@ export type UserUpdateWithoutTestimonialsInput = {
   highlights?: Prisma.HighlightCardUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTestimonialsInput = {
@@ -2326,6 +2446,8 @@ export type UserUncheckedUpdateWithoutTestimonialsInput = {
   highlights?: Prisma.HighlightCardUncheckedUpdateManyWithoutPhotographerNestedInput
   withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserCreateWithoutWithdrawalsInput = {
@@ -2357,6 +2479,8 @@ export type UserCreateWithoutWithdrawalsInput = {
   highlights?: Prisma.HighlightCardCreateNestedManyWithoutPhotographerInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserUncheckedCreateWithoutWithdrawalsInput = {
@@ -2388,6 +2512,8 @@ export type UserUncheckedCreateWithoutWithdrawalsInput = {
   highlights?: Prisma.HighlightCardUncheckedCreateNestedManyWithoutPhotographerInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
   verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
 }
 
 export type UserCreateOrConnectWithoutWithdrawalsInput = {
@@ -2435,6 +2561,8 @@ export type UserUpdateWithoutWithdrawalsInput = {
   highlights?: Prisma.HighlightCardUpdateManyWithoutPhotographerNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWithdrawalsInput = {
@@ -2466,6 +2594,304 @@ export type UserUncheckedUpdateWithoutWithdrawalsInput = {
   highlights?: Prisma.HighlightCardUncheckedUpdateManyWithoutPhotographerNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
   verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
+}
+
+export type UserCreateWithoutMessagesAsCustomerInput = {
+  id?: string
+  email: string
+  emailVerified?: Date | string | null
+  passwordHash?: string | null
+  role: string
+  name: string
+  phone?: string
+  city?: string
+  createdAt?: Date | string
+  bio?: string | null
+  studio?: string | null
+  tags?: string
+  acceptingBookings?: boolean
+  rating?: number
+  sessions?: number
+  subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
+  packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
+  bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
+  bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
+  applications?: Prisma.SubsidyApplicationCreateNestedManyWithoutUserInput
+  reviewedApplications?: Prisma.SubsidyApplicationCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  portfolio?: Prisma.PortfolioItemCreateNestedManyWithoutPhotographerInput
+  highlights?: Prisma.HighlightCardCreateNestedManyWithoutPhotographerInput
+  testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
+  withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
+  verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsPhotographer?: Prisma.ChatMessageCreateNestedManyWithoutPhotographerInput
+}
+
+export type UserUncheckedCreateWithoutMessagesAsCustomerInput = {
+  id?: string
+  email: string
+  emailVerified?: Date | string | null
+  passwordHash?: string | null
+  role: string
+  name: string
+  phone?: string
+  city?: string
+  createdAt?: Date | string
+  bio?: string | null
+  studio?: string | null
+  tags?: string
+  acceptingBookings?: boolean
+  rating?: number
+  sessions?: number
+  subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
+  packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
+  bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
+  applications?: Prisma.SubsidyApplicationUncheckedCreateNestedManyWithoutUserInput
+  reviewedApplications?: Prisma.SubsidyApplicationUncheckedCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  portfolio?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutPhotographerInput
+  highlights?: Prisma.HighlightCardUncheckedCreateNestedManyWithoutPhotographerInput
+  testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
+  withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
+  verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutPhotographerInput
+}
+
+export type UserCreateOrConnectWithoutMessagesAsCustomerInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesAsCustomerInput, Prisma.UserUncheckedCreateWithoutMessagesAsCustomerInput>
+}
+
+export type UserCreateWithoutMessagesAsPhotographerInput = {
+  id?: string
+  email: string
+  emailVerified?: Date | string | null
+  passwordHash?: string | null
+  role: string
+  name: string
+  phone?: string
+  city?: string
+  createdAt?: Date | string
+  bio?: string | null
+  studio?: string | null
+  tags?: string
+  acceptingBookings?: boolean
+  rating?: number
+  sessions?: number
+  subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
+  packages?: Prisma.PackageCreateNestedManyWithoutPhotographerInput
+  bookingsAsCustomer?: Prisma.BookingCreateNestedManyWithoutUserInput
+  bookingsAsPhotographer?: Prisma.BookingCreateNestedManyWithoutPhotographerInput
+  applications?: Prisma.SubsidyApplicationCreateNestedManyWithoutUserInput
+  reviewedApplications?: Prisma.SubsidyApplicationCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  portfolio?: Prisma.PortfolioItemCreateNestedManyWithoutPhotographerInput
+  highlights?: Prisma.HighlightCardCreateNestedManyWithoutPhotographerInput
+  testimonials?: Prisma.TestimonialCreateNestedManyWithoutPhotographerInput
+  withdrawals?: Prisma.WithdrawalCreateNestedManyWithoutPhotographerInput
+  verifiedPayments?: Prisma.PaymentProofCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageCreateNestedManyWithoutCustomerInput
+}
+
+export type UserUncheckedCreateWithoutMessagesAsPhotographerInput = {
+  id?: string
+  email: string
+  emailVerified?: Date | string | null
+  passwordHash?: string | null
+  role: string
+  name: string
+  phone?: string
+  city?: string
+  createdAt?: Date | string
+  bio?: string | null
+  studio?: string | null
+  tags?: string
+  acceptingBookings?: boolean
+  rating?: number
+  sessions?: number
+  subsidyValidUntil?: string | null
+  subsidyDocType?: string | null
+  sessionVersion?: number
+  packages?: Prisma.PackageUncheckedCreateNestedManyWithoutPhotographerInput
+  bookingsAsCustomer?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  bookingsAsPhotographer?: Prisma.BookingUncheckedCreateNestedManyWithoutPhotographerInput
+  applications?: Prisma.SubsidyApplicationUncheckedCreateNestedManyWithoutUserInput
+  reviewedApplications?: Prisma.SubsidyApplicationUncheckedCreateNestedManyWithoutReviewedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  portfolio?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutPhotographerInput
+  highlights?: Prisma.HighlightCardUncheckedCreateNestedManyWithoutPhotographerInput
+  testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutPhotographerInput
+  withdrawals?: Prisma.WithdrawalUncheckedCreateNestedManyWithoutPhotographerInput
+  verifiedPayments?: Prisma.PaymentProofUncheckedCreateNestedManyWithoutVerifiedByInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCustomerInput
+}
+
+export type UserCreateOrConnectWithoutMessagesAsPhotographerInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesAsPhotographerInput, Prisma.UserUncheckedCreateWithoutMessagesAsPhotographerInput>
+}
+
+export type UserUpsertWithoutMessagesAsCustomerInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMessagesAsCustomerInput, Prisma.UserUncheckedUpdateWithoutMessagesAsCustomerInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesAsCustomerInput, Prisma.UserUncheckedCreateWithoutMessagesAsCustomerInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMessagesAsCustomerInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMessagesAsCustomerInput, Prisma.UserUncheckedUpdateWithoutMessagesAsCustomerInput>
+}
+
+export type UserUpdateWithoutMessagesAsCustomerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptingBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  sessions?: Prisma.IntFieldUpdateOperationsInput | number
+  subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
+  bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
+  applications?: Prisma.SubsidyApplicationUpdateManyWithoutUserNestedInput
+  reviewedApplications?: Prisma.SubsidyApplicationUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  portfolio?: Prisma.PortfolioItemUpdateManyWithoutPhotographerNestedInput
+  highlights?: Prisma.HighlightCardUpdateManyWithoutPhotographerNestedInput
+  testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
+  withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
+  verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUpdateManyWithoutPhotographerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMessagesAsCustomerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptingBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  sessions?: Prisma.IntFieldUpdateOperationsInput | number
+  subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
+  bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
+  applications?: Prisma.SubsidyApplicationUncheckedUpdateManyWithoutUserNestedInput
+  reviewedApplications?: Prisma.SubsidyApplicationUncheckedUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  portfolio?: Prisma.PortfolioItemUncheckedUpdateManyWithoutPhotographerNestedInput
+  highlights?: Prisma.HighlightCardUncheckedUpdateManyWithoutPhotographerNestedInput
+  testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
+  withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
+  verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsPhotographer?: Prisma.ChatMessageUncheckedUpdateManyWithoutPhotographerNestedInput
+}
+
+export type UserUpsertWithoutMessagesAsPhotographerInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMessagesAsPhotographerInput, Prisma.UserUncheckedUpdateWithoutMessagesAsPhotographerInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesAsPhotographerInput, Prisma.UserUncheckedCreateWithoutMessagesAsPhotographerInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMessagesAsPhotographerInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMessagesAsPhotographerInput, Prisma.UserUncheckedUpdateWithoutMessagesAsPhotographerInput>
+}
+
+export type UserUpdateWithoutMessagesAsPhotographerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptingBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  sessions?: Prisma.IntFieldUpdateOperationsInput | number
+  subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  packages?: Prisma.PackageUpdateManyWithoutPhotographerNestedInput
+  bookingsAsCustomer?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  bookingsAsPhotographer?: Prisma.BookingUpdateManyWithoutPhotographerNestedInput
+  applications?: Prisma.SubsidyApplicationUpdateManyWithoutUserNestedInput
+  reviewedApplications?: Prisma.SubsidyApplicationUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  portfolio?: Prisma.PortfolioItemUpdateManyWithoutPhotographerNestedInput
+  highlights?: Prisma.HighlightCardUpdateManyWithoutPhotographerNestedInput
+  testimonials?: Prisma.TestimonialUpdateManyWithoutPhotographerNestedInput
+  withdrawals?: Prisma.WithdrawalUpdateManyWithoutPhotographerNestedInput
+  verifiedPayments?: Prisma.PaymentProofUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUpdateManyWithoutCustomerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMessagesAsPhotographerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptingBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  sessions?: Prisma.IntFieldUpdateOperationsInput | number
+  subsidyValidUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subsidyDocType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  packages?: Prisma.PackageUncheckedUpdateManyWithoutPhotographerNestedInput
+  bookingsAsCustomer?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  bookingsAsPhotographer?: Prisma.BookingUncheckedUpdateManyWithoutPhotographerNestedInput
+  applications?: Prisma.SubsidyApplicationUncheckedUpdateManyWithoutUserNestedInput
+  reviewedApplications?: Prisma.SubsidyApplicationUncheckedUpdateManyWithoutReviewedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  portfolio?: Prisma.PortfolioItemUncheckedUpdateManyWithoutPhotographerNestedInput
+  highlights?: Prisma.HighlightCardUncheckedUpdateManyWithoutPhotographerNestedInput
+  testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutPhotographerNestedInput
+  withdrawals?: Prisma.WithdrawalUncheckedUpdateManyWithoutPhotographerNestedInput
+  verifiedPayments?: Prisma.PaymentProofUncheckedUpdateManyWithoutVerifiedByNestedInput
+  messagesAsCustomer?: Prisma.ChatMessageUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 
@@ -2485,6 +2911,8 @@ export type UserCountOutputType = {
   testimonials: number
   withdrawals: number
   verifiedPayments: number
+  messagesAsCustomer: number
+  messagesAsPhotographer: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2499,6 +2927,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   testimonials?: boolean | UserCountOutputTypeCountTestimonialsArgs
   withdrawals?: boolean | UserCountOutputTypeCountWithdrawalsArgs
   verifiedPayments?: boolean | UserCountOutputTypeCountVerifiedPaymentsArgs
+  messagesAsCustomer?: boolean | UserCountOutputTypeCountMessagesAsCustomerArgs
+  messagesAsPhotographer?: boolean | UserCountOutputTypeCountMessagesAsPhotographerArgs
 }
 
 /**
@@ -2588,6 +3018,20 @@ export type UserCountOutputTypeCountVerifiedPaymentsArgs<ExtArgs extends runtime
   where?: Prisma.PaymentProofWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMessagesAsCustomerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatMessageWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMessagesAsPhotographerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatMessageWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2619,6 +3063,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   testimonials?: boolean | Prisma.User$testimonialsArgs<ExtArgs>
   withdrawals?: boolean | Prisma.User$withdrawalsArgs<ExtArgs>
   verifiedPayments?: boolean | Prisma.User$verifiedPaymentsArgs<ExtArgs>
+  messagesAsCustomer?: boolean | Prisma.User$messagesAsCustomerArgs<ExtArgs>
+  messagesAsPhotographer?: boolean | Prisma.User$messagesAsPhotographerArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2698,6 +3144,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   testimonials?: boolean | Prisma.User$testimonialsArgs<ExtArgs>
   withdrawals?: boolean | Prisma.User$withdrawalsArgs<ExtArgs>
   verifiedPayments?: boolean | Prisma.User$verifiedPaymentsArgs<ExtArgs>
+  messagesAsCustomer?: boolean | Prisma.User$messagesAsCustomerArgs<ExtArgs>
+  messagesAsPhotographer?: boolean | Prisma.User$messagesAsPhotographerArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2717,6 +3165,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     testimonials: Prisma.$TestimonialPayload<ExtArgs>[]
     withdrawals: Prisma.$WithdrawalPayload<ExtArgs>[]
     verifiedPayments: Prisma.$PaymentProofPayload<ExtArgs>[]
+    messagesAsCustomer: Prisma.$ChatMessagePayload<ExtArgs>[]
+    messagesAsPhotographer: Prisma.$ChatMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3142,6 +3592,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   testimonials<T extends Prisma.User$testimonialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$testimonialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestimonialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   withdrawals<T extends Prisma.User$withdrawalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$withdrawalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WithdrawalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   verifiedPayments<T extends Prisma.User$verifiedPaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$verifiedPaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentProofPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  messagesAsCustomer<T extends Prisma.User$messagesAsCustomerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesAsCustomerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  messagesAsPhotographer<T extends Prisma.User$messagesAsPhotographerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesAsPhotographerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3841,6 +4293,54 @@ export type User$verifiedPaymentsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.PaymentProofScalarFieldEnum | Prisma.PaymentProofScalarFieldEnum[]
+}
+
+/**
+ * User.messagesAsCustomer
+ */
+export type User$messagesAsCustomerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatMessage
+   */
+  select?: Prisma.ChatMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatMessage
+   */
+  omit?: Prisma.ChatMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatMessageInclude<ExtArgs> | null
+  where?: Prisma.ChatMessageWhereInput
+  orderBy?: Prisma.ChatMessageOrderByWithRelationInput | Prisma.ChatMessageOrderByWithRelationInput[]
+  cursor?: Prisma.ChatMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatMessageScalarFieldEnum | Prisma.ChatMessageScalarFieldEnum[]
+}
+
+/**
+ * User.messagesAsPhotographer
+ */
+export type User$messagesAsPhotographerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatMessage
+   */
+  select?: Prisma.ChatMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatMessage
+   */
+  omit?: Prisma.ChatMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatMessageInclude<ExtArgs> | null
+  where?: Prisma.ChatMessageWhereInput
+  orderBy?: Prisma.ChatMessageOrderByWithRelationInput | Prisma.ChatMessageOrderByWithRelationInput[]
+  cursor?: Prisma.ChatMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatMessageScalarFieldEnum | Prisma.ChatMessageScalarFieldEnum[]
 }
 
 /**

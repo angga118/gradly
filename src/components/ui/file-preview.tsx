@@ -31,6 +31,7 @@ export function FilePreview({
 
   useEffect(() => {
     if (!open) return;
+    const trigger = triggerRef.current;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       e.stopPropagation();
@@ -40,7 +41,7 @@ export function FilePreview({
     closeRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey, true);
-      triggerRef.current?.focus();
+      trigger?.focus();
     };
   }, [open]);
 

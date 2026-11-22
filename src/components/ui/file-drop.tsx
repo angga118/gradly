@@ -99,6 +99,7 @@ export function FileDrop({
           type="file"
           accept={accept}
           className="hidden"
+          onClick={(e) => e.stopPropagation()}
           onChange={(e) => handle(e.target.files?.[0])}
         />
       </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { useGradly } from "@/lib/store";
 import { Button } from "@/components/ui/button";
@@ -28,11 +28,13 @@ export function SiteHeader() {
   const { session, logout, notifications } = useGradly();
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [prevPath, setPrevPath] = useState(pathname);
 
-  useEffect(() => {
+  if (pathname !== prevPath) {
+    setPrevPath(pathname);
     setOpen(false);
     setMenu(false);
-  }, [pathname]);
+  }
 
   const unread = session
     ? notifications.filter((n) => n.userId === session.id && !n.readAt).length

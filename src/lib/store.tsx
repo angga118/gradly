@@ -212,7 +212,18 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
   const [ledger, setLedger] = useState<LedgerEntry[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [stats, setStats] = useState<Stats>(() => emptyStats());
-  const [draft, setDraftState] = useState<BookingDraft>(emptyDraftState);
+  const [draft, setDraftState] = useState<BookingDraft>(() => {
+    if (typeof window === "undefined") return emptyDraftState;
+    try {
+      const raw = window.sessionStorage.getItem(DRAFT_KEY);
+      return raw
+        ? { ...emptyDraftState, ...(JSON.parse(raw) as Partial<BookingDraft>) }
+        : emptyDraftState;
+    } catch {
+      // Draft rusak di storage — abaikan, mulai dari draft kosong.
+      return emptyDraftState;
+    }
+  });
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -235,24 +246,8 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
   );
 
   // Draft booking 3 langkah bertahan antar halaman (refresh tidak mengembalikan ke langkah 1).
-  // Efek hanya jalan di klien, jadi sessionStorage aman dipakai tanpa cek SSR.
-  const [draftReady, setDraftReady] = useState(false);
+  // Dibaca sekali saat init (RequireRole mencegah hydration mismatch), lalu ditulis tiap perubahan.
   useEffect(() => {
-    try {
-      const raw = window.sessionStorage.getItem(DRAFT_KEY);
-      if (raw) {
-        setDraftState({ ...emptyDraftState, ...(JSON.parse(raw) as Partial<BookingDraft>) });
-      }
-    } catch {
-      // Draft rusak di storage — abaikan, mulai dari draft kosong.
-      setDraftState(emptyDraftState);
-    } finally {
-      setDraftReady(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!draftReady) return;
     try {
       // Draft kosong = tidak ada draft tersimpan (mis. setelah booking berhasil).
       if (draft === emptyDraftState) window.sessionStorage.removeItem(DRAFT_KEY);
@@ -260,7 +255,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
     } catch {
       // Storage diblokir atau penuh — draft tetap hidup di state.
     }
-  }, [draft, draftReady]);
+  }, [draft]);
 
   const loadPublic = useCallback(async () => {
     const [pkgs, port, hi, testi, photogs, st] = await Promise.all([
@@ -277,7 +272,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
     if (testi) setTestimonials(testi.testimonials);
     if (photogs) setUsers(photogs.photographers);
     if (st) setStats(st);
-  }, []);
+  }, [getJSON]);
 
   const loadScoped = useCallback(async (user: User) => {
     const [bk, subs, notifs] = await Promise.all([
@@ -299,14 +294,14 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       if (wd) setWithdrawals(wd.withdrawals);
       if (pkgs) setPackages(pkgs.packages);
     }
-  }, []);
+  }, [getJSON]);
 
   const refetchMe = useCallback(async (): Promise<User | null> => {
     const me = await getJSON<{ user: User | null }>("/api/me");
     const user = me?.user ?? null;
     setSession(user);
     return user;
-  }, []);
+  }, [getJSON]);
 
   useEffect(() => {
     let cancelled = false;
@@ -325,7 +320,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [loadPublic, loadScoped]);
+  }, [loadPublic, loadScoped, getJSON]);
 
   const login = useCallback<GradlyContextValue["login"]>(
     async (email, password) => {
@@ -356,7 +351,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       // Verifikasi email belum ada: akun langsung bisa masuk.
       return login(input.email, input.password);
     },
-    [login],
+    [login, sendJSON],
   );
 
   /** Buang state sesi di klien (dipakai logout dan setelah ganti kata sandi). */
@@ -387,7 +382,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       setSession(updated);
       setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
     }
-  }, []);
+  }, [sendJSON]);
 
   const changePassword = useCallback<GradlyContextValue["changePassword"]>(
     async (current, next) => {
@@ -406,7 +401,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       setNotice("Kata sandi berhasil diubah. Silakan masuk kembali.");
       return { ok: true };
     },
-    [clearSessionState],
+    [clearSessionState, sendJSON],
   );
 
   const savePackage = useCallback<GradlyContextValue["savePackage"]>(
@@ -432,13 +427,13 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
         );
       }
     },
-    [packages],
+    [packages, sendJSON],
   );
 
   const deletePackage = useCallback<GradlyContextValue["deletePackage"]>(async (id) => {
     const res = await sendJSON<{ ok: boolean }>(`/api/packages/${id}`, "DELETE");
     if (res.ok) setPackages((prev) => prev.filter((p) => p.id !== id));
-  }, []);
+  }, [sendJSON]);
 
   const createBooking = useCallback<GradlyContextValue["createBooking"]>(async (input) => {
     const res = await sendJSON<{ booking: Booking }>("/api/bookings", "POST", input);
@@ -448,7 +443,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
     const booking = res.data.booking;
     setBookings((prev) => [booking, ...prev]);
     return booking;
-  }, []);
+  }, [sendJSON]);
 
   const setBookingStatus = useCallback<GradlyContextValue["setBookingStatus"]>(
     async (id, status) => {
@@ -460,7 +455,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
         setBookings((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
       }
     },
-    [],
+    [sendJSON],
   );
 
   const attachPayment = useCallback<GradlyContextValue["attachPayment"]>(
@@ -476,7 +471,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
         setBookings((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
       }
     },
-    [],
+    [sendForm],
   );
 
   const submitSubsidy = useCallback<GradlyContextValue["submitSubsidy"]>(async (input) => {
@@ -495,7 +490,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
     const app = res.data.subsidyApplication;
     setSubsidyApplications((prev) => [app, ...prev]);
     return app;
-  }, []);
+  }, [sendForm]);
 
   const reviewSubsidy = useCallback<GradlyContextValue["reviewSubsidy"]>(
     async (id, decision, reason) => {
@@ -511,7 +506,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
         );
       }
     },
-    [],
+    [sendJSON],
   );
 
   const markNotificationRead = useCallback<GradlyContextValue["markNotificationRead"]>(
@@ -524,7 +519,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
         );
       }
     },
-    [],
+    [sendJSON],
   );
 
   const markAllRead = useCallback(async () => {
@@ -533,7 +528,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       const now = new Date().toISOString();
       setNotifications((prev) => prev.map((n) => (n.readAt ? n : { ...n, readAt: now })));
     }
-  }, []);
+  }, [sendJSON]);
 
   const addPortfolio = useCallback<GradlyContextValue["addPortfolio"]>(async (input) => {
     const form = new FormData();
@@ -550,12 +545,12 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
     }
     const item = res.data.portfolio;
     setPortfolio((prev) => [item, ...prev]);
-  }, []);
+  }, [sendForm]);
 
   const removePortfolio = useCallback<GradlyContextValue["removePortfolio"]>(async (id) => {
     const res = await sendJSON<{ ok: boolean }>(`/api/portfolio/${id}`, "DELETE");
     if (res.ok) setPortfolio((prev) => prev.filter((p) => p.id !== id));
-  }, []);
+  }, [sendJSON]);
 
   const requestWithdrawal = useCallback<GradlyContextValue["requestWithdrawal"]>(
     async (amount, bankAccount) => {
@@ -570,7 +565,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       setWithdrawals((prev) => [w, ...prev]);
       return { ok: true };
     },
-    [],
+    [sendJSON],
   );
 
   const verifyPayment = useCallback<GradlyContextValue["verifyPayment"]>(
@@ -583,7 +578,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       if (session) await loadScoped(session);
       return { ok: true };
     },
-    [session, loadScoped],
+    [session, loadScoped, sendJSON],
   );
 
   const processWithdrawal = useCallback<GradlyContextValue["processWithdrawal"]>(
@@ -595,7 +590,7 @@ export function GradlyProvider({ children }: { children: ReactNode }) {
       if (session) await loadScoped(session);
       return { ok: true };
     },
-    [session, loadScoped],
+    [session, loadScoped, sendJSON],
   );
 
   const setDraft = useCallback<GradlyContextValue["setDraft"]>((patch) => {

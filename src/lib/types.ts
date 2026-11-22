@@ -105,6 +105,17 @@ export interface AppNotification {
   createdAt: string;
 }
 
+export type ChatMessage = {
+  id: string;
+  customerId: string;
+  photographerId: string;
+  senderRole: "customer" | "photographer";
+  body: string;
+  createdAt: string;
+  customerName: string;
+  photographerName: string;
+};
+
 export interface PortfolioItem {
   id: string;
   photographerId: string;

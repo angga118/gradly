@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/field";
@@ -37,27 +37,36 @@ export function PackageFormModal({
   const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!open) return;
-    setName(initial?.name ?? "");
-    setDescription(initial?.description ?? "");
-    setPrice(initial ? String(initial.price) : "");
-    setSubsidyPrice(
-      initial?.subsidyPrice != null ? String(initial.subsidyPrice) : "",
-    );
-    setSubsidyEnabled(initial?.subsidyEnabled ?? false);
-    setKipkOnly(initial?.kipkOnly ?? false);
-    setFeatures(initial && initial.features.length ? initial.features : [""]);
-    setIsActive(initial?.isActive ?? true);
-    setError(null);
-  }, [open, initial]);
+  // Field diawali dalam keadaan tertutup; pakai `false` agar mount dengan open=true
+  // tetap menjalankan sinkronisasi dari `initial`.
+  const [prevOpen, setPrevOpen] = useState(false);
+  const [prevInitial, setPrevInitial] = useState(initial);
+  if (open !== prevOpen || initial !== prevInitial) {
+    setPrevOpen(open);
+    setPrevInitial(initial);
+    if (open) {
+      setName(initial?.name ?? "");
+      setDescription(initial?.description ?? "");
+      setPrice(initial ? String(initial.price) : "");
+      setSubsidyPrice(
+        initial?.subsidyPrice != null ? String(initial.subsidyPrice) : "",
+      );
+      setSubsidyEnabled(initial?.subsidyEnabled ?? false);
+      setKipkOnly(initial?.kipkOnly ?? false);
+      setFeatures(initial && initial.features.length ? initial.features : [""]);
+      setIsActive(initial?.isActive ?? true);
+      setError(null);
+    }
+  }
 
   const priceNum = Number(price) || 0;
   const subsidyBlocked = priceNum > SUBSIDY_LIMIT;
 
-  useEffect(() => {
+  const [prevBlocked, setPrevBlocked] = useState(false);
+  if (subsidyBlocked !== prevBlocked) {
+    setPrevBlocked(subsidyBlocked);
     if (subsidyBlocked) setSubsidyEnabled(false);
-  }, [subsidyBlocked]);
+  }
 
   // Paket KIP-K dan harga subsidi saling meniadakan (aturan server).
   function toggleKipkOnly(next: boolean) {

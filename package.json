@@ -19,7 +19,7 @@
     "@prisma/client": "^7.10.0",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^13.0.3",
-    "next": "16.4.1",
+    "next": "16.4.6",
     "next-auth": "^5.0.0-beta.32",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -38,5 +38,8 @@
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5"
+  },
+  "overrides": {
+    "effect": "3.22.5"
   }
 }

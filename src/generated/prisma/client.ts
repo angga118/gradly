@@ -101,3 +101,8 @@ export type Withdrawal = Prisma.WithdrawalModel
  * 
  */
 export type Counter = Prisma.CounterModel
+/**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = Prisma.ChatMessageModel

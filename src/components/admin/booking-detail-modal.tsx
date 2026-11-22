@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useGradly } from "@/lib/store";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -41,10 +41,13 @@ export function AdminBookingDetailModal({
     ? (bookings.find((b) => b.id === initialBooking.id) ?? initialBooking)
     : null;
 
-  useEffect(() => {
+  const [prevBookingId, setPrevBookingId] = useState(booking?.id);
+
+  if (booking?.id !== prevBookingId) {
+    setPrevBookingId(booking?.id);
     setError(null);
     setVerifying(false);
-  }, [booking?.id]);
+  }
 
   async function verify(bookingId: string) {
     setVerifying(true);

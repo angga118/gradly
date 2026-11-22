@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Worktree lane yang bersarang di repo tidak boleh ikut di-lint dari checkout utama.
+    ".slim/worktrees/**",
   ]),
 ]);
 

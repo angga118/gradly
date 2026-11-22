@@ -92,3 +92,9 @@ export const reviewSchema = z.object({
   decision: z.enum(["Terverifikasi", "Ditolak"]),
   reason: z.string().optional(),
 })
+
+export const chatMessageSchema = z.object({
+  photographerId: z.string().min(1),
+  customerId: z.string().min(1),
+  body: z.string().trim().min(1, "Pesan tidak boleh kosong.").max(1000, "Pesan maksimal 1000 karakter."),
+})

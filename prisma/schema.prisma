@@ -40,6 +40,8 @@ model User {
   testimonials            Testimonial[]
   withdrawals             Withdrawal[]
   verifiedPayments        PaymentProof[]       @relation("VerifiedPayments")
+  messagesAsCustomer      ChatMessage[]        @relation("CustomerChat")
+  messagesAsPhotographer  ChatMessage[]        @relation("PhotographerChat")
 }
 
 model SubsidyApplication {
@@ -201,4 +203,18 @@ model Withdrawal {
 model Counter {
   name  String @id
   value Int    @default(0)
+}
+
+model ChatMessage {
+  id             String   @id @default(cuid())
+  customerId     String
+  customer       User     @relation("CustomerChat", fields: [customerId], references: [id])
+  photographerId String
+  photographer   User     @relation("PhotographerChat", fields: [photographerId], references: [id])
+  senderRole     String
+  body           String
+  createdAt      DateTime @default(now())
+
+  @@index([customerId, photographerId, createdAt])
+  @@index([photographerId, createdAt])
 }
