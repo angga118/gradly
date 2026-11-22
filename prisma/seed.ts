@@ -46,6 +46,7 @@ async function main() {
   await prisma.testimonial.deleteMany()
   await prisma.withdrawal.deleteMany()
   await prisma.package.deleteMany()
+  await prisma.chatMessage.deleteMany()
   await prisma.user.deleteMany()
   await prisma.counter.deleteMany()
 
