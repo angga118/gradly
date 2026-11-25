@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useGradly } from "@/lib/store";
 import { formatDate } from "@/lib/format";
+import { coverForClient } from "@/lib/seed-media";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Select } from "@/components/ui/field";
@@ -57,6 +58,14 @@ export function PortofolioView() {
   const myPackages = useMemo(
     () => packages.filter((p) => p.photographerId === session?.id),
     [packages, session?.id],
+  );
+  const myHighlights = useMemo(
+    () => highlights.filter((h) => h.photographerId === session?.id),
+    [highlights, session?.id],
+  );
+  const myTestimonials = useMemo(
+    () => testimonials.filter((t) => t.photographerId === session?.id),
+    [testimonials, session?.id],
   );
 
   const years = useMemo(
@@ -159,7 +168,7 @@ export function PortofolioView() {
             <Card key={item.id} className="group overflow-hidden">
               <PhotoPlaceholder
                 tone={item.tone}
-                fileKey={item.key}
+                fileKey={item.key || coverForClient(portfolio, item.clientName)}
                 alt={item.title}
                 label={item.title}
                 className="aspect-[4/3] w-full"
@@ -193,43 +202,59 @@ export function PortofolioView() {
           title="Yang klien rasakan"
           subtitle="Keunggulan yang membuat sesi terasa nyaman"
         />
-        <div className="mt-5 grid gap-4 sm:grid-cols-3">
-          {highlights.map((h) => (
-            <div
-              key={h.id}
-              className="rounded-2xl border border-ink/10 bg-white/60 p-5"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sky/70 text-ink">
-                <Icon name={HIGHLIGHT_ICONS[h.icon] ?? "sparkles"} size={18} />
-              </span>
-              <p className="mt-3 font-serif text-lg">{h.title}</p>
-              <p className="mt-1 text-sm text-ink/60">{h.text}</p>
-            </div>
-          ))}
-        </div>
+        {myHighlights.length === 0 ? (
+          <EmptyState
+            icon="sparkles"
+            title="Belum ada highlight"
+            description="Tambahkan keunggulan sesimu agar klien lebih mudah memilih."
+          />
+        ) : (
+          <div className="mt-5 grid gap-4 sm:grid-cols-3">
+            {myHighlights.map((h) => (
+              <div
+                key={h.id}
+                className="rounded-2xl border border-ink/10 bg-white/60 p-5"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sky/70 text-ink">
+                  <Icon name={HIGHLIGHT_ICONS[h.icon] ?? "sparkles"} size={18} />
+                </span>
+                <p className="mt-3 font-serif text-lg">{h.title}</p>
+                <p className="mt-1 text-sm text-ink/60">{h.text}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </Card>
 
       <Card className="p-5 sm:p-6">
         <CardHeader title="Kata Mereka" subtitle="Testimoni klien setelah sesi" />
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((t) => (
-            <figure
-              key={t.id}
-              className="flex flex-col rounded-2xl border border-ink/10 bg-white/60 p-5"
-            >
-              <Icon name="quote" size={22} className="text-ink/25" />
-              <blockquote className="mt-3 flex-1 text-sm text-ink/75">
-                {t.message}
-              </blockquote>
-              <figcaption className="mt-4 flex items-center justify-between gap-3 border-t border-ink/8 pt-3">
-                <span className="truncate text-sm font-medium">
-                  {t.clientName}
-                </span>
-                <Rating value={t.rating} />
-              </figcaption>
-            </figure>
-          ))}
-        </div>
+        {myTestimonials.length === 0 ? (
+          <EmptyState
+            icon="quote"
+            title="Belum ada testimoni"
+            description="Testimoni klien akan tampil di sini setelah sesi selesai."
+          />
+        ) : (
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {myTestimonials.map((t) => (
+              <figure
+                key={t.id}
+                className="flex flex-col rounded-2xl border border-ink/10 bg-white/60 p-5"
+              >
+                <Icon name="quote" size={22} className="text-ink/25" />
+                <blockquote className="mt-3 flex-1 text-sm text-ink/75">
+                  {t.message}
+                </blockquote>
+                <figcaption className="mt-4 flex items-center justify-between gap-3 border-t border-ink/8 pt-3">
+                  <span className="truncate text-sm font-medium">
+                    {t.clientName}
+                  </span>
+                  <Rating value={t.rating} />
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
       </Card>
 
       <Modal

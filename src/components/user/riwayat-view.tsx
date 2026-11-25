@@ -7,6 +7,7 @@ import { cn } from "@/lib/cn";
 import { formatDate, formatDateTime, rupiah } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { FileThumb } from "@/components/ui/file-image";
 import { Chip } from "@/components/ui/chip";
 import { StatusChip } from "@/components/ui/status-chip";
 import { Tabs, TabPanel, type TabItem } from "@/components/ui/tabs";
@@ -196,7 +197,12 @@ function BookingRow({
                 {booking.payment ? (
                   <div className="mt-3 space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <Icon name="file" size={16} className="text-ink/60" />
+                      <FileThumb
+                        fileKey={booking.payment.key}
+                        alt={`Bukti transfer ${booking.id}`}
+                        icon="card"
+                        className="h-8 w-8"
+                      />
                       <span className="truncate font-medium">{booking.payment.name}</span>
                     </div>
                     <p className="text-xs text-ink/55">

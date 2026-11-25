@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200">
+<defs><linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFFDF8"/><stop offset="100%" stop-color="#F4EEE2"/></linearGradient>
+<radialGradient id="docGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+<filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
+    <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#20323A" flood-opacity=".14"/>
+  </filter>
+
+<filter id="grain" x="-4%" y="-4%" width="108%" height="108%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="n"/>
+  <feColorMatrix in="n" type="saturate" values="0"/>
+  <feComponentTransfer><feFuncA type="table" tableValues="0 0.055"/></feComponentTransfer>
+</filter></defs>
+
+<rect width="900" height="1200" fill="#ECE6D9"/>
+<circle cx="90" cy="105" r="180" fill="#B58A63" opacity=".06"/>
+<circle cx="830" cy="1110" r="220" fill="#B58A63" opacity=".05"/>
+<rect x="44" y="40" width="812" height="1120" rx="20" fill="url(#paperGrad)" filter="url(#shadow)"/>
+<rect x="44.5" y="40.5" width="811" height="1119" rx="20" fill="none" stroke="#D8D0C0"/>
+<rect x="44" y="40" width="812" height="16" rx="8" fill="#B58A63"/>
+
+<rect x="95" y="330" width="10" height="590" rx="5" fill="#B58A63" opacity=".55"/>
+<g transform="translate(450 155) scale(1)"><circle r="44" fill="#B58A63" opacity=".13"/><path d="M0 -26 L26 22 H-26Z" fill="#B58A63"/><circle cy="6" r="6" fill="#FFFDF8"/></g>
+<text x="450" y="245" fill="#20323A" font-family="Georgia, serif" font-size="37" font-weight="bold" text-anchor="middle">BUKTI TRANSFER</text>
+<text x="450" y="282" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">DOKUMEN ILUSTRASI</text>
+<rect x="95" y="330" width="710" height="590" rx="18" fill="#FFFDF8" stroke="#D8D0C0"/>
+<rect x="95" y="330" width="710" height="8" rx="4" fill="#B58A63" opacity=".5"/>
+<text x="110" y="460" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">PENGIRIM</text><text x="790" y="460" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">— — — — —</text><line x1="110" y1="473" x2="790" y2="473" stroke="#D8D0C0" stroke-dasharray="2 8"/><text x="110" y="548" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">PENERIMA</text><text x="790" y="548" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">— — — — —</text><line x1="110" y1="561" x2="790" y2="561" stroke="#D8D0C0" stroke-dasharray="2 8"/><text x="110" y="636" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">NOMINAL</text><text x="790" y="636" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">Rp — — — —</text><line x1="110" y1="649" x2="790" y2="649" stroke="#D8D0C0" stroke-dasharray="2 8"/><text x="110" y="724" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">TANGGAL</text><text x="790" y="724" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">TTTT-BB-HH</text><line x1="110" y1="737" x2="790" y2="737" stroke="#D8D0C0" stroke-dasharray="2 8"/><text x="110" y="812" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">KETERANGAN</text><text x="790" y="812" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">— — — — —</text><line x1="110" y1="825" x2="790" y2="825" stroke="#D8D0C0" stroke-dasharray="2 8"/>
+<rect x="110" y="860" width="180" height="42" rx="21" fill="#B58A63" opacity=".14"/>
+<circle cx="136" cy="881" r="10" fill="#B58A63" opacity=".5"/>
+<path d="M131 881 l4 4 l8 -9" fill="none" stroke="#FFFDF8" stroke-width="3"/>
+<text x="158" y="888" fill="#B58A63" font-family="Verdana, Geneva, sans-serif" font-size="15" font-weight="bold" text-anchor="start">BERHASIL</text>
+<rect x="520.0" y="852" width="3" height="56" fill="#324A52" opacity="0.73"/><rect x="526.0" y="852" width="5" height="56" fill="#324A52" opacity="0.73"/><rect x="535.0" y="852" width="3" height="56" fill="#324A52" opacity="0.82"/><rect x="543.0" y="852" width="5" height="56" fill="#324A52" opacity="0.84"/><rect x="555.0" y="852" width="3" height="56" fill="#324A52" opacity="0.80"/><rect x="564.0" y="852" width="7" height="56" fill="#324A52" opacity="0.70"/><rect x="578.0" y="852" width="4" height="56" fill="#324A52" opacity="0.80"/><rect x="586.0" y="852" width="2" height="56" fill="#324A52" opacity="0.49"/><rect x="594.0" y="852" width="3" height="56" fill="#324A52" opacity="0.54"/><rect x="601.0" y="852" width="4" height="56" fill="#324A52" opacity="0.72"/><rect x="609.0" y="852" width="4" height="56" fill="#324A52" opacity="0.51"/><rect x="618.0" y="852" width="4" height="56" fill="#324A52" opacity="0.58"/><rect x="627.0" y="852" width="6" height="56" fill="#324A52" opacity="0.71"/><rect x="638.0" y="852" width="6" height="56" fill="#324A52" opacity="0.61"/><rect x="650.0" y="852" width="6" height="56" fill="#324A52" opacity="0.73"/><rect x="663.0" y="852" width="2" height="56" fill="#324A52" opacity="0.60"/><rect x="670.0" y="852" width="3" height="56" fill="#324A52" opacity="0.59"/><rect x="676.0" y="852" width="5" height="56" fill="#324A52" opacity="0.51"/><rect x="687.0" y="852" width="4" height="56" fill="#324A52" opacity="0.60"/><rect x="697.0" y="852" width="3" height="56" fill="#324A52" opacity="0.78"/><rect x="705.0" y="852" width="4" height="56" fill="#324A52" opacity="0.83"/><rect x="712.0" y="852" width="5" height="56" fill="#324A52" opacity="0.54"/><rect x="723.0" y="852" width="7" height="56" fill="#324A52" opacity="0.71"/><rect x="736.0" y="852" width="7" height="56" fill="#324A52" opacity="0.83"/><rect x="748.0" y="852" width="7" height="56" fill="#324A52" opacity="0.65"/><rect x="758.0" y="852" width="6" height="56" fill="#324A52" opacity="0.58"/><rect x="768.0" y="852" width="6" height="56" fill="#324A52" opacity="0.46"/><rect x="777.0" y="852" width="6" height="56" fill="#324A52" opacity="0.65"/>
+<text x="450" y="990" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="normal" text-anchor="middle">Contoh - bukan dokumen resmi</text>
+<text x="450" y="1025" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="12" font-weight="normal" text-anchor="middle" opacity="0.8">Tidak memuat data pribadi atau data rekening</text>
+<rect width="900" height="1200" fill="url(#paperGrad)" opacity="0"/>
+<rect width="900" height="1200" filter="url(#grain)" opacity="0.22" pointer-events="none"/>
+</svg>

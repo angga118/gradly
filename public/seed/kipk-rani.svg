@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200">
+<defs><linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFFDF8"/><stop offset="100%" stop-color="#F4EEE2"/></linearGradient>
+<radialGradient id="docGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+<filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
+    <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#20323A" flood-opacity=".14"/>
+  </filter>
+
+<filter id="grain" x="-4%" y="-4%" width="108%" height="108%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="n"/>
+  <feColorMatrix in="n" type="saturate" values="0"/>
+  <feComponentTransfer><feFuncA type="table" tableValues="0 0.055"/></feComponentTransfer>
+</filter></defs>
+
+<rect width="900" height="1200" fill="#ECE6D9"/>
+<circle cx="90" cy="105" r="180" fill="#7E9C88" opacity=".06"/>
+<circle cx="830" cy="1110" r="220" fill="#7E9C88" opacity=".05"/>
+<rect x="44" y="40" width="812" height="1120" rx="20" fill="url(#paperGrad)" filter="url(#shadow)"/>
+<rect x="44.5" y="40.5" width="811" height="1119" rx="20" fill="none" stroke="#D8D0C0"/>
+<rect x="44" y="40" width="812" height="16" rx="8" fill="#7E9C88"/>
+
+<g transform="translate(450 158) scale(1)"><circle r="44" fill="#7E9C88" opacity=".13"/><path d="M0 -24 L24 0 L0 24 L-24 0Z" fill="#7E9C88"/><circle r="7" fill="#FFFDF8"/></g>
+<text x="450" y="250" fill="#20323A" font-family="Georgia, serif" font-size="40" font-weight="bold" text-anchor="middle">KARTU KIP-K</text>
+<text x="450" y="286" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">DOKUMEN ILUSTRASI</text>
+<rect x="95" y="335" width="710" height="590" rx="20" fill="#FFFDF8" stroke="#D8D0C0"/>
+<rect x="95" y="335" width="710" height="12" rx="6" fill="#7E9C88" opacity=".72"/>
+<circle cx="760" cy="420" r="52" fill="none" stroke="#7E9C88" stroke-width="3" stroke-dasharray="8 9" opacity=".55"/>
+<text x="760" y="426" fill="#7E9C88" font-family="Verdana, Geneva, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">CONTOH</text>
+<text x="125" y="470" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">NAMA</text><text x="775" y="470" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">— — — — —</text><line x1="125" y1="483" x2="775" y2="483" stroke="#D8D0C0" stroke-dasharray="2 8"/><text x="125" y="552" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">NOMOR PESERTA</text><text x="775" y="552" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">— — — — —</text><line x1="125" y1="565" x2="775" y2="565" stroke="#D8D0C0" stroke-dasharray="2 8"/><text x="125" y="634" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">PROGRAM STUDI</text><text x="775" y="634" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">— — — — —</text><line x1="125" y1="647" x2="775" y2="647" stroke="#D8D0C0" stroke-dasharray="2 8"/><text x="125" y="716" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">TAHUN AKADEMIK</text><text x="775" y="716" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">TTTT / TTTT</text><line x1="125" y1="729" x2="775" y2="729" stroke="#D8D0C0" stroke-dasharray="2 8"/><text x="125" y="798" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="bold" text-anchor="start">STATUS</text><text x="775" y="798" fill="#20323A" font-family="Verdana, Geneva, sans-serif" font-size="19" font-weight="normal" text-anchor="end">CONTOH</text><line x1="125" y1="811" x2="775" y2="811" stroke="#D8D0C0" stroke-dasharray="2 8"/>
+<line x1="125" y1="900" x2="400" y2="900" stroke="#20323A" stroke-opacity=".35" stroke-dasharray="6 6"/>
+<text x="262" y="930" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">TANDA TANGAN</text>
+<rect x="470.0" y="865" width="4" height="58" fill="#7E9C88" opacity="0.65"/><rect x="478.0" y="865" width="6" height="58" fill="#7E9C88" opacity="0.58"/><rect x="491.0" y="865" width="5" height="58" fill="#7E9C88" opacity="0.64"/><rect x="499.0" y="865" width="6" height="58" fill="#7E9C88" opacity="0.82"/><rect x="508.0" y="865" width="6" height="58" fill="#7E9C88" opacity="0.62"/><rect x="519.0" y="865" width="4" height="58" fill="#7E9C88" opacity="0.71"/><rect x="530.0" y="865" width="7" height="58" fill="#7E9C88" opacity="0.72"/><rect x="544.0" y="865" width="4" height="58" fill="#7E9C88" opacity="0.64"/><rect x="554.0" y="865" width="3" height="58" fill="#7E9C88" opacity="0.77"/><rect x="563.0" y="865" width="6" height="58" fill="#7E9C88" opacity="0.61"/><rect x="573.0" y="865" width="5" height="58" fill="#7E9C88" opacity="0.67"/><rect x="582.0" y="865" width="3" height="58" fill="#7E9C88" opacity="0.53"/><rect x="590.0" y="865" width="5" height="58" fill="#7E9C88" opacity="0.76"/><rect x="600.0" y="865" width="5" height="58" fill="#7E9C88" opacity="0.84"/><rect x="612.0" y="865" width="4" height="58" fill="#7E9C88" opacity="0.76"/><rect x="620.0" y="865" width="7" height="58" fill="#7E9C88" opacity="0.53"/><rect x="630.0" y="865" width="5" height="58" fill="#7E9C88" opacity="0.75"/><rect x="642.0" y="865" width="2" height="58" fill="#7E9C88" opacity="0.46"/><rect x="651.0" y="865" width="7" height="58" fill="#7E9C88" opacity="0.83"/><rect x="665.0" y="865" width="7" height="58" fill="#7E9C88" opacity="0.73"/><rect x="675.0" y="865" width="3" height="58" fill="#7E9C88" opacity="0.63"/><rect x="681.0" y="865" width="2" height="58" fill="#7E9C88" opacity="0.79"/><rect x="689.0" y="865" width="3" height="58" fill="#7E9C88" opacity="0.69"/><rect x="696.0" y="865" width="4" height="58" fill="#7E9C88" opacity="0.53"/>
+<text x="450" y="1000" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="14" font-weight="normal" text-anchor="middle">Contoh - bukan kartu resmi</text>
+<text x="450" y="1035" fill="#6E7A78" font-family="Verdana, Geneva, sans-serif" font-size="12" font-weight="normal" text-anchor="middle" opacity="0.8">Tanpa nomor identitas atau data pribadi</text>
+<rect width="900" height="1200" fill="url(#paperGrad)" opacity="0"/>
+<rect width="900" height="1200" filter="url(#grain)" opacity="0.22" pointer-events="none"/>
+</svg>

@@ -152,6 +152,19 @@ for (const [p, shape] of APIS) {
   check(`GET ${p} → 200 + shape`, res.status === 200 && shape(body), res.status !== 200 ? `got ${res.status}` : "unexpected shape")
 }
 
+const seedImage = await req("/seed/foto-01.svg", null)
+check(
+  "GET /seed/foto-01.svg → 200 + SVG",
+  seedImage.status === 200 && (seedImage.headers.get("content-type") ?? "").includes("svg"),
+  `got ${seedImage.status}`,
+)
+const portfolioSeed = (await json(await req("/api/portfolio", null)))?.portfolio
+check(
+  "portofolio seed punya key gambar",
+  Array.isArray(portfolioSeed) && portfolioSeed.some((p) => p.key?.startsWith("seed/")),
+  "tidak ada PortfolioItem dengan key seed/",
+)
+
 const unauth = await req("/api/bookings", null)
 check("GET /api/bookings unauthenticated → 401", unauth.status === 401, `got ${unauth.status}`)
 

@@ -3,9 +3,11 @@
 import { useMemo, useState } from "react";
 import { useGradly } from "@/lib/store";
 import { formatDate } from "@/lib/format";
+import { coverForClient, coverForPhotographer } from "@/lib/seed-media";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
+import { FileImage } from "@/components/ui/file-image";
 import { Icon } from "@/components/ui/icons";
 import { Avatar, EmptyState, Rating, SectionHeading } from "@/components/ui/misc";
 import { Tabs, TabPanel } from "@/components/ui/tabs";
@@ -86,7 +88,7 @@ export function FotograferDetail({ id }: { id: string }) {
       {/* ── Profil fotografer ──────────────────────────────── */}
       <Reveal>
         <Card className="overflow-hidden">
-          <div className="relative h-32 bg-gradient-to-br from-sage via-sage/60 to-sky/70 sm:h-44">
+          <div className="relative h-44 bg-gradient-to-br from-sage via-sage/60 to-sky/70 sm:h-56">
             <div
               className="absolute inset-0 opacity-[0.14]"
               style={{
@@ -95,14 +97,18 @@ export function FotograferDetail({ id }: { id: string }) {
               }}
               aria-hidden="true"
             />
+            <FileImage
+              fileKey={coverForPhotographer(portfolio, id)}
+              alt={`Karya terbaru ${name}`}
+            />
           </div>
           <div className="px-6 pb-6">
-            <div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="relative z-10 -mt-14 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex items-end gap-4">
                 <span className="rounded-full border-4 border-paper">
                   <Avatar name={name} size={88} />
                 </span>
-                <div className="pb-1">
+                <div className="pb-1 pt-14">
                   <h1 className="font-serif text-2xl leading-tight sm:text-3xl">{name}</h1>
                   <p className="text-sm text-ink/60">
                     {fotografer.studio || "Fotografer"} · {fotografer.city}
@@ -204,7 +210,7 @@ export function FotograferDetail({ id }: { id: string }) {
                   <figure>
                     <PhotoTile
                       tone={item.tone as "butter" | "sky" | "sage"}
-                      fileKey={item.key}
+                      fileKey={item.key || coverForPhotographer(items, id)}
                       alt={item.title}
                       label={item.title}
                       meta={item.location}
@@ -263,9 +269,15 @@ export function FotograferDetail({ id }: { id: string }) {
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {fotograferTestimonials.map((t, i) => (
               <Reveal key={t.id} delay={i * 90}>
-                <Card className="flex h-full flex-col bg-paper/85 p-6">
+                <Card className="relative flex h-full flex-col bg-paper/85 p-6">
                   <Icon name="quote" size={26} className="text-ink/20" />
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/80">
+                  <div className="absolute right-6 top-6 h-14 w-14 overflow-hidden rounded-xl border border-paper/80 shadow-soft">
+                    <FileImage
+                      fileKey={coverForClient(items, t.clientName)}
+                      alt={`Momen sesi ${t.clientName}`}
+                    />
+                  </div>
+                  <p className="mt-3 flex-1 pr-14 text-sm leading-relaxed text-ink/80">
                     {t.message}
                   </p>
                   <div className="mt-5 flex items-center gap-3 border-t border-ink/10 pt-4">

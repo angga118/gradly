@@ -2,9 +2,17 @@
 
 import Link from "next/link";
 import { useGradly } from "@/lib/store";
-import { FAQ } from "@/lib/mock-data";
+import {
+  FAQ,
+  seedPackages,
+  seedPortfolio,
+  seedTestimonials,
+  seedUsers,
+} from "@/lib/mock-data";
 import { rupiah, rupiahShort } from "@/lib/format";
+import { coverForClient, coverForPhotographer } from "@/lib/seed-media";
 import { Button } from "@/components/ui/button";
+import { FileImage } from "@/components/ui/file-image";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icons";
@@ -51,12 +59,18 @@ const SUBSIDY_POINTS = [
 ];
 
 export function Landing() {
-  const { packages, portfolio, testimonials, users, stats } = useGradly();
+  const { packages, portfolio, testimonials, users, stats, hydrated } = useGradly();
 
-  const fotografer = users.find((u) => u.role === "fotografer");
-  const activePackages = packages.filter((p) => p.isActive);
+  // Tampilkan data seed sampai request selesai supaya kartu tidak kosong saat load.
+  const shownPackages = hydrated ? packages : seedPackages;
+  const shownPortfolio = hydrated ? portfolio : seedPortfolio;
+  const shownTestimonials = hydrated ? testimonials : seedTestimonials;
+  const shownUsers = hydrated ? users : seedUsers;
+
+  const fotografer = shownUsers.find((u) => u.role === "fotografer");
+  const activePackages = shownPackages.filter((p) => p.isActive);
   const harapan = activePackages.find((p) => p.kipkOnly);
-  const heroShot = portfolio.find((item) => item.key);
+  const heroShot = shownPortfolio.find((item) => item.key);
   const featured = [...activePackages]
     .sort((a, b) => Number(Boolean(b.popular)) - Number(Boolean(a.popular)))
     .slice(0, 3);
@@ -165,18 +179,30 @@ export function Landing() {
           <Reveal delay={120}>
             <div className="relative mx-auto h-[400px] w-full max-w-[440px] sm:h-[470px]">
               <div
-                className="absolute left-1 top-3 h-[76%] w-[68%] -rotate-6 rounded-[1.75rem] bg-butter/70 shadow-soft"
+                className="absolute left-1 top-3 h-[76%] w-[68%] -rotate-6 overflow-hidden rounded-[1.75rem] bg-butter/70 shadow-soft"
                 aria-hidden="true"
-              />
+              >
+                <FileImage
+                  fileKey={coverForPhotographer(shownPortfolio, "p2")}
+                  alt=""
+                  className="h-full w-full object-cover opacity-90"
+                />
+              </div>
               <div
-                className="absolute bottom-6 right-0 h-[68%] w-[60%] rotate-6 rounded-[1.75rem] bg-sky/70 shadow-soft"
+                className="absolute bottom-6 right-0 h-[68%] w-[60%] rotate-6 overflow-hidden rounded-[1.75rem] bg-sky/70 shadow-soft"
                 aria-hidden="true"
-              />
+              >
+                <FileImage
+                  fileKey={coverForPhotographer(shownPortfolio, "p3")}
+                  alt=""
+                  className="h-full w-full object-cover opacity-90"
+                />
+              </div>
 
               <div className="absolute left-1/2 top-1/2 w-[74%] -translate-x-1/2 -translate-y-1/2 rotate-[-2deg]">
                 <PhotoTile
                   tone="sage"
-                  fileKey={heroShot?.key}
+                  fileKey={heroShot?.key ?? coverForPhotographer(shownPortfolio, "p1")}
                   alt={heroShot?.title ?? "Karya fotografer Gradly"}
                   label={heroShot?.title ?? "Senja di Dago"}
                   meta={heroShot?.location ?? "Golden Graduate · Bandung"}
@@ -379,11 +405,11 @@ export function Landing() {
           </div>
         </Reveal>
         <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-3">
-          {portfolio.slice(0, 6).map((item, i) => (
+          {shownPortfolio.slice(0, 6).map((item, i) => (
             <Reveal key={item.id} delay={i * 70}>
               <PhotoTile
                 tone={item.tone as "butter" | "sky" | "sage"}
-                fileKey={item.key}
+                fileKey={item.key || coverForPhotographer(shownPortfolio, "p1")}
                 alt={item.title}
                 label={item.title}
                 meta={item.location}
@@ -405,11 +431,17 @@ export function Landing() {
             />
           </Reveal>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {testimonials.map((t, i) => (
+            {shownTestimonials.map((t, i) => (
               <Reveal key={t.id} delay={i * 90}>
-                <Card className="flex h-full flex-col bg-paper/85 p-6">
+                <Card className="relative flex h-full flex-col bg-paper/85 p-6">
                   <Icon name="quote" size={26} className="text-ink/20" />
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/80">
+                  <div className="absolute right-6 top-6 h-14 w-14 overflow-hidden rounded-xl border border-paper/80 shadow-soft">
+                    <FileImage
+                      fileKey={coverForClient(shownPortfolio, t.clientName)}
+                      alt={`Momen sesi ${t.clientName}`}
+                    />
+                  </div>
+                  <p className="mt-3 flex-1 pr-14 text-sm leading-relaxed text-ink/80">
                     {t.message}
                   </p>
                   <div className="mt-5 flex items-center gap-3 border-t border-ink/10 pt-4">

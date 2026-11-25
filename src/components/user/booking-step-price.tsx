@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useGradly } from "@/lib/store";
 import { cn } from "@/lib/cn";
 import { rupiah } from "@/lib/format";
+import { coverForPhotographer } from "@/lib/seed-media";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
@@ -27,8 +28,13 @@ export function BookingStepPrice() {
   const resolvedId = queryId && packageById(queryId) ? queryId : draft.packageId;
   const pkg = resolvedId ? packageById(resolvedId) : undefined;
   const photographer = pkg ? userById(pkg.photographerId) : undefined;
+  const coverKey = pkg
+    ? coverForPhotographer(portfolio, pkg.photographerId)
+    : undefined;
   const cover = pkg
-    ? portfolio.find((item) => item.photographerId === pkg.photographerId && item.key)
+    ? portfolio.find(
+        (item) => item.photographerId === pkg.photographerId && item.key === coverKey,
+      )
     : undefined;
   const kipkVerified =
     session?.subsidyDocType === "KIP-K" && Boolean(session?.subsidyValidUntil);
@@ -89,7 +95,7 @@ export function BookingStepPrice() {
             <PackageBanner
               name={pkg.name}
               tone="sky"
-              fileKey={cover?.key}
+              fileKey={coverKey}
               alt={
                 cover
                   ? `Karya terbaru ${cover.title}${photographer ? ` oleh ${photographer.name}` : ""}`

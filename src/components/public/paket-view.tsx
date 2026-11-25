@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useGradly } from "@/lib/store";
+import { seedPackages, seedUsers } from "@/lib/mock-data";
 import { rupiah } from "@/lib/format";
 import { Select } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icons";
@@ -28,15 +29,21 @@ const SORTS: { value: Sort; label: string }[] = [
 ];
 
 export function PaketView() {
-  const { packages, users } = useGradly();
+  const { packages, users, hydrated } = useGradly();
   const [filter, setFilter] = useState<Filter>("semua");
   const [sort, setSort] = useState<Sort>("populer");
   const [fotograferId, setFotograferId] = useState("semua");
 
-  const active = useMemo(() => packages.filter((p) => p.isActive), [packages]);
+  const shownPackages = hydrated ? packages : seedPackages;
+  const shownUsers = hydrated ? users : seedUsers;
+
+  const active = useMemo(
+    () => shownPackages.filter((p) => p.isActive),
+    [shownPackages],
+  );
   const fotografer = useMemo(
-    () => users.filter((u) => u.role === "fotografer"),
-    [users],
+    () => shownUsers.filter((u) => u.role === "fotografer"),
+    [shownUsers],
   );
 
   const visible = useMemo(() => {

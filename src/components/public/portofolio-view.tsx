@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
 import { useGradly } from "@/lib/store";
+import { coverForPhotographer } from "@/lib/seed-media";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icons";
@@ -14,16 +14,6 @@ import { Reveal } from "./reveal";
 export function PortofolioView() {
   const { users, portfolio, hydrated } = useGradly();
   const fotografer = users.filter((u) => u.role === "fotografer");
-
-  const coverByPhotographer = useMemo(() => {
-    const map = new Map();
-    for (const item of portfolio) {
-      if (item.key && !map.has(item.photographerId)) {
-        map.set(item.photographerId, item.key);
-      }
-    }
-    return map;
-  }, [portfolio]);
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6 sm:py-16">
@@ -37,7 +27,7 @@ export function PortofolioView() {
 
       {!hydrated ? (
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
-          <span className="sr-only">Memuat daftar fotografer�</span>
+          <span className="sr-only">Memuat daftar fotografer…</span>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="h-56 animate-pulse rounded-[var(--radius-card)] bg-ink/5" />
           ))}
@@ -53,7 +43,6 @@ export function PortofolioView() {
       ) : (
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {fotografer.map((f, i) => {
-            const cover = coverByPhotographer.get(f.id);
             return (
               <Reveal key={f.id} delay={i * 70} className="h-full">
                 <Link
@@ -62,7 +51,7 @@ export function PortofolioView() {
                   aria-label={"Lihat portofolio " + f.name}
                 >
                   <Card className="group h-full overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lift">
-                    <div className="relative h-14 bg-gradient-to-br from-sage via-sage/60 to-sky/70">
+                    <div className="relative h-36 bg-gradient-to-br from-sage via-sage/60 to-sky/70 sm:h-40">
                       <div
                         className="absolute inset-0 opacity-[0.14]"
                         style={{
@@ -71,23 +60,20 @@ export function PortofolioView() {
                         }}
                         aria-hidden="true"
                       />
-                      {cover ? (
-                        <FileImage
-                          fileKey={cover}
-                          alt={"Karya terbaru " + f.name}
-                          className="absolute inset-0 h-full w-full object-cover"
-                        />
-                      ) : null}
+                      <FileImage
+                        fileKey={coverForPhotographer(portfolio, f.id)}
+                        alt={"Karya terbaru " + f.name}
+                      />
                     </div>
                     <div className="flex h-full flex-col px-6 pb-6">
-                      <div className="-mt-8 flex items-end gap-3">
+                      <div className="relative z-10 -mt-9 flex items-end gap-3">
                         <span className="rounded-full border-4 border-paper">
                           <Avatar name={f.name} size={62} />
                         </span>
-                        <div className="min-w-0 pb-1">
+                        <div className="min-w-0 pb-1 pt-9">
                           <h2 className="truncate font-serif text-xl leading-tight">{f.name}</h2>
-                          <p className="truncate text-sm text-ink/60">
-                            {f.studio || "Fotografer"} � {f.city}
+                          <p className="truncate text-sm text-ink/70">
+                            {f.studio || "Fotografer"} · {f.city}
                           </p>
                         </div>
                       </div>

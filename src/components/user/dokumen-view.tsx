@@ -6,6 +6,7 @@ import { formatDateTime } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
+import { FileThumb } from "@/components/ui/file-image";
 import { StatusChip } from "@/components/ui/status-chip";
 import { EmptyState } from "@/components/ui/misc";
 import { Icon } from "@/components/ui/icons";
@@ -53,9 +54,11 @@ export function DokumenView() {
                 <Card as="li" key={app.id} className="p-5 sm:p-6">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky/70 text-ink">
-                        <Icon name="file" size={20} />
-                      </span>
+                      <FileThumb
+                        fileKey={app.docKey}
+                        alt={`Dokumen ${app.docType}`}
+                        className="h-11 w-11 rounded-2xl"
+                      />
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="font-medium">{app.docName}</p>

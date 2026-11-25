@@ -138,7 +138,7 @@ async function main() {
       .filter((b) => b.payment)
       .map((b) => ({
         bookingId: b.id,
-        fileKey: `seed/${b.payment!.name}`,
+        fileKey: b.payment!.key,
         name: b.payment!.name,
         sizeKb: b.payment!.sizeKb,
         uploadedAt: d(b.payment!.uploadedAt),
@@ -153,7 +153,7 @@ async function main() {
       userId: a.userId,
       docType: a.docType,
       docName: a.docName,
-      fileKey: `seed/${a.docName}`,
+      fileKey: a.docKey,
       kelurahan: a.kelurahan,
       address: a.address,
       status: a.status,
@@ -186,7 +186,7 @@ async function main() {
       location: p.location,
       shotDate: p.shotDate,
       tone: p.tone,
-      fileKey: null,
+      fileKey: p.key || null,
     })),
   })
 

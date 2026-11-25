@@ -5,6 +5,7 @@ import { useGradly } from "@/lib/store";
 import { formatDateTime, relativeTime } from "@/lib/format";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FileThumb } from "@/components/ui/file-image";
 import { Chip } from "@/components/ui/chip";
 import { Tabs, TabPanel } from "@/components/ui/tabs";
 import { Avatar, EmptyState } from "@/components/ui/misc";
@@ -130,7 +131,11 @@ export default function AdminVerifikasi() {
                     <div>
                       <dt className="text-xs text-ink/50">Dokumen</dt>
                       <dd className="mt-0.5 flex items-center gap-1.5 text-sm">
-                        <Icon name="file" size={15} className="text-ink/50" />
+                        <FileThumb
+                          fileKey={app.docKey}
+                          alt={`Dokumen ${app.docType} ${app.userName}`}
+                          className="h-8 w-8"
+                        />
                         <span className="truncate">{app.docName}</span>
                       </dd>
                     </div>

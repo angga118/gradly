@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useGradly } from "@/lib/store";
+import { coverForPhotographer } from "@/lib/seed-media";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icons";
@@ -25,8 +26,9 @@ export function PackageCard({
   const photographer = userById(pkg.photographerId);
   const hasSubsidy = pkg.subsidyEnabled && pkg.subsidyPrice != null;
   const popular = Boolean(pkg.popular);
+  const coverKey = coverForPhotographer(portfolio, pkg.photographerId);
   const cover = portfolio.find(
-    (item) => item.photographerId === pkg.photographerId && item.key,
+    (item) => item.photographerId === pkg.photographerId && item.key === coverKey,
   );
 
   return (
@@ -38,20 +40,20 @@ export function PackageCard({
       )}
     >
       {popular ? (
-        <span className="absolute -top-3 left-6 inline-flex items-center gap-1.5 rounded-full bg-ink px-3 py-1 text-xs font-medium text-paper shadow-soft">
+        <span className="absolute -top-3 left-6 z-10 inline-flex items-center gap-1.5 rounded-full bg-ink px-3 py-1 text-xs font-medium text-paper shadow-soft">
           <Icon name="sparkles" size={13} />
           Paling dipilih
         </span>
       ) : null}
 
-      {cover ? (
-        <PhotoTile
-          fileKey={cover.key}
-          alt={`Karya terbaru ${cover.title}${photographer ? ` oleh ${photographer.name}` : ""}`}
-          tone="sky"
-          className="-m-6 mb-6 aspect-[16/9] rounded-t-[var(--radius-card)]"
-        />
-      ) : null}
+      <PhotoTile
+        fileKey={coverKey}
+        alt={`Karya ${cover?.title ?? pkg.name}${photographer ? ` oleh ${photographer.name}` : ""}`}
+        tone="sky"
+        label={cover?.title ?? pkg.name}
+        meta={photographer?.studio ?? "Gradly"}
+        className="-m-6 mb-6 aspect-[16/9] rounded-t-[var(--radius-card)]"
+      />
 
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="font-serif text-2xl leading-tight">{pkg.name}</h3>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { StatusChip } from "@/components/ui/status-chip";
 import { Avatar } from "@/components/ui/misc";
+import { FileThumb } from "@/components/ui/file-image";
 import { Icon } from "@/components/ui/icons";
 import { FilePreview } from "@/components/ui/file-preview";
 import { formatDate, formatDateTime, rupiah } from "@/lib/format";
@@ -170,9 +171,12 @@ export function AdminBookingDetailModal({
                 Bukti pembayaran
               </div>
               <div className="mt-3 flex items-center gap-3 rounded-lg border border-ink/10 bg-white/60 p-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sky text-ink">
-                  <Icon name="file" size={18} />
-                </span>
+                <FileThumb
+                  fileKey={booking.payment.key}
+                  alt={`Bukti pembayaran ${booking.id}`}
+                  icon="card"
+                  className="h-10 w-10"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">
                     {booking.payment.name}

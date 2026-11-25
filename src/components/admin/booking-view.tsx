@@ -9,6 +9,7 @@ import { Chip } from "@/components/ui/chip";
 import { Input } from "@/components/ui/field";
 import { Tabs, TabPanel } from "@/components/ui/tabs";
 import { Avatar, EmptyState } from "@/components/ui/misc";
+import { FileThumb } from "@/components/ui/file-image";
 import { StatusChip } from "@/components/ui/status-chip";
 import { Icon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
@@ -144,15 +145,23 @@ export default function AdminBooking() {
                       </div>
 
                       <div className="flex shrink-0 flex-col gap-3 sm:items-end">
-                        <div className="text-left sm:text-right">
-                          <p className="font-medium tabular-nums">
-                            {rupiah(b.total)}
-                          </p>
-                          <p className="text-xs text-ink/50">
-                            {b.payment
-                              ? "Bukti transfer ada"
-                              : "Belum ada bukti transfer"}
-                          </p>
+                        <div className="flex items-center justify-end gap-2.5 text-left sm:text-right">
+                          <div>
+                            <p className="font-medium tabular-nums">
+                              {rupiah(b.total)}
+                            </p>
+                            <p className="text-xs text-ink/50">
+                              {b.payment
+                                ? "Bukti transfer ada"
+                                : "Belum ada bukti transfer"}
+                            </p>
+                          </div>
+                          <FileThumb
+                            fileKey={b.payment?.key ?? ""}
+                            alt={`Bukti transfer ${b.id}`}
+                            icon="card"
+                            className="h-10 w-10"
+                          />
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <Button

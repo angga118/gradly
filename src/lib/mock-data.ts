@@ -335,7 +335,7 @@ export const seedBookings: Booking[] = [
     subsidized: true,
     createdAt: "2026-08-30T10:05:00.000Z",
     payment: {
-      key: "seed/bukti-transfer-bagas.jpg",
+      key: "seed/bukti-transfer-bagas.svg",
       name: "bukti-transfer-bagas.jpg",
       sizeKb: 480,
       uploadedAt: "2026-08-30T10:20:00.000Z",
@@ -363,7 +363,7 @@ export const seedBookings: Booking[] = [
     subsidized: false,
     createdAt: "2026-10-08T06:12:00.000Z",
     payment: {
-      key: "seed/bukti-rani.png",
+      key: "seed/bukti-rani.svg",
       name: "bukti-rani.png",
       sizeKb: 720,
       uploadedAt: "2026-10-08T06:40:00.000Z",
@@ -411,7 +411,7 @@ export const seedBookings: Booking[] = [
     subsidized: true,
     createdAt: "2026-10-05T03:10:00.000Z",
     payment: {
-      key: "seed/bukti-bagas-okt.jpg",
+      key: "seed/bukti-bagas-okt.svg",
       name: "bukti-bagas-okt.jpg",
       sizeKb: 510,
       uploadedAt: "2026-10-05T03:25:00.000Z",
@@ -439,7 +439,7 @@ export const seedBookings: Booking[] = [
     subsidized: false,
     createdAt: "2026-08-01T09:00:00.000Z",
     payment: {
-      key: "seed/bukti-prestige.jpg",
+      key: "seed/bukti-prestige.svg",
       name: "bukti-prestige.jpg",
       sizeKb: 640,
       uploadedAt: "2026-08-01T09:30:00.000Z",
@@ -467,7 +467,7 @@ export const seedBookings: Booking[] = [
     subsidized: false,
     createdAt: "2026-09-10T07:00:00.000Z",
     payment: {
-      key: "seed/bukti-bagas-sep.jpg",
+      key: "seed/bukti-bagas-sep.svg",
       name: "bukti-bagas-sep.jpg",
       sizeKb: 500,
       uploadedAt: "2026-09-10T07:20:00.000Z",
@@ -495,7 +495,7 @@ export const seedBookings: Booking[] = [
     subsidized: false,
     createdAt: "2026-09-18T09:00:00.000Z",
     payment: {
-      key: "seed/bukti-rani-sep.jpg",
+      key: "seed/bukti-rani-sep.svg",
       name: "bukti-rani-sep.jpg",
       sizeKb: 640,
       uploadedAt: "2026-09-18T09:30:00.000Z",
@@ -512,7 +512,7 @@ export const seedSubsidyApplications: SubsidyApplication[] = [
     userName: "Rani Puspita",
     docType: "KIP-K",
     docName: "kipk-rani.pdf",
-    docKey: "seed/kipk-rani.pdf",
+    docKey: "seed/kipk-rani.svg",
     kelurahan: "Coblong",
     address: "Jl. Dago Atas No. 21, Bandung",
     status: "Terverifikasi",
@@ -526,7 +526,7 @@ export const seedSubsidyApplications: SubsidyApplication[] = [
     userName: "Bagas Nugroho",
     docType: "KIP-K",
     docName: "kipk-bagas.pdf",
-    docKey: "seed/kipk-bagas.pdf",
+    docKey: "seed/kipk-bagas.svg",
     kelurahan: "Dago",
     address: "Jl. Cihampelas No. 88, Bandung",
     status: "Terverifikasi",
@@ -540,7 +540,7 @@ export const seedSubsidyApplications: SubsidyApplication[] = [
     userName: "Sinta Maharani",
     docType: "SKTM",
     docName: "sktm-sinta.jpg",
-    docKey: "seed/sktm-sinta.jpg",
+    docKey: "seed/sktm-sinta.svg",
     kelurahan: "Cibaduyut",
     address: "Jl. Cibaduyut Raya No. 12, Bandung",
     status: "Menunggu review",
@@ -552,7 +552,7 @@ export const seedSubsidyApplications: SubsidyApplication[] = [
     userName: "Fajar Ramadhan",
     docType: "KIP-K",
     docName: "kipk-fajar.pdf",
-    docKey: "seed/kipk-fajar.pdf",
+    docKey: "seed/kipk-fajar.svg",
     kelurahan: "Antapani",
     address: "Jl. Antapani Lama No. 45, Bandung",
     status: "Menunggu review",
@@ -564,7 +564,7 @@ export const seedSubsidyApplications: SubsidyApplication[] = [
     userName: "Nadia Kusuma",
     docType: "SKTM",
     docName: "sktm-nadia.png",
-    docKey: "seed/sktm-nadia.png",
+    docKey: "seed/sktm-nadia.svg",
     kelurahan: "Buahbatu",
     address: "Jl. Buahbatu No. 201, Bandung",
     status: "Ditolak",
@@ -625,7 +625,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Dago Pakar",
     shotDate: "2026-06-14",
     tone: "butter",
-    key: "",
+    key: "seed/foto-01.svg",
   },
   {
     id: "pf2",
@@ -636,7 +636,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Unpad",
     shotDate: "2026-05-30",
     tone: "sky",
-    key: "",
+    key: "seed/foto-02.svg",
   },
   {
     id: "pf3",
@@ -647,7 +647,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "ITB",
     shotDate: "2026-04-22",
     tone: "sage",
-    key: "",
+    key: "seed/foto-03.svg",
   },
   {
     id: "pf4",
@@ -658,7 +658,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Balai Kota",
     shotDate: "2026-03-18",
     tone: "butter",
-    key: "",
+    key: "seed/foto-04.svg",
   },
   {
     id: "pf5",
@@ -669,7 +669,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Cibaduyut",
     shotDate: "2026-02-09",
     tone: "sky",
-    key: "",
+    key: "seed/foto-05.svg",
   },
   {
     id: "pf6",
@@ -680,7 +680,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Antapani",
     shotDate: "2026-01-27",
     tone: "sage",
-    key: "",
+    key: "seed/foto-06.svg",
   },
   {
     id: "pf7",
@@ -691,7 +691,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Unpad",
     shotDate: "2026-06-20",
     tone: "sky",
-    key: "",
+    key: "seed/foto-07.svg",
   },
   {
     id: "pf8",
@@ -702,7 +702,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Balai Kota",
     shotDate: "2026-05-11",
     tone: "butter",
-    key: "",
+    key: "seed/foto-08.svg",
   },
   {
     id: "pf9",
@@ -713,7 +713,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "ITB",
     shotDate: "2026-04-02",
     tone: "sage",
-    key: "",
+    key: "seed/foto-09.svg",
   },
   {
     id: "pf10",
@@ -724,7 +724,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Sekar Frame",
     shotDate: "2026-06-08",
     tone: "butter",
-    key: "",
+    key: "seed/foto-10.svg",
   },
   {
     id: "pf11",
@@ -735,7 +735,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Sekar Frame",
     shotDate: "2026-05-02",
     tone: "sky",
-    key: "",
+    key: "seed/foto-11.svg",
   },
   {
     id: "pf12",
@@ -746,7 +746,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Sekar Frame",
     shotDate: "2026-03-27",
     tone: "sage",
-    key: "",
+    key: "seed/foto-12.svg",
   },
   {
     id: "pf13",
@@ -757,7 +757,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Jalan Braga",
     shotDate: "2026-06-01",
     tone: "sky",
-    key: "",
+    key: "seed/foto-13.svg",
   },
   {
     id: "pf14",
@@ -768,7 +768,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Dago Pakar",
     shotDate: "2026-04-19",
     tone: "butter",
-    key: "",
+    key: "seed/foto-14.svg",
   },
   {
     id: "pf15",
@@ -779,7 +779,7 @@ export const seedPortfolio: PortfolioItem[] = [
     location: "Antapani",
     shotDate: "2026-02-23",
     tone: "sage",
-    key: "",
+    key: "seed/foto-15.svg",
   },
 ];
 

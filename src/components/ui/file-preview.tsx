@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
+import { fileUrl } from "@/lib/file-url";
 import { Button } from "./button";
 import { Icon } from "./icons";
 
-const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png"];
+const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "svg"];
 
 function extensionOf(key: string): string {
   const dot = key.lastIndexOf(".");
@@ -21,12 +22,16 @@ export function FilePreview({
   name: string;
   className?: string;
 }) {
-  const [failed, setFailed] = useState(false);
+  const [error, setError] = useState<{ key: string; failed: boolean }>({
+    key: fileKey,
+    failed: false,
+  });
+  const failed = error.key === fileKey && error.failed;
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
-  const src = `/api/files/${encodeURIComponent(fileKey)}`;
+  const src = fileUrl(fileKey);
   const isImage = IMAGE_EXTENSIONS.includes(extensionOf(fileKey));
 
   useEffect(() => {
@@ -103,7 +108,8 @@ export function FilePreview({
         <img
           src={src}
           alt={`Pratinjau ${name}`}
-          onError={() => setFailed(true)}
+          onLoad={() => setError({ key: fileKey, failed: false })}
+          onError={() => setError({ key: fileKey, failed: true })}
           className="max-h-72 w-full object-contain"
         />
         <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-opacity group-hover:bg-ink/25 group-hover:opacity-100 group-focus-visible:bg-ink/25 group-focus-visible:opacity-100">

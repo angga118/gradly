@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGradly } from "@/lib/store";
 import { todayISO } from "@/lib/format";
+import { coverForPhotographer } from "@/lib/seed-media";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Textarea } from "@/components/ui/field";
@@ -21,9 +22,12 @@ type Errors = Partial<Record<FieldKey, string>>;
 
 export function BookingStepEvent() {
   const router = useRouter();
-  const { session, draft, setDraft, packageById } = useGradly();
+  const { session, draft, setDraft, packageById, portfolio } = useGradly();
 
   const pkg = draft.packageId ? packageById(draft.packageId) : undefined;
+  const coverKey = pkg
+    ? coverForPhotographer(portfolio, pkg.photographerId)
+    : undefined;
 
   const [form, setForm] = useState({
     customerName: draft.customerName || session?.name || "",
@@ -227,7 +231,13 @@ export function BookingStepEvent() {
 
         <Reveal delay={80} className="space-y-6 lg:sticky lg:top-24">
           <Card className="overflow-hidden">
-            <PackageBanner name={pkg.name} tone="butter" ratio="aspect-[16/7]" />
+            <PackageBanner
+              name={pkg.name}
+              tone="butter"
+              fileKey={coverKey}
+              alt={`Karya ${pkg.name}`}
+              ratio="aspect-[16/7]"
+            />
             <div className="p-5">
               <p className="text-xs uppercase tracking-[0.16em] text-ink/50">Paket dipilih</p>
               <p className="mt-1 font-serif text-xl">{pkg.name}</p>
