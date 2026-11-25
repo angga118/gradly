@@ -72,7 +72,7 @@ function asRole(value: string): Role {
   return (ROLE_VALUES as string[]).includes(value) ? (value as Role) : "user"
 }
 
-/** `tags`/`features` are JSON string columns in SQLite. */
+/** `tags`/`features` are JSON string columns in the database. */
 export function parseStringArray(raw: string | null | undefined): string[] {
   if (!raw) return []
   try {

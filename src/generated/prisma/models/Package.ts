@@ -610,6 +610,7 @@ export type PackageCreateOrConnectWithoutPhotographerInput = {
 
 export type PackageCreateManyPhotographerInputEnvelope = {
   data: Prisma.PackageCreateManyPhotographerInput | Prisma.PackageCreateManyPhotographerInput[]
+  skipDuplicates?: boolean
 }
 
 export type PackageUpsertWithWhereUniqueWithoutPhotographerInput = {
@@ -1564,6 +1565,7 @@ export type PackageCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Packages.
    */
   data: Prisma.PackageCreateManyInput | Prisma.PackageCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1582,6 +1584,7 @@ export type PackageCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many Packages.
    */
   data: Prisma.PackageCreateManyInput | Prisma.PackageCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -448,6 +448,7 @@ export type LedgerEntryCreateOrConnectWithoutBookingInput = {
 
 export type LedgerEntryCreateManyBookingInputEnvelope = {
   data: Prisma.LedgerEntryCreateManyBookingInput | Prisma.LedgerEntryCreateManyBookingInput[]
+  skipDuplicates?: boolean
 }
 
 export type LedgerEntryUpsertWithWhereUniqueWithoutBookingInput = {
@@ -1238,6 +1239,7 @@ export type LedgerEntryCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many LedgerEntries.
    */
   data: Prisma.LedgerEntryCreateManyInput | Prisma.LedgerEntryCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1256,6 +1258,7 @@ export type LedgerEntryCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many LedgerEntries.
    */
   data: Prisma.LedgerEntryCreateManyInput | Prisma.LedgerEntryCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

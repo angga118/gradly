@@ -26,8 +26,8 @@ Satu akun punya satu peran. Peran menentukan halaman tujuan setelah login dan ha
 - Frontend: Next.js 16 (App Router) + React + TypeScript. Halaman publik dirender di server untuk SEO.
 - Styling: Tailwind CSS dengan design token di bagian "Desain".
 - Backend: route handler Next.js — satu API untuk semua peran, tanpa service terpisah.
-- Database: SQLite lewat Prisma (`@prisma/adapter-better-sqlite3`), file lokal `prisma/dev.db`.
-- File privat: disk lokal `storage/private`, diakses lewat `/api/files/<key>` dengan cek kepemilikan (pemilik akun atau admin).
+- Database: PostgreSQL (Neon) lewat Prisma (`@prisma/adapter-pg`).
+- File privat: bucket privat Supabase Storage, diakses lewat `/api/files/<key>` dengan cek kepemilikan (pemilik akun atau admin).
 - Autentikasi: Auth.js (NextAuth v5) — email + kata sandi, Google opsional.
 - Email transaksional: Resend — hasil verifikasi subsidi, konfirmasi booking, pengingat sesi.
 - Cron: route handler `/api/cron/*`, dijaga header `Authorization: Bearer $CRON_SECRET`.
@@ -40,8 +40,12 @@ Semua variabel ada di `.env.example`; salin ke `.env` lalu isi sesuai kebutuhan 
 
 | Variabel | Kegunaan |
 | --- | --- |
-| `DATABASE_URL` | Koneksi database SQLite, contoh `file:./dev.db` (relatif terhadap folder `prisma/`) |
+| `DATABASE_URL` | Connection string Neon pooled (`-pooler`, `?pgbouncer=true`) untuk runtime |
+| `DATABASE_URL_UNPOOLED` | Connection string Neon langsung untuk Prisma CLI/migrasi |
 | `AUTH_SECRET` | Kunci penanda tangan session Auth.js, minimal 32 karakter |
+| `SUPABASE_URL` | URL project Supabase untuk Storage |
+| `SUPABASE_SECRET_KEY` | Kunci rahasia Supabase `sb_secret_...` (server-only; `service_role` lama masih diterima) |
+| `SUPABASE_BUCKET` | Nama bucket privat, default `gradly-private` |
 | `AUTH_TRUST_HOST` | `true` saat mempercayai host/proxy di lingkungan lokal |
 | `APP_URL` | URL dasar aplikasi untuk tautan absolut (email, cron) |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Kredensial login Google; kosong = login Google nonaktif |
@@ -72,6 +76,21 @@ npm run smoke          # smoke test end-to-end; butuh dev server jalan + databas
 ```
 
 `npm run smoke` mengirim HTTP ke `BASE_URL` (default `http://localhost:3000`) dan mencetak PASS/FAIL per cek.
+
+## Deploy gratis: Vercel + Neon + Supabase
+
+Tanpa kartu kredit. App di Vercel Hobby, database di Neon Free, upload privat di Supabase Free.
+
+1. **Neon** — buat project, salin dua connection string: **pooled** (`...-pooler...`, tambahkan `?pgbouncer=true`) untuk `DATABASE_URL`, dan yang **langsung** untuk `DATABASE_URL_UNPOOLED`.
+2. **Supabase** — buat project → Storage → bucket `gradly-private` dengan akses **Private**; Settings → API → salin kunci `sb_secret_...`; isi `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_BUCKET`.
+3. **Vercel** — import repo GitHub, framework Next.js. Isi env: dua variabel Neon, `AUTH_SECRET` (`openssl rand -base64 32`), `AUTH_TRUST_HOST=true`, `APP_URL=https://<project>.vercel.app`, tiga variabel Supabase, `CRON_SECRET` (`openssl rand -hex 32`), dan `NEXT_PUBLIC_*` untuk kontak/rekening. `RESEND_API_KEY` opsional.
+4. Deploy, lalu dari mesin lokal dengan env yang sama jalankan `npx prisma migrate deploy` dan `npm run db:seed`.
+5. `vercel.json` memanggil `/api/cron/reminders` tiap 06:00 UTC; Vercel otomatis mengirim `Authorization: Bearer $CRON_SECRET`.
+
+Catatan:
+- `NEXT_PUBLIC_*` dan `CRON_SECRET` di-capture saat build — setelah mengubahnya, **redeploy**.
+- Neon Free tidur setelah ±5 menit idle (cold start); Supabase Free dijeda setelah 1 minggu tanpa aktivitas — aktifkan lagi lewat dashboard.
+- Kuota gratis: Neon 0,5 GB per project, Supabase 500 MB database + 1 GB file. Supabase Free membatasi 50 MB per unggahan, jadi foto portofolio di atas 50 MB akan gagal meski validasi aplikasi mengizinkan 100 MB.
 
 ## Rute (Usulan)
 

@@ -476,6 +476,7 @@ export type PortfolioItemCreateOrConnectWithoutPhotographerInput = {
 
 export type PortfolioItemCreateManyPhotographerInputEnvelope = {
   data: Prisma.PortfolioItemCreateManyPhotographerInput | Prisma.PortfolioItemCreateManyPhotographerInput[]
+  skipDuplicates?: boolean
 }
 
 export type PortfolioItemUpsertWithWhereUniqueWithoutPhotographerInput = {
@@ -1299,6 +1300,7 @@ export type PortfolioItemCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many PortfolioItems.
    */
   data: Prisma.PortfolioItemCreateManyInput | Prisma.PortfolioItemCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1317,6 +1319,7 @@ export type PortfolioItemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many PortfolioItems.
    */
   data: Prisma.PortfolioItemCreateManyInput | Prisma.PortfolioItemCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

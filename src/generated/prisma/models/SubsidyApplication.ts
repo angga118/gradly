@@ -592,6 +592,7 @@ export type SubsidyApplicationCreateOrConnectWithoutUserInput = {
 
 export type SubsidyApplicationCreateManyUserInputEnvelope = {
   data: Prisma.SubsidyApplicationCreateManyUserInput | Prisma.SubsidyApplicationCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type SubsidyApplicationCreateWithoutReviewedByInput = {
@@ -629,6 +630,7 @@ export type SubsidyApplicationCreateOrConnectWithoutReviewedByInput = {
 
 export type SubsidyApplicationCreateManyReviewedByInputEnvelope = {
   data: Prisma.SubsidyApplicationCreateManyReviewedByInput | Prisma.SubsidyApplicationCreateManyReviewedByInput[]
+  skipDuplicates?: boolean
 }
 
 export type SubsidyApplicationUpsertWithWhereUniqueWithoutUserInput = {
@@ -1565,6 +1567,7 @@ export type SubsidyApplicationCreateManyArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many SubsidyApplications.
    */
   data: Prisma.SubsidyApplicationCreateManyInput | Prisma.SubsidyApplicationCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1583,6 +1586,7 @@ export type SubsidyApplicationCreateManyAndReturnArgs<ExtArgs extends runtime.Ty
    * The data used to create many SubsidyApplications.
    */
   data: Prisma.SubsidyApplicationCreateManyInput | Prisma.SubsidyApplicationCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

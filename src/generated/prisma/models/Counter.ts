@@ -948,6 +948,7 @@ export type CounterCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Counters.
    */
   data: Prisma.CounterCreateManyInput | Prisma.CounterCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -966,6 +967,7 @@ export type CounterCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many Counters.
    */
   data: Prisma.CounterCreateManyInput | Prisma.CounterCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

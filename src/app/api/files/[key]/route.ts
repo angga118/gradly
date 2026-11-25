@@ -1,5 +1,3 @@
-import { createReadStream } from "node:fs"
-import { Readable } from "node:stream"
 import { requireUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { readUpload } from "@/lib/storage"
@@ -58,8 +56,7 @@ export async function GET(
   const stored = await readUpload(key)
   if (!stored) return new Response("Not found", { status: 404 })
 
-  const body = Readable.toWeb(createReadStream(stored.path)) as unknown as ReadableStream<Uint8Array>
-  return new Response(body, {
+  return new Response(stored.data, {
     headers: {
       "Content-Type": stored.contentType,
       "Content-Length": String(stored.size),

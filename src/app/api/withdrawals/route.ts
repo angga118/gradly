@@ -49,7 +49,7 @@ export async function POST(req: Request) {
   const input = parsed.data
 
   // honey: available = Σ(payout + distribution) for this photographer's bookings − Σ(withdrawals)
-  // already requested. Recomputed inside the write transaction so the SQLite write
+  // already requested. Recomputed inside the write transaction so the database write
   // lock serializes concurrent POSTs — a check-then-insert across two statements
   // would let both pass. Revisit if a ledger/balance table lands.
   let created

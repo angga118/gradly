@@ -380,6 +380,7 @@ export type HighlightCardCreateOrConnectWithoutPhotographerInput = {
 
 export type HighlightCardCreateManyPhotographerInputEnvelope = {
   data: Prisma.HighlightCardCreateManyPhotographerInput | Prisma.HighlightCardCreateManyPhotographerInput[]
+  skipDuplicates?: boolean
 }
 
 export type HighlightCardUpsertWithWhereUniqueWithoutPhotographerInput = {
@@ -1159,6 +1160,7 @@ export type HighlightCardCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many HighlightCards.
    */
   data: Prisma.HighlightCardCreateManyInput | Prisma.HighlightCardCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1177,6 +1179,7 @@ export type HighlightCardCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many HighlightCards.
    */
   data: Prisma.HighlightCardCreateManyInput | Prisma.HighlightCardCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

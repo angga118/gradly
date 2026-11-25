@@ -1,14 +1,13 @@
-import { mkdir, stat, unlink, writeFile } from "node:fs/promises"
-import { join, extname, resolve, sep } from "node:path"
 import { randomUUID } from "node:crypto"
+import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 
 export type StoredFile = { key: string; name: string; sizeKb: number }
 
-/** Typed rejection raised by {@link saveUpload} for invalid uploads. */
+/** Typed rejection raised for invalid uploads and storage failures. */
 export class StorageError extends Error {
   constructor(
     message: string,
-    readonly code: "unsupported_type" | "too_large" | "empty",
+    readonly code: "unsupported_type" | "too_large" | "empty" | "storage_error",
   ) {
     super(message)
     this.name = "StorageError"
@@ -34,16 +33,32 @@ const MIME_BY_EXT: Record<string, string> = {
   pdf: "application/pdf",
 }
 
-const STORE_DIR = resolve(process.cwd(), "storage", "private")
-
 /** Only charset-randomUUID + extension keys are ever written, so reject anything else. */
 const SAFE_KEY = /^[A-Za-z0-9._-]+$/
 
-function resolveKey(key: string): string | null {
-  if (!SAFE_KEY.test(key) || key.includes("..")) return null
-  const path = resolve(STORE_DIR, key)
-  const prefix = STORE_DIR + sep
-  return path.startsWith(prefix) ? path : null
+// Server-only: the service-role key must never reach a client bundle.
+let client: SupabaseClient | null = null
+
+function privateBucket() {
+  if (!client) {
+    const url = process.env.SUPABASE_URL
+    const serviceKey =
+      process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!url || !serviceKey) {
+      throw new StorageError(
+        "Supabase Storage belum dikonfigurasi.",
+        "storage_error",
+      )
+    }
+    client = createClient(url, serviceKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+  }
+  return client.storage.from(process.env.SUPABASE_BUCKET || "gradly-private")
+}
+
+function isValidKey(key: string): boolean {
+  return SAFE_KEY.test(key) && !key.includes("..")
 }
 
 export async function saveUpload(
@@ -70,8 +85,13 @@ export async function saveUpload(
   const key = `${randomUUID()}.${ext}`
   const bytes = Buffer.from(await file.arrayBuffer())
 
-  await mkdir(STORE_DIR, { recursive: true })
-  await writeFile(join(STORE_DIR, key), bytes)
+  const { error } = await privateBucket().upload(key, bytes, {
+    contentType: file.type,
+    upsert: false,
+  })
+  if (error) {
+    throw new StorageError(`Gagal menyimpan berkas: ${error.message}`, "storage_error")
+  }
 
   return {
     key,
@@ -82,27 +102,29 @@ export async function saveUpload(
 
 export async function readUpload(
   key: string,
-): Promise<{ path: string; size: number; contentType: string } | null> {
-  const path = resolveKey(key)
-  if (!path) return null
-  try {
-    const info = await stat(/* turbopackIgnore: true */ path)
-    if (!info.isFile()) return null
-    const ext = extname(path).slice(1).toLowerCase()
-    return {
-      path,
-      size: info.size,
-      contentType: MIME_BY_EXT[ext] ?? "application/octet-stream",
-    }
-  } catch {
-    return null
+): Promise<{ data: ArrayBuffer; size: number; contentType: string } | null> {
+  if (!isValidKey(key)) return null
+
+  const { data, error } = await privateBucket().download(key)
+  if (error) {
+    throw new StorageError(`Gagal membaca berkas: ${error.message}`, "storage_error")
+  }
+  if (!data) return null
+
+  const bytes = await data.arrayBuffer()
+  const ext = key.split(".").pop()?.toLowerCase() ?? ""
+  return {
+    data: bytes,
+    size: bytes.byteLength,
+    contentType: MIME_BY_EXT[ext] || data.type || "application/octet-stream",
   }
 }
 
 export async function deleteUpload(key: string): Promise<void> {
-  const path = resolveKey(key)
-  if (!path) return
-  await unlink(path).catch(() => {
-    /* already gone — idempotent */
-  })
+  if (!isValidKey(key)) return
+
+  const { error } = await privateBucket().remove([key])
+  if (error) {
+    throw new StorageError(`Gagal menghapus berkas: ${error.message}`, "storage_error")
+  }
 }

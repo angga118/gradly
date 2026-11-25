@@ -448,6 +448,7 @@ export type WithdrawalCreateOrConnectWithoutPhotographerInput = {
 
 export type WithdrawalCreateManyPhotographerInputEnvelope = {
   data: Prisma.WithdrawalCreateManyPhotographerInput | Prisma.WithdrawalCreateManyPhotographerInput[]
+  skipDuplicates?: boolean
 }
 
 export type WithdrawalUpsertWithWhereUniqueWithoutPhotographerInput = {
@@ -1238,6 +1239,7 @@ export type WithdrawalCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many Withdrawals.
    */
   data: Prisma.WithdrawalCreateManyInput | Prisma.WithdrawalCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1256,6 +1258,7 @@ export type WithdrawalCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many Withdrawals.
    */
   data: Prisma.WithdrawalCreateManyInput | Prisma.WithdrawalCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
